@@ -1,0 +1,29 @@
+{
+  "name": "mern-template",
+  "version": "1.0.0",
+  "description": "A template for a MERN-Stack Web App",
+  "main": "index.js",
+  "scripts": {
+    "init": "./bin/init.sh",
+    "server": "cd server && npm run dev",
+    "client": "cd client && npm run dev",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fredericbahr/mern-template.git"
+  },
+  "keywords": [
+    "MERN",
+    "Template"
+  ],
+  "author": "Frederic Bahr",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fredericbahr/mern-template/issues"
+  },
+  "homepage": "https://github.com/fredericbahr/mern-template#readme",
+  "dependencies": {
+    "concurrently": "^7.0.0"
+  }
+}
