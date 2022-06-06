@@ -2,10 +2,94 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model Animal {
+  id          Int         @id @default(autoincrement())
+  name        String
+  yearOfBirth Int
+  weight      Int
+  owner       Customer    @relation(fields: [customerId], references: [id])
+  customerId  Int
+  treatments  Treatment[]
+}
+
+model Customer {
+  id          Int         @id @default(autoincrement())
+  name        String
+  street      String
+  plz         Int
+  city        String
+  phoneNumber String
+  createdAt   DateTime    @default(now())
+  animals     Animal[]
+  treatments  Treatment[]
+}
+
+model Treatment {
+  id         Int        @id @default(autoincrement())
+  diagnosis  String
+  costs      Int        @default(0)
+  date       DateTime   @default(now())
+  notes      String
+  animal     Animal     @relation(fields: [animalId], references: [id])
+  customer   Customer   @relation(fields: [customerId], references: [id])
+  animalId   Int
+  customerId Int
+  medicines  Medicine[]
+  photos     Photo[]
+  videos     Video[]
+  findings   Finding[]
+}
+
+model Medicine {
+  id          Int         @id @default(autoincrement())
+  name        String
+  dosis       Int
+  description String
+  treatments  Treatment[]
+}
+
+model Race {
+  id        Int     @id @default(autoincrement())
+  name      String
+  species   Species @relation(fields: [speciesId], references: [id])
+  speciesId Int
+}
+
+model Species {
+  id    Int    @id @default(autoincrement())
+  name  String
+  races Race[]
+}
+
+model Photo {
+  id          Int        @id @default(autoincrement())
+  description String
+  blob        Bytes
+  treatment   Treatment? @relation(fields: [treatmentId], references: [id])
+  treatmentId Int?
+}
+
+model Video {
+  id          Int        @id @default(autoincrement())
+  description String
+  blob        Bytes
+  treatment   Treatment? @relation(fields: [treatmentId], references: [id])
+  treatmentId Int?
+}
+
+model Finding {
+  id          Int        @id @default(autoincrement())
+  description String
+  blob        Bytes
+  treatment   Treatment? @relation(fields: [treatmentId], references: [id])
+  treatmentId Int?
 }
