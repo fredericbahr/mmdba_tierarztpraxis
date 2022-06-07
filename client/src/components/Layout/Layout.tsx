@@ -13,17 +13,17 @@ export const Layout = () => {
       route: "/",
     },
     {
-      name: "Animals",
+      name: "Tiere",
       icon: PawPrint,
       route: "/animal",
     },
     {
-      name: "Customer",
+      name: "Kunden",
       icon: Users,
       route: "/customer",
     },
     {
-      name: "Medicine",
+      name: "Medikamente",
       icon: Pill,
       route: "/medicine",
     },
