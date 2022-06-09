@@ -18,7 +18,9 @@ model Animal {
   weight     Int
   owner      Customer    @relation(fields: [customerId], references: [id])
   customerId Int
+  race       Race        @relation(fields: [raceId], references: [id])
   treatments Treatment[]
+  raceId     Int
 }
 
 model Customer {
@@ -58,10 +60,11 @@ model Medicine {
 }
 
 model Race {
-  id        Int     @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   name      String
-  species   Species @relation(fields: [speciesId], references: [id])
+  species   Species  @relation(fields: [speciesId], references: [id])
   speciesId Int
+  Animal    Animal[]
 }
 
 model Species {

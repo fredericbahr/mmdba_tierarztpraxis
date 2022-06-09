@@ -7,14 +7,17 @@ import {
   ModalContent,
   ModalFooter,
   ModalOverlay,
+  useToast,
 } from "@chakra-ui/react";
 import { Step, Steps, useSteps } from "chakra-ui-steps";
 import React, { useState } from "react";
 
+import { useCustomToast } from "../../../hooks/useCustomToast";
+import { useFetch } from "../../../hooks/useFetch";
 import { AnimalCreateStep } from "../AnimalCreateStep/AnimalCreateStep";
-import { AnimalCreateSuccess } from "../AnimalCreateSuccess/AnimalCreateSuccess";
 import { AnimalCustomerChooseStep } from "../AnimalCustomerChooseStep/AnimalCustomerChooseStep";
 import { AnimalRaceChooseStep } from "../AnimalRaceChooseStep/AnimalRaceChooseStep";
+import { AnimalSpeziesChooseStep } from "../AnimalSpeciesChooseStep/AnimalSpeciesChooseStep";
 
 interface IProps {
   isOpen: boolean;
@@ -26,8 +29,11 @@ export const AnimalCreateModal = ({ isOpen, onClose }: IProps) => {
     initialStep: 0,
   });
 
+  const { showErrorToast } = useCustomToast();
+  const { isLoading, error, post } = useFetch();
+
   const [animalName, setAnimalName] = useState("");
-  const [animalBirthYear, setAnimalBirthYear] = useState<Date | null>(null);
+  const [animalBirthdate, setAnimalBirthdate] = useState<Date | null>(null);
   const [animalWeight, setAnimalWeight] = useState<number | null>(null);
   const [customerId, setCustomerId] = useState<number | null>(null);
   const [speciesId, setSpeciesId] = useState<number | null>(null);
@@ -38,7 +44,7 @@ export const AnimalCreateModal = ({ isOpen, onClose }: IProps) => {
   };
 
   const handleAnimalBirthYearChange = (value: Date) => {
-    setAnimalBirthYear(value);
+    setAnimalBirthdate(value);
   };
 
   const handleAnimalWeightChange = (value: number) => {
@@ -60,8 +66,25 @@ export const AnimalCreateModal = ({ isOpen, onClose }: IProps) => {
   /**
    * Handles the creation of the animal
    */
-  const handleAnimalCreation = () => {
-    nextStep();
+  const handleAnimalCreation = async () => {
+    const body = {
+      name: animalName,
+      birthdate: animalBirthdate,
+      weight: animalWeight,
+      customerId: customerId,
+      raceId: raceId,
+    };
+
+    const data = await post("/animals", body);
+
+    if (error || !data) {
+      return showErrorToast(
+        "Fehler",
+        error || "Fehler beim Erstellen des Tieres"
+      );
+    }
+
+    onClose();
   };
 
   const steps = [
@@ -83,7 +106,9 @@ export const AnimalCreateModal = ({ isOpen, onClose }: IProps) => {
     },
     {
       label: "Spezies auswählen",
-      content: <AnimalCreateStep />,
+      content: (
+        <AnimalSpeziesChooseStep onSpecieschange={handleSpeciesChange} />
+      ),
     },
     {
       label: "Rasse auswählen",
@@ -114,16 +139,6 @@ export const AnimalCreateModal = ({ isOpen, onClose }: IProps) => {
                 </Step>
               ))}
             </Steps>
-            <Flex marginTop={4}>
-              {activeStep === steps.length && (
-                <Flex px={4} py={4} width="100%" flexDirection="column">
-                  <AnimalCreateSuccess />
-                  <Button mx="auto" mt={6} size="sm" onClick={reset}>
-                    Reset
-                  </Button>
-                </Flex>
-              )}
-            </Flex>
           </Flex>
         </ModalBody>
 
@@ -143,6 +158,7 @@ export const AnimalCreateModal = ({ isOpen, onClose }: IProps) => {
                   ? handleAnimalCreation
                   : nextStep
               }
+              isLoading={isLoading}
               disabled={activeStep >= steps.length}
             >
               {activeStep === steps.length - 1 ? "Tier anlegen" : "Weiter"}

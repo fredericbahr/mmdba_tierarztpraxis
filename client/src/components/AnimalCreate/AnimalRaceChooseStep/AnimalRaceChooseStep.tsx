@@ -19,7 +19,7 @@ import { useFetch } from "../../../hooks/useFetch";
 import { IRaceOption } from "../../../interfaces/autocompleteOptionInterfaces";
 
 interface IProps {
-  speciesId: number;
+  speciesId: number | null;
   onRaceChange: (value: number) => void;
 }
 

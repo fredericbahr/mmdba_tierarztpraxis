@@ -22,7 +22,7 @@ interface IProps {
   onSpecieschange: (value: number) => void;
 }
 
-export const AnimalRaceChooseStep = ({ onSpecieschange }: IProps) => {
+export const AnimalSpeziesChooseStep = ({ onSpecieschange }: IProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [options, setOptions] = React.useState<IRaceOption[]>([]);
