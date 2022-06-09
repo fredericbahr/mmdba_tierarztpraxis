@@ -12,13 +12,13 @@ datasource db {
 }
 
 model Animal {
-  id          Int         @id @default(autoincrement())
-  name        String
-  yearOfBirth Int
-  weight      Int
-  owner       Customer    @relation(fields: [customerId], references: [id])
-  customerId  Int
-  treatments  Treatment[]
+  id         Int         @id @default(autoincrement())
+  name       String
+  birthday   DateTime
+  weight     Int
+  owner      Customer    @relation(fields: [customerId], references: [id])
+  customerId Int
+  treatments Treatment[]
 }
 
 model Customer {
