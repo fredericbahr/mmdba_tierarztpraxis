@@ -29,18 +29,29 @@ export const AnimalCreateStep = ({
       <form>
         <FormControl isRequired>
           <FormLabel htmlFor="animalName">Tiername</FormLabel>
-          <Input id="animalName" type="text" onChange={() => onAnimalNameChange}/>
+          <Input
+            id="animalName"
+            type="text"
+            onChange={() => onAnimalNameChange}
+          />
         </FormControl>
-        
+
         <FormControl isRequired>
           <FormLabel htmlFor="animalBirthYear">Geburtsdatum</FormLabel>
-          <Input id="animalBirthYear" type="date" onChange={() => onAnimalBirthYearChange}/>
+          <Input
+            id="animalBirthYear"
+            type="date"
+            onChange={() => onAnimalBirthYearChange}
+          />
         </FormControl>
-        
+
         <FormControl isRequired>
           <FormLabel htmlFor="animalWeight">Gewicht</FormLabel>
           <NumberInput>
-            <NumberInputField id="animalWeight" onChange={() => onAnimalWeightChange} />
+            <NumberInputField
+              id="animalWeight"
+              onChange={() => onAnimalWeightChange}
+            />
             <NumberInputStepper>
               <NumberIncrementStepper />
               <NumberDecrementStepper />

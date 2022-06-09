@@ -14,6 +14,7 @@ import React, { useState } from "react";
 import { AnimalCreateStep } from "../AnimalCreateStep/AnimalCreateStep";
 import { AnimalCreateSuccess } from "../AnimalCreateSuccess/AnimalCreateSuccess";
 import { AnimalCustomerChooseStep } from "../AnimalCustomerChooseStep/AnimalCustomerChooseStep";
+import { AnimalRaceChooseStep } from "../AnimalRaceChooseStep/AnimalRaceChooseStep";
 
 interface IProps {
   isOpen: boolean;
@@ -29,6 +30,8 @@ export const AnimalCreateModal = ({ isOpen, onClose }: IProps) => {
   const [animalBirthYear, setAnimalBirthYear] = useState<Date | null>(null);
   const [animalWeight, setAnimalWeight] = useState<number | null>(null);
   const [customerId, setCustomerId] = useState<number | null>(null);
+  const [speciesId, setSpeciesId] = useState<number | null>(null);
+  const [raceId, setRaceId] = useState<number | null>(null);
 
   const handleAnimalNameChange = (value: string) => {
     setAnimalName(value);
@@ -44,6 +47,14 @@ export const AnimalCreateModal = ({ isOpen, onClose }: IProps) => {
 
   const handleCustomerIdChange = (value: number) => {
     setCustomerId(value);
+  };
+
+  const handleSpeciesChange = (value: number) => {
+    setSpeciesId(value);
+  };
+
+  const handleRaceIdChange = (value: number) => {
+    setRaceId(value);
   };
 
   /**
@@ -66,7 +77,9 @@ export const AnimalCreateModal = ({ isOpen, onClose }: IProps) => {
     },
     {
       label: "Besitzer auswählen",
-      content: <AnimalCustomerChooseStep />,
+      content: (
+        <AnimalCustomerChooseStep onCustomerChange={handleCustomerIdChange} />
+      ),
     },
     {
       label: "Spezies auswählen",
@@ -74,7 +87,12 @@ export const AnimalCreateModal = ({ isOpen, onClose }: IProps) => {
     },
     {
       label: "Rasse auswählen",
-      content: <AnimalCreateStep />,
+      content: (
+        <AnimalRaceChooseStep
+          onRaceChange={handleRaceIdChange}
+          speciesId={speciesId}
+        />
+      ),
     },
   ];
 

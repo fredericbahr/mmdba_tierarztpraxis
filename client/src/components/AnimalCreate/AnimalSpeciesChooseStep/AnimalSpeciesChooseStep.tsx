@@ -19,11 +19,10 @@ import { useFetch } from "../../../hooks/useFetch";
 import { IRaceOption } from "../../../interfaces/autocompleteOptionInterfaces";
 
 interface IProps {
-  speciesId: number;
-  onRaceChange: (value: number) => void;
+  onSpecieschange: (value: number) => void;
 }
 
-export const AnimalRaceChooseStep = ({ speciesId, onRaceChange }: IProps) => {
+export const AnimalRaceChooseStep = ({ onSpecieschange }: IProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [options, setOptions] = React.useState<IRaceOption[]>([]);
@@ -31,7 +30,7 @@ export const AnimalRaceChooseStep = ({ speciesId, onRaceChange }: IProps) => {
 
   useEffect(() => {
     const fetchOptions = async () => {
-      const fetchedOptions = await get(`/api/races/${speciesId}`);
+      const fetchedOptions = await get("/api/species");
 
       if (fetchedOptions && !error) {
         setOptions(fetchedOptions);
@@ -44,9 +43,12 @@ export const AnimalRaceChooseStep = ({ speciesId, onRaceChange }: IProps) => {
   return (
     <VStack justify="center" align="center" w="full" spacing={8}>
       <FormControl w="60">
-        <FormLabel>Tierrasse</FormLabel>
+        <FormLabel>Tierspezies</FormLabel>
         <AutoComplete openOnFocus>
-          <AutoCompleteInput variant="filled" onChange={() => onRaceChange} />
+          <AutoCompleteInput
+            variant="filled"
+            onChange={() => onSpecieschange}
+          />
           <AutoCompleteList>
             <>
               {isLoading && <Spinner />}
@@ -63,10 +65,10 @@ export const AnimalRaceChooseStep = ({ speciesId, onRaceChange }: IProps) => {
             </>
           </AutoCompleteList>
         </AutoComplete>
-        <FormHelperText>Wählen Sie bitte einen Tierrasse</FormHelperText>
+        <FormHelperText>Wählen Sie bitte einen Tierspezies</FormHelperText>
       </FormControl>
-      <Button onClick={onOpen}>Rasse anlegen</Button>
+      <Button onClick={onOpen}>Spezies anlegen</Button>
     </VStack>
   );
-  // TODO: Add Race Create Modal
+  // TODO: Add Spezies Create Modal
 };

@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "npx nodemon server.ts",
     "build": "tsc",
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix ."
   },
   "author": "Frederic Bahr",
   "license": "MIT",

@@ -1,4 +1,10 @@
-import { Flex, FlexProps, Icon, ListItem } from "@chakra-ui/react";
+import {
+  Flex,
+  FlexProps,
+  Icon,
+  ListItem,
+  useColorModeValue,
+} from "@chakra-ui/react";
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -26,7 +32,7 @@ export const NavItem = ({ item, children, ...rest }: IProps) => {
           display="flex"
           alignItems="center"
           _hover={{
-            backgroundColor: "gray.100",
+            backgroundColor: useColorModeValue("gray.100", "gray.700"),
           }}
         >
           {item.icon && <Icon mr="4" fontSize="16" as={item.icon} />}
