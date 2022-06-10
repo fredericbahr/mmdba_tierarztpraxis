@@ -13,14 +13,14 @@ import {
 import React from "react";
 
 interface IProps {
-  onAnimalNameChange: (value: string) => void;
-  onAnimalBirthYearChange: (value: Date) => void;
-  onAnimalWeightChange: (value: number) => void;
+  onAnimalNameChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onAnimalBirthdateChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onAnimalWeightChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export const AnimalCreateStep = ({
   onAnimalNameChange,
-  onAnimalBirthYearChange,
+  onAnimalBirthdateChange,
   onAnimalWeightChange,
 }: IProps) => {
   return (
@@ -32,7 +32,7 @@ export const AnimalCreateStep = ({
           <Input
             id="animalName"
             type="text"
-            onChange={() => onAnimalNameChange}
+            onChange={onAnimalNameChange}
           />
         </FormControl>
 
@@ -41,7 +41,7 @@ export const AnimalCreateStep = ({
           <Input
             id="animalBirthYear"
             type="date"
-            onChange={() => onAnimalBirthYearChange}
+            onChange={onAnimalBirthdateChange}
           />
         </FormControl>
 
@@ -50,7 +50,7 @@ export const AnimalCreateStep = ({
           <NumberInput>
             <NumberInputField
               id="animalWeight"
-              onChange={() => onAnimalWeightChange}
+              onChange={onAnimalWeightChange}
             />
             <NumberInputStepper>
               <NumberIncrementStepper />

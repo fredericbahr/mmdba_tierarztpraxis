@@ -12,11 +12,11 @@ import {
 import React from "react";
 
 interface IProps {
-  onNameChange: (value: string) => void;
-  onStreetChange: (value: string) => void;
-  onZipChange: (value: number) => void;
-  onCityChange: (value: string) => void;
-  onPhoneNumberChange: (value: string) => void;
+  onNameChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onStreetChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onZipChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onCityChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onPhoneNumberChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export const CustomerCreateForm = ({
@@ -30,21 +30,17 @@ export const CustomerCreateForm = ({
     <form>
       <FormControl isRequired>
         <FormLabel htmlFor="customerName">Name</FormLabel>
-        <Input type="text" id="customerName" onChange={() => onNameChange} />
+        <Input type="text" id="customerName" onChange={onNameChange} />
       </FormControl>
       <FormControl isRequired>
         <FormLabel htmlFor="customerStreet">Straße</FormLabel>
-        <Input
-          type="text"
-          id="customerStreet"
-          onChange={() => onStreetChange}
-        />
+        <Input type="text" id="customerStreet" onChange={onStreetChange} />
       </FormControl>
       <HStack>
         <FormControl isRequired>
           <FormLabel htmlFor="customerZIP">Postleitzahl</FormLabel>
           <NumberInput>
-            <NumberInputField id="customerZIP" onChange={() => onZipChange} />
+            <NumberInputField id="customerZIP" onChange={onZipChange} />
             <NumberInputStepper>
               <NumberIncrementStepper />
               <NumberDecrementStepper />
@@ -53,7 +49,7 @@ export const CustomerCreateForm = ({
         </FormControl>
         <FormControl isRequired>
           <FormLabel htmlFor="customerCity">Ort</FormLabel>
-          <Input type="text" id="customerCity" onChange={() => onCityChange} />
+          <Input type="text" id="customerCity" onChange={onCityChange} />
         </FormControl>
       </HStack>
       <FormControl isRequired>
@@ -61,7 +57,7 @@ export const CustomerCreateForm = ({
         <Input
           type="text"
           id="customerPhoneNumber"
-          onChange={() => onPhoneNumberChange}
+          onChange={onPhoneNumberChange}
         />
       </FormControl>
     </form>

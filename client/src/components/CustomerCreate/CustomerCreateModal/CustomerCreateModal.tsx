@@ -30,24 +30,34 @@ export const CustomerCreateModal = ({ isOpen, onClose }: IProps) => {
   const [customerCity, setCustomerCity] = useState("");
   const [customerPhoneNumber, setCustomerPhoneNumber] = useState("");
 
-  const handleCustomerNameChange = (value: string) => {
-    setCustomerName(value);
+  const handleCustomerNameChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setCustomerName(event.target.value);
   };
 
-  const handleCustomerStreetChange = (value: string) => {
-    setCustomerStreet(value);
+  const handleCustomerStreetChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setCustomerStreet(event.target.value);
   };
 
-  const handleCustomerZipChange = (value: number) => {
-    setCustomerZip(value);
+  const handleCustomerZipChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setCustomerZip(Number(event.target.value));
   };
 
-  const handleCustomerCityChange = (value: string) => {
-    setCustomerCity(value);
+  const handleCustomerCityChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setCustomerCity(event.target.value);
   };
 
-  const handleCustomerPhoneNumberChange = (value: string) => {
-    setCustomerPhoneNumber(value);
+  const handleCustomerPhoneNumberChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setCustomerPhoneNumber(event.target.value);
   };
 
   const handleOwnerCreation = async () => {
@@ -59,10 +69,13 @@ export const CustomerCreateModal = ({ isOpen, onClose }: IProps) => {
       phoneNumber: customerPhoneNumber,
     };
 
-    await post("/api/customer", body);
+    const data = await post("/api/customer", body);
 
-    if (error) {
-      showErrorToast("Fehler", error || "Fehler beim Anlegen eines Besitzers");
+    if (!data || error) {
+      return showErrorToast(
+        "Fehler",
+        error || "Fehler beim Anlegen eines Besitzers"
+      );
     }
 
     showSuccessToast("Erfolg", "Besitzer erfolgreich angelegt");

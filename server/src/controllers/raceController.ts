@@ -1,6 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
-import { httpBadRequest, httpIntServerError, httpOK } from "../config/statusCode";
+import {
+  httpBadRequest,
+  httpIntServerError,
+  httpOK,
+} from "../config/statusCode";
 import { IRacesRequest } from "../interfaces/raceInterfaces";
 
 const prisma = new PrismaClient();
@@ -13,17 +17,17 @@ const prisma = new PrismaClient();
 export const getRaces = async (req: Request<IRacesRequest>, res: Response) => {
   const { speciesId } = req.params;
 
-  if(!speciesId) {
+  if (!speciesId) {
     return res.status(httpBadRequest).json({
-      error: "Bitte geben Sie eine Spezies an"
+      error: "Bitte geben Sie eine Spezies an",
     });
   }
 
   try {
     const races = await prisma.race.findMany({
       where: {
-        speciesId
-      }
+        speciesId,
+      },
     });
 
     res.status(httpOK).json(races);

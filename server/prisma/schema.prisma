@@ -61,7 +61,7 @@ model Medicine {
 
 model Race {
   id        Int      @id @default(autoincrement())
-  name      String
+  name      String   @unique
   species   Species  @relation(fields: [speciesId], references: [id])
   speciesId Int
   Animal    Animal[]
@@ -69,7 +69,7 @@ model Race {
 
 model Species {
   id    Int    @id @default(autoincrement())
-  name  String
+  name  String @unique
   races Race[]
 }
 

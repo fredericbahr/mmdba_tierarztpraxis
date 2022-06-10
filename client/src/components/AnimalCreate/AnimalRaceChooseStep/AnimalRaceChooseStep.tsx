@@ -46,8 +46,8 @@ export const AnimalRaceChooseStep = ({ speciesId, onRaceChange }: IProps) => {
     <VStack justify="center" align="center" w="full" spacing={8}>
       <FormControl w="60">
         <FormLabel>Tierrasse</FormLabel>
-        <AutoComplete openOnFocus>
-          <AutoCompleteInput variant="filled" onChange={() => onRaceChange} />
+        <AutoComplete openOnFocus onChange={onRaceChange}>
+          <AutoCompleteInput variant="filled" />
           <AutoCompleteList>
             <>
               {isLoading && (
@@ -59,7 +59,9 @@ export const AnimalRaceChooseStep = ({ speciesId, onRaceChange }: IProps) => {
                 options.map((option, cid) => (
                   <AutoCompleteItem
                     key={`option-${cid}`}
-                    value={option.id}
+                    getValue={(option) => option.id}
+                    label={option.name}
+                    value={option}
                     textTransform="capitalize"
                   >
                     {option.name}

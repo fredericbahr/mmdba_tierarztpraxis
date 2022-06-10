@@ -7,7 +7,6 @@ import {
   ModalContent,
   ModalFooter,
   ModalOverlay,
-  useToast,
 } from "@chakra-ui/react";
 import { Step, Steps, useSteps } from "chakra-ui-steps";
 import React, { useState } from "react";
@@ -25,7 +24,7 @@ interface IProps {
 }
 
 export const AnimalCreateModal = ({ isOpen, onClose }: IProps) => {
-  const { nextStep, prevStep, reset, activeStep } = useSteps({
+  const { nextStep, prevStep, activeStep } = useSteps({
     initialStep: 0,
   });
 
@@ -39,23 +38,29 @@ export const AnimalCreateModal = ({ isOpen, onClose }: IProps) => {
   const [speciesId, setSpeciesId] = useState<number | null>(null);
   const [raceId, setRaceId] = useState<number | null>(null);
 
-  const handleAnimalNameChange = (value: string) => {
-    setAnimalName(value);
+  const handleAnimalNameChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setAnimalName(event.target.value);
   };
 
-  const handleAnimalBirthYearChange = (value: Date) => {
-    setAnimalBirthdate(value);
+  const handleAnimalBirthdateChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setAnimalBirthdate(new Date(event.target.value));
   };
 
-  const handleAnimalWeightChange = (value: number) => {
-    setAnimalWeight(value);
+  const handleAnimalWeightChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setAnimalWeight(Number(event.target.value));
   };
 
   const handleCustomerIdChange = (value: number) => {
     setCustomerId(value);
   };
 
-  const handleSpeciesChange = (value: number) => {
+  const handleSpeciesIdChange = (value: number) => {
     setSpeciesId(value);
   };
 
@@ -93,7 +98,7 @@ export const AnimalCreateModal = ({ isOpen, onClose }: IProps) => {
       content: (
         <AnimalCreateStep
           onAnimalNameChange={handleAnimalNameChange}
-          onAnimalBirthYearChange={handleAnimalBirthYearChange}
+          onAnimalBirthdateChange={handleAnimalBirthdateChange}
           onAnimalWeightChange={handleAnimalWeightChange}
         />
       ),
@@ -107,7 +112,7 @@ export const AnimalCreateModal = ({ isOpen, onClose }: IProps) => {
     {
       label: "Spezies auswählen",
       content: (
-        <AnimalSpeziesChooseStep onSpecieschange={handleSpeciesChange} />
+        <AnimalSpeziesChooseStep onSpeciesChange={handleSpeciesIdChange} />
       ),
     },
     {

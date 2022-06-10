@@ -32,10 +32,10 @@ export const AnimalCustomerChooseStep = ({ onCustomerChange }: IProps) => {
 
   useEffect(() => {
     const fetchOptions = async () => {
-      const fetchedOptions = await get("/api/customers");
+      const { customers } = await get("/api/customers");
 
-      if (fetchedOptions && !error) {
-        setOptions(fetchedOptions);
+      if (customers && !error) {
+        setOptions(customers);
       }
     };
 
@@ -47,31 +47,25 @@ export const AnimalCustomerChooseStep = ({ onCustomerChange }: IProps) => {
       <VStack justify="center" align="center" w="full" spacing={8}>
         <FormControl w="60">
           <FormLabel>Tierbesitzer</FormLabel>
-          <AutoComplete openOnFocus>
-            <AutoCompleteInput
-              variant="filled"
-              onChange={() => onCustomerChange}
-            />
+          <AutoComplete openOnFocus onChange={onCustomerChange}>
+            <AutoCompleteInput variant="filled" />
             <AutoCompleteList>
               <>
-                {isLoading && (
+                {/* {isLoading && (
                   <Flex justifyContent="center" alignItems="center">
                     <Spinner />
                   </Flex>
-                )}
-                {!isLoading &&
-                  options.map((option, cid) => (
-                    <AutoCompleteItem
-                      key={`option-${cid}`}
-                      value={option.id}
-                      textTransform="capitalize"
-                    >
-                      <Flex justifyContent="center" alignItems="center">
-                        <Spinner />
-                      </Flex>
-                      {option.name}
-                    </AutoCompleteItem>
-                  ))}
+                )} */}
+                {options.map((option, cid) => (
+                  <AutoCompleteItem
+                    key={`option-${cid}`}
+                    label={option.name}
+                    getValue={(option) => `${option.id}`}
+                    value={option}
+                  >
+                    {option.name}
+                  </AutoCompleteItem>
+                ))}
               </>
             </AutoCompleteList>
           </AutoComplete>

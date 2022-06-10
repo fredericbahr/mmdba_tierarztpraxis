@@ -20,10 +20,10 @@ import { useFetch } from "../../../hooks/useFetch";
 import { IRaceOption } from "../../../interfaces/autocompleteOptionInterfaces";
 
 interface IProps {
-  onSpecieschange: (value: number) => void;
+  onSpeciesChange: (value: number) => void;
 }
 
-export const AnimalSpeziesChooseStep = ({ onSpecieschange }: IProps) => {
+export const AnimalSpeziesChooseStep = ({ onSpeciesChange }: IProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [options, setOptions] = React.useState<IRaceOption[]>([]);
@@ -45,11 +45,8 @@ export const AnimalSpeziesChooseStep = ({ onSpecieschange }: IProps) => {
     <VStack justify="center" align="center" w="full" spacing={8}>
       <FormControl w="60">
         <FormLabel>Tierspezies</FormLabel>
-        <AutoComplete openOnFocus>
-          <AutoCompleteInput
-            variant="filled"
-            onChange={() => onSpecieschange}
-          />
+        <AutoComplete openOnFocus onChange={onSpeciesChange}>
+          <AutoCompleteInput variant="filled" />
           <AutoCompleteList>
             <>
               {isLoading && (
@@ -61,7 +58,9 @@ export const AnimalSpeziesChooseStep = ({ onSpecieschange }: IProps) => {
                 options.map((option, cid) => (
                   <AutoCompleteItem
                     key={`option-${cid}`}
-                    value={option.id}
+                    getValue={(option) => option.id}
+                    label={option.name}
+                    value={option}
                     textTransform="capitalize"
                   >
                     {option.name}
