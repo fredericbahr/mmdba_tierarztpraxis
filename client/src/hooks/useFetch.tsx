@@ -43,7 +43,7 @@ export const useFetch = () => {
 
       if (!response.ok) {
         setIsLoading(false);
-        errorRef.current = responsedData.message || response.statusText;
+        errorRef.current = responsedData.error || response.statusText;
         return null;
       }
 
@@ -79,7 +79,7 @@ export const useFetch = () => {
 
       if (!response.ok) {
         setIsLoading(false);
-        errorRef.current = responsedData.message || response.statusText;
+        errorRef.current = responsedData.error || response.statusText;
         return null;
       }
 
@@ -115,7 +115,7 @@ export const useFetch = () => {
 
       if (!response.ok) {
         setIsLoading(false);
-        errorRef.current = responsedData.message || response.statusText;
+        errorRef.current = responsedData.error || response.statusText;
         return null;
       }
 
@@ -149,7 +149,7 @@ export const useFetch = () => {
 
       if (!response.ok) {
         setIsLoading(false);
-        errorRef.current = responsedData.message || response.statusText;
+        errorRef.current = responsedData.error || response.statusText;
         return null;
       }
 
@@ -182,7 +182,7 @@ export const useFetch = () => {
 
       if (!response.ok) {
         setIsLoading(false);
-        errorRef.current = responsedData.message || response.statusText;
+        errorRef.current = responsedData.error || response.statusText;
         return null;
       }
 
