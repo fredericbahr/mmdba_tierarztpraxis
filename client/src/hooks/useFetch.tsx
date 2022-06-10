@@ -111,6 +111,8 @@ export const useFetch = () => {
         body: JSON.stringify(body),
       });
 
+      console.log(response);
+
       const responsedData = await response.json();
 
       if (!response.ok) {

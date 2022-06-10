@@ -75,7 +75,7 @@ export const AnimalCreateModal = ({ isOpen, onClose }: IProps) => {
       raceId: raceId,
     };
 
-    const data = await post("/animals", body);
+    const data = await post("/api/animal", body);
 
     if (error || !data) {
       return showErrorToast(
@@ -122,7 +122,7 @@ export const AnimalCreateModal = ({ isOpen, onClose }: IProps) => {
   ];
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="6xl">
+    <Modal isOpen={isOpen} onClose={onClose} size="6xl" isCentered>
       <ModalOverlay />
       <ModalContent>
         <ModalBody>

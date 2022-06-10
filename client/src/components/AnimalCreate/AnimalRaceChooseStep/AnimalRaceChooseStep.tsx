@@ -1,5 +1,6 @@
 import {
   Button,
+  Flex,
   FormControl,
   FormHelperText,
   FormLabel,
@@ -49,7 +50,11 @@ export const AnimalRaceChooseStep = ({ speciesId, onRaceChange }: IProps) => {
           <AutoCompleteInput variant="filled" onChange={() => onRaceChange} />
           <AutoCompleteList>
             <>
-              {isLoading && <Spinner />}
+              {isLoading && (
+                <Flex justifyContent="center" alignItems="center">
+                  <Spinner />
+                </Flex>
+              )}
               {!isLoading &&
                 options.map((option, cid) => (
                   <AutoCompleteItem
