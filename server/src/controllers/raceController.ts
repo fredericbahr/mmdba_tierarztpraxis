@@ -1,11 +1,14 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Race } from "@prisma/client";
 import { Request, Response } from "express";
 import {
   httpBadRequest,
   httpIntServerError,
   httpOK,
 } from "../config/statusCode";
-import { IRacesRequest } from "../interfaces/raceInterfaces";
+import {
+  IRaceCreateRequest,
+  IRacesGetRequest,
+} from "../interfaces/raceInterfaces";
 
 const prisma = new PrismaClient();
 
@@ -14,7 +17,10 @@ const prisma = new PrismaClient();
  * @param req Request Object
  * @param res Response Object
  */
-export const getRaces = async (req: Request<IRacesRequest>, res: Response) => {
+export const getRaces = async (
+  req: Request<IRacesGetRequest>,
+  res: Response
+) => {
   const { speciesId } = req.params;
 
   if (!speciesId) {
@@ -30,8 +36,36 @@ export const getRaces = async (req: Request<IRacesRequest>, res: Response) => {
       },
     });
 
-    res.status(httpOK).json(races);
+    res.status(httpOK).json({ races });
   } catch (error: any) {
     res.status(httpIntServerError).json({ error: error.message });
+  }
+};
+
+export const handleRaceCreation = async (
+  req: Request<never, never, IRaceCreateRequest>,
+  res: Response
+) => {
+  try {
+    const { name, speciesId } = req.body;
+
+    if (!name || !speciesId) {
+      return res.status(httpBadRequest).json({
+        error: "Name und Species angeben",
+      });
+    }
+
+    const race = await prisma.race.create({
+      data: {
+        name,
+      },
+      connect: {
+        speciesId,
+      },
+    });
+  } catch (error: any) {
+    return res.status(httpIntServerError).json({
+      error: "Fehler beim Erstellen einer Rasse",
+    });
   }
 };

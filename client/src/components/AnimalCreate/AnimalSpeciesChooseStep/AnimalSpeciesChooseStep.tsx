@@ -1,9 +1,10 @@
 import {
   Button,
-  Flex,
   FormControl,
   FormHelperText,
   FormLabel,
+  InputGroup,
+  InputRightElement,
   Spinner,
   useDisclosure,
   VStack,
@@ -16,8 +17,10 @@ import {
 } from "@choc-ui/chakra-autocomplete";
 import React, { useEffect } from "react";
 
+import { useCustomToast } from "../../../hooks/useCustomToast";
 import { useFetch } from "../../../hooks/useFetch";
-import { IRaceOption } from "../../../interfaces/autocompleteOptionInterfaces";
+import { ISpeciesOption } from "../../../interfaces/autocompleteOptionInterfaces";
+import { SpeciesCreateModal } from "../../SpeciesCreate/SpeciesCreateModal/SpeciesCreateModal";
 
 interface IProps {
   onSpeciesChange: (value: number) => void;
@@ -25,16 +28,22 @@ interface IProps {
 
 export const AnimalSpeziesChooseStep = ({ onSpeciesChange }: IProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { showErrorToast } = useCustomToast();
 
-  const [options, setOptions] = React.useState<IRaceOption[]>([]);
+  const [options, setOptions] = React.useState<ISpeciesOption[]>([]);
   const { isLoading, error, get } = useFetch();
 
   useEffect(() => {
     const fetchOptions = async () => {
-      const fetchedOptions = await get("/api/species");
+      const { species } = await get("/api/species");
 
-      if (fetchedOptions && !error) {
-        setOptions(fetchedOptions);
+      if (!species || error) {
+        showErrorToast("Fehler", "Fehler beim Laden der Spezien");
+      }
+
+      if (species && !error) {
+        console.log(species);
+        setOptions(species);
       }
     };
 
@@ -42,37 +51,33 @@ export const AnimalSpeziesChooseStep = ({ onSpeciesChange }: IProps) => {
   }, []);
 
   return (
-    <VStack justify="center" align="center" w="full" spacing={8}>
-      <FormControl w="60">
-        <FormLabel>Tierspezies</FormLabel>
-        <AutoComplete openOnFocus onChange={onSpeciesChange}>
-          <AutoCompleteInput variant="filled" />
-          <AutoCompleteList>
-            <>
-              {isLoading && (
-                <Flex justifyContent="center" alignItems="center">
-                  <Spinner />
-                </Flex>
-              )}
-              {!isLoading &&
-                options.map((option, cid) => (
-                  <AutoCompleteItem
-                    key={`option-${cid}`}
-                    getValue={(option) => option.id}
-                    label={option.name}
-                    value={option}
-                    textTransform="capitalize"
-                  >
-                    {option.name}
-                  </AutoCompleteItem>
-                ))}
-            </>
-          </AutoCompleteList>
-        </AutoComplete>
-        <FormHelperText>Wählen Sie bitte einen Tierspezies</FormHelperText>
-      </FormControl>
-      <Button onClick={onOpen}>Spezies anlegen</Button>
-    </VStack>
+    <>
+      <VStack justify="center" align="center" w="full" spacing={8}>
+        <FormControl w="60">
+          <FormLabel>Tierspezies</FormLabel>
+          <AutoComplete openOnFocus onChange={onSpeciesChange}>
+            <InputGroup>
+              <AutoCompleteInput variant="filled" />
+              <InputRightElement>{isLoading && <Spinner />}</InputRightElement>
+            </InputGroup>
+            <AutoCompleteList>
+              {options.map((option, cid) => (
+                <AutoCompleteItem
+                  key={`option-${cid}`}
+                  label={option.name}
+                  getValue={(option) => `${option.id}`}
+                  value={option}
+                >
+                  {option.name}
+                </AutoCompleteItem>
+              ))}
+            </AutoCompleteList>
+          </AutoComplete>
+          <FormHelperText>Wählen Sie bitte einen Tierspezies</FormHelperText>
+        </FormControl>
+        <Button onClick={onOpen}>Spezies anlegen</Button>
+      </VStack>
+      <SpeciesCreateModal isOpen={isOpen} onClose={onClose} />;
+    </>
   );
-  // TODO: Add Spezies Create Modal
 };

@@ -17,7 +17,7 @@ export const getSpecies = async (req: Request, res: Response) => {
   try {
     const species = await prisma.species.findMany({});
 
-    res.status(httpOK).json(species);
+    res.status(httpOK).json({ species });
   } catch (error: any) {
     res.status(httpIntServerError).json({
       error: "Fehler beim Abfragen der Spezies",

@@ -4,6 +4,8 @@ import {
   FormControl,
   FormHelperText,
   FormLabel,
+  InputGroup,
+  InputRightElement,
   Spinner,
   useDisclosure,
   VStack,
@@ -16,6 +18,7 @@ import {
 } from "@choc-ui/chakra-autocomplete";
 import React, { useEffect } from "react";
 
+import { useCustomToast } from "../../../hooks/useCustomToast";
 import { useFetch } from "../../../hooks/useFetch";
 import { IRaceOption } from "../../../interfaces/autocompleteOptionInterfaces";
 
@@ -26,16 +29,21 @@ interface IProps {
 
 export const AnimalRaceChooseStep = ({ speciesId, onRaceChange }: IProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { showErrorToast } = useCustomToast();
 
   const [options, setOptions] = React.useState<IRaceOption[]>([]);
   const { isLoading, error, get } = useFetch();
 
   useEffect(() => {
     const fetchOptions = async () => {
-      const fetchedOptions = await get(`/api/races/${speciesId}`);
+      const { races } = await get(`/api/races/${speciesId}`);
 
-      if (fetchedOptions && !error) {
-        setOptions(fetchedOptions);
+      if (!races || error) {
+        showErrorToast("Fehler", "Fehler beim Laden der Rassen");
+      }
+
+      if (races && !error) {
+        setOptions(races);
       }
     };
 
@@ -47,27 +55,21 @@ export const AnimalRaceChooseStep = ({ speciesId, onRaceChange }: IProps) => {
       <FormControl w="60">
         <FormLabel>Tierrasse</FormLabel>
         <AutoComplete openOnFocus onChange={onRaceChange}>
-          <AutoCompleteInput variant="filled" />
+          <InputGroup>
+            <AutoCompleteInput variant="filled" />
+            <InputRightElement>{isLoading && <Spinner />}</InputRightElement>
+          </InputGroup>
           <AutoCompleteList>
-            <>
-              {isLoading && (
-                <Flex justifyContent="center" alignItems="center">
-                  <Spinner />
-                </Flex>
-              )}
-              {!isLoading &&
-                options.map((option, cid) => (
-                  <AutoCompleteItem
-                    key={`option-${cid}`}
-                    getValue={(option) => option.id}
-                    label={option.name}
-                    value={option}
-                    textTransform="capitalize"
-                  >
-                    {option.name}
-                  </AutoCompleteItem>
-                ))}
-            </>
+            {options.map((option, cid) => (
+              <AutoCompleteItem
+                key={`option-${cid}`}
+                label={option.name}
+                getValue={(option) => `${option.id}`}
+                value={option}
+              >
+                {option.name}
+              </AutoCompleteItem>
+            ))}
           </AutoCompleteList>
         </AutoComplete>
         <FormHelperText>Wählen Sie bitte einen Tierrasse</FormHelperText>
