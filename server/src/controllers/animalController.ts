@@ -18,9 +18,11 @@ export const createAnimal = async (
   req: Request<never, never, ICreateAnimalRequest>,
   res: Response
 ) => {
-  const { name, birthday, weight, customerId, raceId } = req.body;
+  const { name, birthdate, weight, customerId, raceId } = req.body;
 
-  if (!name || !birthday || !weight || !customerId || !raceId) {
+  console.log(req.body);
+
+  if (!name || !birthdate || !weight || !customerId || !raceId) {
     return res.status(httpBadRequest).json({
       error: "Nicht alle Felder ausgefüllt",
     });
@@ -30,7 +32,7 @@ export const createAnimal = async (
     const animal = await prisma.animal.create({
       data: {
         name,
-        birthday,
+        birthdate,
         weight,
         owner: {
           connect: {

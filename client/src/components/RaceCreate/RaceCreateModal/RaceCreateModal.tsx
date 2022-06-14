@@ -5,28 +5,21 @@ import {
   FormHelperText,
   FormLabel,
   Input,
-  InputGroup,
-  InputRightElement,
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Spinner,
   VStack,
 } from "@chakra-ui/react";
-import {
-  AutoComplete,
-  AutoCompleteInput,
-  AutoCompleteItem,
-  AutoCompleteList,
-} from "@choc-ui/chakra-autocomplete";
 import React, { useEffect, useState } from "react";
+import Select from "react-select";
 
 import { useCustomToast } from "../../../hooks/useCustomToast";
 import { useFetch } from "../../../hooks/useFetch";
 import { ISpeciesOption } from "../../../interfaces/autocompleteOptionInterfaces";
+import { ISelectOptions } from "../../../interfaces/selectInterface";
 
 interface IProps {
   isOpen: boolean;
@@ -43,15 +36,17 @@ export const RaceCreateModal = ({ isOpen, onClose }: IProps) => {
   const { showSuccessToast, showErrorToast } = useCustomToast();
 
   const [raceName, setRaceName] = useState("");
-  const [speciesId, setSpeciesId] = useState<number | undefined>(undefined);
-  const [speciesOptions, setSpeciesOption] = useState<ISpeciesOption[]>([]);
+  const [speciesId, setSpeciesId] = useState<number | null>(null);
+  const [speciesOptions, setSpeciesOptions] = useState<
+    ISelectOptions<number>[]
+  >([]);
 
   const handleRaceNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRaceName(event.target.value);
   };
 
-  const handleSpeciesChange = (value: number) => {
-    setSpeciesId(value);
+  const handleSpeciesChange = (selected?: ISelectOptions<number> | null) => {
+    setSpeciesId(selected?.value ?? null);
   };
 
   const handleRaceCreation = async () => {
@@ -76,7 +71,16 @@ export const RaceCreateModal = ({ isOpen, onClose }: IProps) => {
         return showErrorToast("Fehler", "Spezies konnten nicht geladen werden");
       }
 
-      setSpeciesOption(species);
+      if (species && !error) {
+        const speciesOptions: ISelectOptions<number>[] = species.map(
+          (species: ISpeciesOption) => ({
+            value: species.id,
+            label: species.name,
+          })
+        );
+
+        setSpeciesOptions(speciesOptions);
+      }
     };
 
     fetchSpecies();
@@ -100,26 +104,16 @@ export const RaceCreateModal = ({ isOpen, onClose }: IProps) => {
               </FormControl>
               <FormControl isRequired>
                 <FormLabel>Species der Rasse</FormLabel>
-                <AutoComplete openOnFocus onChange={handleSpeciesChange}>
-                  <InputGroup>
-                    <AutoCompleteInput variant="filled" />
-                    <InputRightElement>
-                      {speciesLoading && <Spinner />}
-                    </InputRightElement>
-                  </InputGroup>
-                  <AutoCompleteList>
-                    {speciesOptions.map((option, cid) => (
-                      <AutoCompleteItem
-                        key={`option-${cid}`}
-                        label={option.name}
-                        getValue={(option) => `${option.id}`}
-                        value={option}
-                      >
-                        {option.name}
-                      </AutoCompleteItem>
-                    ))}
-                  </AutoCompleteList>
-                </AutoComplete>
+                <Select
+                  isClearable
+                  isSearchable
+                  isLoading={speciesLoading}
+                  options={speciesOptions}
+                  value={speciesOptions.find(
+                    (option) => option.value === speciesId
+                  )}
+                  onChange={handleSpeciesChange}
+                />
                 <FormHelperText>Wählen Sie bitte eine Spezies</FormHelperText>
               </FormControl>
             </VStack>

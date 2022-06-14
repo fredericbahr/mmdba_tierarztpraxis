@@ -11,4 +11,5 @@ export interface ISpeciesOption {
 export interface IRaceOption {
   id: number;
   name: string;
+  speciesId: number;
 }

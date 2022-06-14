@@ -3,34 +3,31 @@ import {
   FormControl,
   FormHelperText,
   FormLabel,
-  InputGroup,
-  InputRightElement,
-  Spinner,
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
-import {
-  AutoComplete,
-  AutoCompleteInput,
-  AutoCompleteItem,
-  AutoCompleteList,
-} from "@choc-ui/chakra-autocomplete";
 import React, { useEffect } from "react";
+import Select from "react-select";
 
 import { useCustomToast } from "../../../hooks/useCustomToast";
 import { useFetch } from "../../../hooks/useFetch";
 import { ISpeciesOption } from "../../../interfaces/autocompleteOptionInterfaces";
+import { ISelectOptions } from "../../../interfaces/selectInterface";
 import { SpeciesCreateModal } from "../../SpeciesCreate/SpeciesCreateModal/SpeciesCreateModal";
 
 interface IProps {
-  onSpeciesChange: (value: number) => void;
+  speciesId: number | null;
+  onSpeciesChange: (selected?: ISelectOptions<number> | null) => void;
 }
 
-export const AnimalSpeziesChooseStep = ({ onSpeciesChange }: IProps) => {
+export const AnimalSpeziesChooseStep = ({
+  speciesId,
+  onSpeciesChange,
+}: IProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { showErrorToast } = useCustomToast();
 
-  const [options, setOptions] = React.useState<ISpeciesOption[]>([]);
+  const [options, setOptions] = React.useState<ISelectOptions<number>[]>([]);
   const { isLoading, error, get } = useFetch();
 
   useEffect(() => {
@@ -42,8 +39,14 @@ export const AnimalSpeziesChooseStep = ({ onSpeciesChange }: IProps) => {
       }
 
       if (species && !error) {
-        console.log(species);
-        setOptions(species);
+        const speciesOptions: ISelectOptions<number>[] = species.map(
+          (species: ISpeciesOption) => ({
+            value: species.id,
+            label: species.name,
+          })
+        );
+
+        setOptions(speciesOptions);
       }
     };
 
@@ -56,30 +59,20 @@ export const AnimalSpeziesChooseStep = ({ onSpeciesChange }: IProps) => {
     <>
       <VStack justify="center" align="center" w="full" spacing={8}>
         <FormControl w="60">
-          <FormLabel>Tierspezies</FormLabel>
-          <AutoComplete openOnFocus onChange={onSpeciesChange}>
-            <InputGroup>
-              <AutoCompleteInput variant="filled" />
-              <InputRightElement>{isLoading && <Spinner />}</InputRightElement>
-            </InputGroup>
-            <AutoCompleteList>
-              {options.map((option, cid) => (
-                <AutoCompleteItem
-                  key={`option-${cid}`}
-                  label={option.name}
-                  getValue={(option) => `${option.id}`}
-                  value={option}
-                >
-                  {option.name}
-                </AutoCompleteItem>
-              ))}
-            </AutoCompleteList>
-          </AutoComplete>
+          <FormLabel>Tierspezies{speciesId}</FormLabel>
+          <Select
+            isClearable
+            isSearchable
+            isLoading={isLoading}
+            options={options}
+            value={options.find((option) => option.value === speciesId)}
+            onChange={onSpeciesChange}
+          />
           <FormHelperText>Wählen Sie bitte einen Tierspezies</FormHelperText>
         </FormControl>
         <Button onClick={onOpen}>Spezies anlegen</Button>
       </VStack>
-      <SpeciesCreateModal isOpen={isOpen} onClose={onClose} />;
+      <SpeciesCreateModal isOpen={isOpen} onClose={onClose} />
     </>
   );
 };
