@@ -14,7 +14,7 @@ datasource db {
 model Animal {
   id         Int         @id @default(autoincrement())
   name       String
-  birthday   DateTime
+  birthdate   DateTime
   weight     Int
   owner      Customer    @relation(fields: [customerId], references: [id])
   customerId Int
