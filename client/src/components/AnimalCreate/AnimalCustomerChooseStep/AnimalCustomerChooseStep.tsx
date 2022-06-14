@@ -1,6 +1,5 @@
 import {
   Button,
-  Flex,
   FormControl,
   FormHelperText,
   FormLabel,
@@ -43,13 +42,14 @@ export const AnimalCustomerChooseStep = ({ onCustomerChange }: IProps) => {
       }
 
       if (customers && !error) {
-        console.log(customers);
         setOptions(customers);
       }
     };
 
-    fetchOptions();
-  }, []);
+    if (!isOpen) {
+      fetchOptions();
+    }
+  }, [isOpen]);
 
   return (
     <>

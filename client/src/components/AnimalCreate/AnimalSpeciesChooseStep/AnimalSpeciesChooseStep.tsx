@@ -47,8 +47,10 @@ export const AnimalSpeziesChooseStep = ({ onSpeciesChange }: IProps) => {
       }
     };
 
-    fetchOptions();
-  }, []);
+    if (!isOpen) {
+      fetchOptions();
+    }
+  }, [isOpen]);
 
   return (
     <>

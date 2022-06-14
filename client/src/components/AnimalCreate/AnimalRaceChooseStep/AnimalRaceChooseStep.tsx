@@ -1,6 +1,5 @@
 import {
   Button,
-  Flex,
   FormControl,
   FormHelperText,
   FormLabel,
@@ -21,6 +20,7 @@ import React, { useEffect } from "react";
 import { useCustomToast } from "../../../hooks/useCustomToast";
 import { useFetch } from "../../../hooks/useFetch";
 import { IRaceOption } from "../../../interfaces/autocompleteOptionInterfaces";
+import { RaceCreateModal } from "../../RaceCreate/RaceCreateModal/RaceCreateModal";
 
 interface IProps {
   speciesId: number | null;
@@ -47,35 +47,39 @@ export const AnimalRaceChooseStep = ({ speciesId, onRaceChange }: IProps) => {
       }
     };
 
-    fetchOptions();
-  }, []);
+    if (!isOpen) {
+      fetchOptions();
+    }
+  }, [isOpen]);
 
   return (
-    <VStack justify="center" align="center" w="full" spacing={8}>
-      <FormControl w="60">
-        <FormLabel>Tierrasse</FormLabel>
-        <AutoComplete openOnFocus onChange={onRaceChange}>
-          <InputGroup>
-            <AutoCompleteInput variant="filled" />
-            <InputRightElement>{isLoading && <Spinner />}</InputRightElement>
-          </InputGroup>
-          <AutoCompleteList>
-            {options.map((option, cid) => (
-              <AutoCompleteItem
-                key={`option-${cid}`}
-                label={option.name}
-                getValue={(option) => `${option.id}`}
-                value={option}
-              >
-                {option.name}
-              </AutoCompleteItem>
-            ))}
-          </AutoCompleteList>
-        </AutoComplete>
-        <FormHelperText>Wählen Sie bitte einen Tierrasse</FormHelperText>
-      </FormControl>
-      <Button onClick={onOpen}>Rasse anlegen</Button>
-    </VStack>
+    <>
+      <VStack justify="center" align="center" w="full" spacing={8}>
+        <FormControl w="60">
+          <FormLabel>Tierrasse</FormLabel>
+          <AutoComplete openOnFocus onChange={onRaceChange}>
+            <InputGroup>
+              <AutoCompleteInput variant="filled" />
+              <InputRightElement>{isLoading && <Spinner />}</InputRightElement>
+            </InputGroup>
+            <AutoCompleteList>
+              {options.map((option, cid) => (
+                <AutoCompleteItem
+                  key={`option-${cid}`}
+                  label={option.name}
+                  getValue={(option) => `${option.id}`}
+                  value={option}
+                >
+                  {option.name}
+                </AutoCompleteItem>
+              ))}
+            </AutoCompleteList>
+          </AutoComplete>
+          <FormHelperText>Wählen Sie bitte einen Tierrasse</FormHelperText>
+        </FormControl>
+        <Button onClick={onOpen}>Rasse anlegen</Button>
+      </VStack>
+      <RaceCreateModal isOpen={isOpen} onClose={onClose} />
+    </>
   );
-  // TODO: Add Race Create Modal
 };
