@@ -47,7 +47,7 @@ export const handleSpeciesCreation = async (
       },
     });
 
-    res.status(httpOK).json({ species });
+    return res.status(httpOK).json({ species });
   } catch (error: any) {
     return res.status(httpIntServerError).json({
       error: "Fehler beim Speichern der Spezies",

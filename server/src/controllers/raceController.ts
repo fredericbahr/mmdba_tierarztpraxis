@@ -32,7 +32,7 @@ export const getRaces = async (
   try {
     const races = await prisma.race.findMany({
       where: {
-        speciesId,
+        speciesId: +speciesId,
       },
     });
 
@@ -58,11 +58,15 @@ export const handleRaceCreation = async (
     const race = await prisma.race.create({
       data: {
         name,
-      },
-      connect: {
-        speciesId,
+        species: {
+          connect: {
+            id: +speciesId,
+          },
+        },
       },
     });
+
+    return res.status(httpOK).json({ race });
   } catch (error: any) {
     return res.status(httpIntServerError).json({
       error: "Fehler beim Erstellen einer Rasse",
