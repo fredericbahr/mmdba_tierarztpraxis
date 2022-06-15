@@ -34,6 +34,9 @@ export const getRaces = async (
       where: {
         speciesId: +speciesId,
       },
+      include: {
+        species: true,
+      },
     });
 
     res.status(httpOK).json({ races });
@@ -60,7 +63,7 @@ export const handleRaceCreation = async (
         name,
         species: {
           connect: {
-            id: +speciesId,
+            id: speciesId,
           },
         },
       },

@@ -3,34 +3,31 @@ import {
   FormControl,
   FormHelperText,
   FormLabel,
-  InputGroup,
-  InputRightElement,
-  Spinner,
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
-import {
-  AutoComplete,
-  AutoCompleteInput,
-  AutoCompleteItem,
-  AutoCompleteList,
-} from "@choc-ui/chakra-autocomplete";
 import React, { useEffect } from "react";
+import Select from "react-select";
 
 import { useCustomToast } from "../../../hooks/useCustomToast";
 import { useFetch } from "../../../hooks/useFetch";
 import { ICustomerOption } from "../../../interfaces/autocompleteOptionInterfaces";
+import { ISelectOptions } from "../../../interfaces/selectInterface";
 import { CustomerCreateModal } from "../../CustomerCreate/CustomerCreateModal/CustomerCreateModal";
 
 interface IProps {
-  onCustomerChange: (value: number) => void;
+  customerId: number | null;
+  onCustomerChange: (selected?: ISelectOptions<number> | null) => void;
 }
 
-export const AnimalCustomerChooseStep = ({ onCustomerChange }: IProps) => {
+export const AnimalCustomerChooseStep = ({
+  customerId,
+  onCustomerChange,
+}: IProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { showErrorToast } = useCustomToast();
 
-  const [options, setOptions] = React.useState<ICustomerOption[]>([]);
+  const [options, setOptions] = React.useState<ISelectOptions<number>[]>([]);
   const { isLoading, error, get } = useFetch();
 
   useEffect(() => {
@@ -42,7 +39,14 @@ export const AnimalCustomerChooseStep = ({ onCustomerChange }: IProps) => {
       }
 
       if (customers && !error) {
-        setOptions(customers);
+        const customerOptions: ISelectOptions<number>[] = customers.map(
+          (customer: ICustomerOption) => ({
+            value: customer.id,
+            label: customer.name,
+          })
+        );
+
+        setOptions(customerOptions);
       }
     };
 
@@ -54,26 +58,16 @@ export const AnimalCustomerChooseStep = ({ onCustomerChange }: IProps) => {
   return (
     <>
       <VStack justify="center" align="center" w="full" spacing={8}>
-        <FormControl w="60">
-          <FormLabel>Tierbesitzer</FormLabel>
-          <AutoComplete openOnFocus onChange={onCustomerChange}>
-            <InputGroup>
-              <AutoCompleteInput variant="filled" />
-              <InputRightElement>{isLoading && <Spinner />}</InputRightElement>
-            </InputGroup>
-            <AutoCompleteList>
-              {options.map((option, cid) => (
-                <AutoCompleteItem
-                  key={`option-${cid}`}
-                  label={option.name}
-                  getValue={(option) => `${option.id}`}
-                  value={option}
-                >
-                  {option.name}
-                </AutoCompleteItem>
-              ))}
-            </AutoCompleteList>
-          </AutoComplete>
+        <FormControl w="sm">
+          <FormLabel>Tierbesitzer{customerId}</FormLabel>
+          <Select
+            isClearable
+            isSearchable
+            isLoading={isLoading}
+            options={options}
+            value={options.find((option) => option.value === customerId)}
+            onChange={onCustomerChange}
+          />
           <FormHelperText>Wählen Sie bitte einen Besitzer</FormHelperText>
         </FormControl>
         <Button onClick={onOpen}>Besitzer anlegen</Button>

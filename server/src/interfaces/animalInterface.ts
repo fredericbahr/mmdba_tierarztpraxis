@@ -1,6 +1,6 @@
 export interface ICreateAnimalRequest {
     name: string;
-    birthday: Date;
+    birthdate: Date;
     weight: number;
     customerId: number;
     raceId: number;
