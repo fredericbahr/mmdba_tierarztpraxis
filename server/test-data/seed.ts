@@ -274,12 +274,41 @@ async function repopulate() {
     });
     console.log("Passed treatment");
 
-    const newMedicine = await prisma.medicine.createMany({
-      data: [
-        { description: "Läuse-Medizin", dosis: 12, name: "Permethrin" },
-        { description: "Ambiotika", dosis: 7, name: "Roxithromycin" },
-        { description: "Anti-Infekt", dosis: 3, name: "Angocin" },
-      ],
+    const treatmentId = await prisma.treatment.findMany({
+      select: {
+        id: true
+      }
+    });
+
+    const medicineToTreatment_laeuse = await prisma.medicine.create({
+      data: {
+        description: "Läuse-Medizin", dosis: 12, name: "Permethrin", 
+        treatments: {
+          connect: {
+            id: treatmentId[0].id
+          }
+        }
+      }
+    });
+    const medicineToTreatment_zahn = await prisma.medicine.create({
+      data: {
+        description: "Anti-Infekt", dosis: 3, name: "Angocin",
+        treatments: {
+          connect: {
+            id: treatmentId[1].id
+          }
+        }
+      }
+    });
+    const medicineToTreatment_erkalt = await prisma.medicine.create({
+      data: {
+        description: "Ambiotika", dosis: 7, name: "Roxithromycin",
+        treatments: {
+          connect: {
+            id: treatmentId[1].id
+          }
+        }
+      }
     });
     console.log("Passed medicine");
 
