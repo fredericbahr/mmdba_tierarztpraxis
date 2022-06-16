@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
 import { readFileSync } from "fs";
-import { connect } from "http2";
 import PdfParse from "pdf-parse";
 
 const prisma = new PrismaClient();
@@ -17,9 +16,9 @@ const videos: Buffer[] = [];
 async function deleteAllEntries() {
   //delete all table entries
   try {
+    const deleteTreatment = await prisma.treatment.deleteMany({});
     const deleteAnimal = await prisma.animal.deleteMany({});
     const deleteCustomer = await prisma.customer.deleteMany({});
-    const deleteTreatment = await prisma.treatment.deleteMany({});
     const deleteMedicine = await prisma.medicine.deleteMany({});
     const deleteRace = await prisma.race.deleteMany({});
     const deleteSpecies = await prisma.species.deleteMany({});
@@ -31,15 +30,45 @@ async function deleteAllEntries() {
   }
 }
 
-async function readFiles() {
-  for (let i = 0; i < 3; i++) {
-    const pdfData = readFileSync(`./pdf/pdf${i + 1}.pdf`);
-    const pdfContent = (await PdfParse(pdfData)).text;
-    pdf.push({
-      content: pdfContent,
-      data: pdfData,
-    });
+const readPDFs = async () => {
+  try {
+    for (let i = 0; i < 3; i++) {
+      const pdfData = readFileSync(`${__dirname}/pdf/pdf${i + 1}.pdf`);
+      const pdfContent = (await PdfParse(pdfData)).text;
+      pdf.push({
+        content: pdfContent,
+        data: pdfData,
+      });
+    }
+  } catch (e) {
+    console.log("Fehler beim Lesen der PDFs");
   }
+};
+
+const readPhotos = async () => {
+  try {
+    photos.push(readFileSync(`${__dirname}/photos/cat.jpg`));
+    photos.push(readFileSync(`${__dirname}/photos/dog.jpg`));
+    photos.push(readFileSync(`${__dirname}/photos/bird.jpg`));
+  } catch (e) {
+    console.log("Fehler beim lesen der Fotos");
+  }
+};
+
+const readVideos = async () => {
+  try {
+    videos.push(readFileSync(`${__dirname}/videos/cat.mp4`));
+    videos.push(readFileSync(`${__dirname}/videos/dog.mp4`));
+    videos.push(readFileSync(`${__dirname}/videos/bird.mp4`));
+  } catch (e) {
+    console.log("Fehler beim lesen der Videos");
+  }
+};
+
+async function readFiles() {
+  await readPDFs();
+  await readPhotos();
+  await readVideos();
 }
 
 async function repopulate() {
@@ -53,7 +82,9 @@ async function repopulate() {
         id: true,
       },
     });
-    console.log(speciesId);
+
+    console.log("Passed species");
+
     const schaeferhund = await prisma.race.create({
       data: {
         name: "Schäferhund",
@@ -85,6 +116,8 @@ async function repopulate() {
       },
     });
 
+    console.log("Passed races");
+
     const newCustomers = await prisma.customer.createMany({
       data: [
         {
@@ -110,6 +143,8 @@ async function repopulate() {
         },
       ],
     });
+
+    console.log("Passed customer");
 
     const ownerId = await prisma.customer.findMany({
       select: {
@@ -174,11 +209,14 @@ async function repopulate() {
       },
     });
 
+
     const animalId = await prisma.animal.findMany({
       select: {
         id: true,
       },
     });
+
+    console.log("Passed animals");
 
     const laeuse = await prisma.treatment.create({
       data: {
@@ -245,105 +283,109 @@ async function repopulate() {
     });
     console.log("Passed medicine");
 
-    const canis = await prisma.photo.create({
+    const lauesePhoto = await prisma.photo.create({
       data: {
-        blob: Buffer.from("", "binary"),
-        description: "Canis maior, eiternd",
-        treatment: {
-          connect: {
-            id: 2,
-          },
-        },
-      },
-    });
-    const ohr = await prisma.photo.create({
-      data: {
-        blob: Buffer.from("", "binary"),
+        blob: photos[0],
         description: "Läuse-Befall, linkes Ohr",
         treatment: {
           connect: {
-            id: 1,
+            id: laeuse.id,
           },
         },
       },
     });
-    const erkalt = await prisma.photo.create({
+    const canisPhoto = await prisma.photo.create({
       data: {
-        blob: Buffer.from("", "binary"),
+        blob: photos[1],
+        description: "Canis maior, eiternd",
+        treatment: {
+          connect: {
+            id: zahn.id,
+          },
+        },
+      },
+    });
+    const erkaltPhoto = await prisma.photo.create({
+      data: {
+        blob: photos[2],
         description: "Erkältung",
         treatment: {
           connect: {
-            id: 3,
+            id: erkaeltung.id,
           },
         },
       },
     });
     console.log("Passed photos");
 
-    const canisVideo = await prisma.video.create({
+    const laueseVideo = await prisma.video.create({
       data: {
-        blob: Buffer.from("", "binary"),
-        description: "Canis maior, eiternd",
+        blob: videos[0],
+        description: "Läuse-Befall, linkes Ohr",
         treatment: {
           connect: {
-            id: 2,
+            id: laeuse.id,
           },
         },
       },
     });
-    const ohrVideo = await prisma.video.create({
+
+    const canisVideo = await prisma.video.create({
       data: {
-        blob: Buffer.from("", "binary"),
-        description: "Läuse-Befall, linkes Ohr",
+        blob: videos[1],
+        description: "Canis maior, eiternd",
         treatment: {
           connect: {
-            id: 1,
+            id: zahn.id,
           },
         },
       },
     });
     const erkaltVideo = await prisma.video.create({
       data: {
-        blob: Buffer.from("", "binary"),
+        blob: videos[2],
         description: "Erkältung",
         treatment: {
           connect: {
-            id: 3,
+            id: erkaeltung.id,
           },
         },
       },
     });
     console.log("Passed videos");
 
-    const canisFinding = await prisma.finding.create({
+    const ohrFinding = await prisma.finding.create({
       data: {
-        blob: Buffer.from("", "binary"),
-        description: "Canis maior, eiternd",
+        blob: pdf[0].data,
+        description: "Läuse-Befall, linkes Ohr",
+        content: pdf[0].content,
         treatment: {
           connect: {
-            id: 2,
+            id: laeuse.id,
           },
         },
       },
     });
-    const ohrFinding = await prisma.finding.create({
+    const canisFinding = await prisma.finding.create({
       data: {
-        blob: Buffer.from("", "binary"),
-        description: "Läuse-Befall, linkes Ohr",
+        blob: pdf[1].data,
+        description: "Canis maior, eiternd",
+        content: pdf[1].content,
         treatment: {
           connect: {
-            id: 1,
+            id: zahn.id,
           },
         },
       },
     });
     const erkaltFinding = await prisma.finding.create({
       data: {
-        blob: Buffer.from("", "binary"),
+        blob: pdf[2].data,
         description: "Erkältung",
+        content: pdf[2].content,
         treatment: {
           connect: {
-            id: 3,
+            id: erkaeltung.id,
           },
         },
       },
@@ -357,6 +399,7 @@ async function repopulate() {
 
 async function main() {
   await deleteAllEntries();
+  await readFiles();
   await repopulate();
 }
 
