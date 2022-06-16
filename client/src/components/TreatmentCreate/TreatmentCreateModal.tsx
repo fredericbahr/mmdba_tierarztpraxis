@@ -14,6 +14,7 @@ import React from "react";
 import { useFetch } from "../../hooks/useFetch";
 import { IStep } from "../../interfaces/stepInterface";
 import { TreatmentCreateStep } from "./TreatmentCreateStep";
+import { TreatmentDocumentationUploadStep } from "./TreatmentDocumentationUploadStep";
 
 interface IProps {
   isOpen: boolean;
@@ -74,6 +75,10 @@ export const TreatmentCreateModal = ({ isOpen, onClose }: IProps) => {
           onTreatmentDateChange={handleTreatmentDateChange}
         />
       ),
+    },
+    {
+      label: "Dokumentation hochladen",
+      content: <TreatmentDocumentationUploadStep />,
     },
   ];
 
