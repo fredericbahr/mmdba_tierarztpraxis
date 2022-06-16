@@ -29,7 +29,7 @@ export const AnimalCreateModal = ({ isOpen, onClose }: IProps) => {
     initialStep: 0,
   });
 
-  const { showErrorToast } = useCustomToast();
+  const { showErrorToast, showSuccessToast } = useCustomToast();
   const { isLoading, error, post } = useFetch();
 
   const [animalName, setAnimalName] = useState("");
@@ -190,7 +190,4 @@ export const AnimalCreateModal = ({ isOpen, onClose }: IProps) => {
     </Modal>
   );
 };
-function showSuccessToast(arg0: string, arg1: string) {
-  throw new Error("Function not implemented.");
-}
 
