@@ -59,7 +59,7 @@ export const AnimalCustomerChooseStep = ({
     <>
       <VStack justify="center" align="center" w="full" spacing={8}>
         <FormControl w="sm">
-          <FormLabel>Tierbesitzer{customerId}</FormLabel>
+          <FormLabel>Tierbesitzer</FormLabel>
           <Select
             isClearable
             isSearchable

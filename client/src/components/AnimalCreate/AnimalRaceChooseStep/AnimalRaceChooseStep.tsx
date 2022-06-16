@@ -82,8 +82,8 @@ export const AnimalRaceChooseStep = ({
   return (
     <>
       <VStack justify="center" align="center" w="full" spacing={8}>
-        <FormControl w="60">
-          <FormLabel>Tierrasse{raceId}</FormLabel>
+        <FormControl w="sm">
+          <FormLabel>Tierrasse</FormLabel>
           <Select
             isClearable
             isSearchable

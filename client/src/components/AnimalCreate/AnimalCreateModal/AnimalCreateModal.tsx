@@ -90,6 +90,8 @@ export const AnimalCreateModal = ({ isOpen, onClose }: IProps) => {
       );
     }
 
+    showSuccessToast("Erfolgreich", "Tiere wurden erfolgreich erstellt");
+
     onClose();
   };
 
@@ -165,12 +167,11 @@ export const AnimalCreateModal = ({ isOpen, onClose }: IProps) => {
         <ModalFooter>
           <Flex width="100%" justify="flex-end">
             <Button
-              isDisabled={activeStep === 0}
               mr={4}
-              onClick={prevStep}
+              onClick={activeStep === 0 ? onClose : prevStep}
               variant="ghost"
             >
-              Zurück
+              {activeStep === 0 ? "Abbrechen" : "Zurück"}
             </Button>
             <Button
               onClick={
@@ -189,3 +190,7 @@ export const AnimalCreateModal = ({ isOpen, onClose }: IProps) => {
     </Modal>
   );
 };
+function showSuccessToast(arg0: string, arg1: string) {
+  throw new Error("Function not implemented.");
+}
+
