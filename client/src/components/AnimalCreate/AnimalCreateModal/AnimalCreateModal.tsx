@@ -14,6 +14,7 @@ import React, { useEffect, useState } from "react";
 import { useCustomToast } from "../../../hooks/useCustomToast";
 import { useFetch } from "../../../hooks/useFetch";
 import { ISelectOptions } from "../../../interfaces/selectInterface";
+import { IStep } from "../../../interfaces/stepInterface";
 import { AnimalCreateStep } from "../AnimalCreateStep/AnimalCreateStep";
 import { AnimalCustomerChooseStep } from "../AnimalCustomerChooseStep/AnimalCustomerChooseStep";
 import { AnimalRaceChooseStep } from "../AnimalRaceChooseStep/AnimalRaceChooseStep";
@@ -95,7 +96,7 @@ export const AnimalCreateModal = ({ isOpen, onClose }: IProps) => {
     onClose();
   };
 
-  const steps = [
+  const steps: IStep[] = [
     {
       label: "Tier anlegen",
       content: (
