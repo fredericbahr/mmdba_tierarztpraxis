@@ -1,28 +1,29 @@
 import "./PDFPreview.css";
 
-import { Grid, GridItem } from "@chakra-ui/react";
+import { Grid } from "@chakra-ui/react";
 import React from "react";
 import { Document, Page } from "react-pdf";
 
 import { useCustomToast } from "../../hooks/useCustomToast";
+import { PreviewItem } from "./PreviewItem";
 
 interface IProps {
   files: File[];
+  handleDelete: (index: number) => void;
 }
 
-export const PDFPreview = ({ files }: IProps) => {
+export const PDFPreview = ({ files, handleDelete }: IProps) => {
   const { showErrorToast } = useCustomToast();
 
   return (
     <Grid templateColumns="repeat(4, 1fr)" gridGap={8}>
       {files.map((file, index) => {
         return (
-          <GridItem
+          <PreviewItem
             key={index}
-            maxW="40"
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
+            handleDelete={handleDelete}
+            file={file}
+            index={index}
           >
             <Document
               file={file}
@@ -33,7 +34,7 @@ export const PDFPreview = ({ files }: IProps) => {
             >
               <Page pageNumber={1} />
             </Document>
-          </GridItem>
+          </PreviewItem>
         );
       })}
     </Grid>

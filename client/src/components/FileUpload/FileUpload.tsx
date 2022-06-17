@@ -3,10 +3,10 @@ import { UploadSimple } from "phosphor-react";
 import React, { useRef, useState } from "react";
 
 interface IProps {
-  setFiles: (files: File[]) => void;
+  handleNewFiles: (files: File[]) => void;
 }
 
-export const FileUpload = ({ setFiles }: IProps) => {
+export const FileUpload = ({ handleNewFiles }: IProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [dragActive, setDragActive] = useState(false);
@@ -14,7 +14,7 @@ export const FileUpload = ({ setFiles }: IProps) => {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const files = event.target.files;
-      setFiles([...files, ...Array.from(files)]);
+      handleNewFiles(Array.from(files));
     }
   };
 
@@ -43,7 +43,7 @@ export const FileUpload = ({ setFiles }: IProps) => {
 
     if (event.dataTransfer.files) {
       const files = event.dataTransfer.files;
-      setFiles([...files, ...Array.from(files)]);
+      handleNewFiles(Array.from(files));
     }
   };
 

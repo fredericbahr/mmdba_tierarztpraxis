@@ -7,12 +7,28 @@ import { VideoPreview } from "./VideoPreview";
 
 interface IProps {
   files: File[];
+  handleFileChange: (files: File[]) => void;
 }
 
-export const FilePreview = ({ files }: IProps) => {
+export const FilePreview = ({ files, handleFileChange }: IProps) => {
   const [pdfFiles, setPdfFiles] = useState<File[]>([]);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [videoFiles, setVideoFiles] = useState<File[]>([]);
+
+  const handlePDFDelete = (index: number) => {
+    const remainingFiles = pdfFiles.filter((_, i) => i !== index);
+    handleFileChange([...remainingFiles, ...imageFiles, ...videoFiles]);
+  };
+
+  const handleImageDelete = (index: number) => {
+    const remainingFiles = imageFiles.filter((_, i) => i !== index);
+    handleFileChange([...pdfFiles, ...remainingFiles, ...videoFiles]);
+  };
+
+  const handleVideoDelete = (index: number) => {
+    const remainingFiles = videoFiles.filter((_, i) => i !== index);
+    handleFileChange([...pdfFiles, ...imageFiles, ...remainingFiles]);
+  };
 
   useEffect(() => {
     const pdfFiles = files.filter((file) => file.type.includes("pdf"));
@@ -27,23 +43,23 @@ export const FilePreview = ({ files }: IProps) => {
   const isNotEmpty = (files: File[]) => files.length > 0;
 
   return (
-    <VStack>
+    <VStack alignItems="start" spacing={12} mx={8}>
       {isNotEmpty(pdfFiles) && (
-        <VStack>
+        <VStack alignItems="start" spacing={2}>
           <Heading as="h3">Befunde</Heading>
-          <PDFPreview files={pdfFiles} />
+          <PDFPreview files={pdfFiles} handleDelete={handlePDFDelete} />
         </VStack>
       )}
       {isNotEmpty(imageFiles) && (
-        <VStack>
+        <VStack alignItems="start" spacing={2}>
           <Heading as="h3">Bilddokumentation</Heading>
-          <ImagePreview files={imageFiles} />
+          <ImagePreview files={imageFiles} handleDelete={handleImageDelete} />
         </VStack>
       )}
       {isNotEmpty(videoFiles) && (
-        <VStack>
+        <VStack alignItems="start" spacing={2}>
           <Heading as="h3">Videodokumentation</Heading>
-          <VideoPreview files={videoFiles} />
+          <VideoPreview files={videoFiles} handleDelete={handleVideoDelete} />
         </VStack>
       )}
     </VStack>
