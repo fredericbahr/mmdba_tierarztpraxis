@@ -9,18 +9,18 @@ import {
 import React, { useEffect } from "react";
 import Select from "react-select";
 
-import { useCustomToast } from "../../../hooks/useCustomToast";
-import { useFetch } from "../../../hooks/useFetch";
-import { ICustomerOption } from "../../../interfaces/autocompleteOptionInterfaces";
-import { ISelectOptions } from "../../../interfaces/selectInterface";
-import { CustomerCreateModal } from "../../CustomerCreate/CustomerCreateModal/CustomerCreateModal";
+import { useCustomToast } from "../../hooks/useCustomToast";
+import { useFetch } from "../../hooks/useFetch";
+import { ICustomerOption } from "../../interfaces/autocompleteOptionInterfaces";
+import { ISelectOptions } from "../../interfaces/selectInterface";
+import { CustomerCreateModal } from "../CustomerCreate/CustomerCreateModal/CustomerCreateModal";
 
 interface IProps {
   customerId: number | null;
   onCustomerChange: (selected?: ISelectOptions<number> | null) => void;
 }
 
-export const AnimalCustomerChooseStep = ({
+export const CustomerChooseStep = ({
   customerId,
   onCustomerChange,
 }: IProps) => {

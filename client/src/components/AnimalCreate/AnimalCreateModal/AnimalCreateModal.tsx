@@ -15,8 +15,8 @@ import { useCustomToast } from "../../../hooks/useCustomToast";
 import { useFetch } from "../../../hooks/useFetch";
 import { ISelectOptions } from "../../../interfaces/selectInterface";
 import { IStep } from "../../../interfaces/stepInterface";
+import { CustomerChooseStep } from "../../CustomerChooseStep/CustomerChooseStep";
 import { AnimalCreateStep } from "../AnimalCreateStep/AnimalCreateStep";
-import { AnimalCustomerChooseStep } from "../AnimalCustomerChooseStep/AnimalCustomerChooseStep";
 import { AnimalRaceChooseStep } from "../AnimalRaceChooseStep/AnimalRaceChooseStep";
 import { AnimalSpeziesChooseStep } from "../AnimalSpeciesChooseStep/AnimalSpeciesChooseStep";
 
@@ -113,7 +113,7 @@ export const AnimalCreateModal = ({ isOpen, onClose }: IProps) => {
     {
       label: "Besitzer auswählen",
       content: (
-        <AnimalCustomerChooseStep
+        <CustomerChooseStep
           customerId={customerId}
           onCustomerChange={handleCustomerIdChange}
         />

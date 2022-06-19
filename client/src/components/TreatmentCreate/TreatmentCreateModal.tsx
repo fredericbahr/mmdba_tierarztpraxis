@@ -9,10 +9,13 @@ import {
   ModalOverlay,
 } from "@chakra-ui/react";
 import { Step, Steps, useSteps } from "chakra-ui-steps";
-import React from "react";
+import React, { useState } from "react";
 
 import { useFetch } from "../../hooks/useFetch";
+import { ISelectOptions } from "../../interfaces/selectInterface";
 import { IStep } from "../../interfaces/stepInterface";
+import { AnimalChooseStep } from "../AnimalChooseStep/AnimalChooseStep";
+import { CustomerChooseStep } from "../CustomerChooseStep/CustomerChooseStep";
 import { TreatmentCreateStep } from "./TreatmentCreateStep";
 import { TreatmentDocumentationUploadStep } from "./TreatmentDocumentationUploadStep";
 
@@ -27,10 +30,12 @@ export const TreatmentCreateModal = ({ isOpen, onClose }: IProps) => {
   });
   const { isLoading, error, post } = useFetch();
 
-  const [treatmentDiagnosis, setTreatmentDiagnosis] = React.useState("");
-  const [treatmentNotes, setTreatmentNotes] = React.useState("");
-  const [treatmentPrice, setTreatmentPrice] = React.useState(0);
-  const [treatmentDate, setTreatmentDate] = React.useState<Date | null>(null);
+  const [treatmentDiagnosis, setTreatmentDiagnosis] = useState("");
+  const [treatmentNotes, setTreatmentNotes] = useState("");
+  const [treatmentPrice, setTreatmentPrice] = useState(0);
+  const [treatmentDate, setTreatmentDate] = useState<Date | null>(null);
+  const [customerId, setCustomerId] = useState<number | null>(null);
+  const [animalId, setAnimalId] = useState<number | null>(null);
 
   const handleTreatmentDiagnosisChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -56,6 +61,14 @@ export const TreatmentCreateModal = ({ isOpen, onClose }: IProps) => {
     setTreatmentDate(new Date(event.target.value));
   };
 
+  const handleCustomerChange = (selected?: ISelectOptions<number> | null) => {
+    setCustomerId(selected?.value ?? null);
+  };
+
+  const handleAnimalChange = (selected?: ISelectOptions<number> | null) => {
+    setAnimalId(selected?.value ?? null);
+  };
+
   const handleTreatmentCreate = () => {
     console.log("TreatmentCreateModal.handleTreatmentCreate");
   };
@@ -77,13 +90,38 @@ export const TreatmentCreateModal = ({ isOpen, onClose }: IProps) => {
       ),
     },
     {
+      label: "Besitzer auswählen",
+      content: (
+        <CustomerChooseStep
+          customerId={customerId}
+          onCustomerChange={handleCustomerChange}
+        />
+      ),
+    },
+    {
+      label: "Tier auswählen",
+      content: (
+        <AnimalChooseStep
+          animalId={animalId}
+          customerId={customerId}
+          onAnimalChange={handleAnimalChange}
+        />
+      ),
+    },
+    {
       label: "Dokumentation hochladen",
       content: <TreatmentDocumentationUploadStep />,
     },
   ];
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="6xl" isCentered>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      size="6xl"
+      isCentered
+      scrollBehavior="inside"
+    >
       <ModalOverlay />
       <ModalContent>
         <ModalBody>
