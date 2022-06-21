@@ -14,7 +14,7 @@ import Logo from "../../assets/logo.png";
 import { NavItem } from "./NavItem";
 
 export interface ISidebarItem {
-  name: string;
+  label: string;
   icon: Icon;
   route: string;
 }
@@ -42,7 +42,7 @@ export const SidebarContent = ({ items, onClose, ...rest }: IProps) => {
       <List>
         {items.map((item, idx) => (
           <NavItem key={idx} item={item}>
-            {item.name}
+            {item.label}
           </NavItem>
         ))}
       </List>

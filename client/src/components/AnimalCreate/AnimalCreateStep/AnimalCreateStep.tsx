@@ -56,7 +56,7 @@ export const AnimalCreateStep = ({
           </FormControl>
 
           <FormControl isRequired>
-            <FormLabel htmlFor="animalWeight">Gewicht:</FormLabel>
+            <FormLabel htmlFor="animalWeight">Gewicht</FormLabel>
             <NumberInput defaultValue={animalWeight || undefined}>
               <NumberInputField
                 id="animalWeight"
