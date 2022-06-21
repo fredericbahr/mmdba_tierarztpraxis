@@ -120,7 +120,7 @@ export const TreatmentCreateModal = ({ isOpen, onClose }: IProps) => {
       onClose={onClose}
       size="6xl"
       isCentered
-      scrollBehavior="inside"
+      scrollBehavior="outside"
     >
       <ModalOverlay />
       <ModalContent>
