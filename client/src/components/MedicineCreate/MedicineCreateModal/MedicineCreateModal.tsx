@@ -15,6 +15,9 @@ import { useCustomToast } from "../../../hooks/useCustomToast";
 import { useFetch } from "../../../hooks/useFetch";
 import { ISelectOptions } from "../../../interfaces/selectInterface";
 import { IStep } from "../../../interfaces/stepInterface";
+import { FileUpload } from "../../FileUpload/FileUpload";
+import { MedicineCreateStep } from "../MedicineCreateStep/MedicineCreateStep";
+import { MedicineDescriptionUpload } from "../MedicineDescriptionUpload/MedicineDescriptionUpload";
 
 interface IProps {
   isOpen: boolean;
@@ -29,12 +32,55 @@ export const MedicineCreateModal = ({ isOpen, onClose }: IProps) => {
   const { showErrorToast } = useCustomToast();
   const { isLoading, error, post } = useFetch();
 
+  const [medicineName, setMedicineName] = useState("");
+  const [medicineDosis, setMedicineDosis] = useState<number | null>(null);
+  const [medicineDescription, setMedicineDescription] = useState<File | null>(
+    null
+  );
+
+  const handleMedicineNameChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setMedicineName(event.target.value);
+  };
+
+  const handleMedicineDosisChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setMedicineDosis(Number(event.target.value));
+  };
+
+  const handleMedicineDescriptionChange = (file: File | null) => {
+    setMedicineDescription(file);
+  };
+
   /**
    * Handles the creation of the animal
    */
   const handleMedicineCreation = async () => {};
 
-  const steps: IStep[] = [];
+  const steps: IStep[] = [
+    {
+      label: "Medizin anlegen",
+      content: (
+        <MedicineCreateStep
+          medicineName={medicineName}
+          medicineDosis={medicineDosis}
+          onMedicineNameChange={handleMedicineNameChange}
+          onMedicineDosisChange={handleMedicineDosisChange}
+        />
+      ),
+    },
+    {
+      label: "Beschreibung hochladen",
+      content: (
+        <MedicineDescriptionUpload
+          file={medicineDescription}
+          onFileChange={handleMedicineDescriptionChange}
+        />
+      ),
+    },
+  ];
 
   useEffect(() => {
     reset();
