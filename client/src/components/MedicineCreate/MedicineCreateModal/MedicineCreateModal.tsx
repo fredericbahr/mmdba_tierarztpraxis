@@ -29,8 +29,8 @@ export const MedicineCreateModal = ({ isOpen, onClose }: IProps) => {
     initialStep: 0,
   });
 
-  const { showErrorToast } = useCustomToast();
-  const { isLoading, error, post } = useFetch();
+  const { showErrorToast, showSuccessToast } = useCustomToast();
+  const { isLoading, error, uploadFormData } = useFetch();
 
   const [medicineName, setMedicineName] = useState("");
   const [medicineDosis, setMedicineDosis] = useState<number | null>(null);
@@ -47,7 +47,8 @@ export const MedicineCreateModal = ({ isOpen, onClose }: IProps) => {
   const handleMedicineDosisChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setMedicineDosis(Number(event.target.value));
+    const dosis = event.target.value;
+    setMedicineDosis(dosis ? Number(dosis) : null);
   };
 
   const handleMedicineDescriptionChange = (file: File | null) => {
@@ -57,7 +58,23 @@ export const MedicineCreateModal = ({ isOpen, onClose }: IProps) => {
   /**
    * Handles the creation of the animal
    */
-  const handleMedicineCreation = async () => {};
+  const handleMedicineCreation = async () => {
+    const formData = new FormData();
+    formData.append("name", medicineName);
+    formData.append("dosis", (medicineDosis ?? "").toString());
+    formData.append("medicine-files", medicineDescription ?? "");
+
+    console.log(formData);
+
+    const response = await uploadFormData("/api/medicine", formData);
+
+    if (!response?.medicine || error) {
+      return showErrorToast("Fehler", error || "Es ist ein Fehler aufgetreten");
+    }
+
+    showSuccessToast("Erfolg", "Medizin erfolgreich angelegt");
+    onClose();
+  };
 
   const steps: IStep[] = [
     {
