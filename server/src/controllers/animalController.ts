@@ -37,7 +37,7 @@ export const getAnimalQuery = async (
         where: {
           birthdate: req.query.birthdate != null ? new Date(String(req.query.birthdate)) : undefined,
           customerId: req.query.customerId != null ? Number(req.query.customerId) : undefined,
-          name: req.query.name != null ? String(req.query.name) : undefined, 
+          name: req.query.name != null && req.query.name != "" ? String(req.query.name) : undefined, 
           raceId: req.query.raceId != null ? Number(req.query.raceId) : undefined,
           weight: req.query.weight != null ? Number(req.query.weight) : undefined, 
         }}

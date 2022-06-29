@@ -81,16 +81,10 @@ export const SearchAnimalModal = ({ isOpen, onClose }: IProps) => {
       raceId: raceId,
       speciesId: speciesId,
     };
+    const empty_query = Object.keys(parameters).length === 1 && parameters.name === "" ? false : true;
 
-    let empty_query = true;
-    for (const k in parameters) {
-      if (k != null || undefined)  {
-        empty_query = false;
-        break;
-      }
-    }
     let data = undefined;
-    if (!empty_query && parameters.name === "") {
+    if (!empty_query) {
       data = await get("/api/animal/");
     }
     else {
