@@ -1,13 +1,56 @@
 import { PrismaClient } from "@prisma/client";
+import console from "console";
 import { Request, Response } from "express";
 import {
   httpBadRequest,
   httpIntServerError,
   httpOK,
 } from "../config/statusCode";
-import { ICreateAnimalRequest } from "../interfaces/animalInterface";
+import { ICreateAnimalRequest, ISearchAnimalRequest } from "../interfaces/animalInterface";
 
 const prisma = new PrismaClient();
+
+export const getAnimals = async (
+  req: Request<never, never, ICreateAnimalRequest>,
+  res: Response
+) => {
+  try {
+    const animals = await prisma.animal.findMany();
+    console.log("Trying to find all");
+    console.log(animals);
+    return res.status(httpOK).json({ animals });
+  }
+  catch (error: any) {
+    return res.status(httpIntServerError).json({
+      error: "Fehler beim Suchen des Tieres",
+    });
+  }
+};
+
+export const getAnimalQuery = async (
+  req: Request<ISearchAnimalRequest, never, ICreateAnimalRequest>,
+  res: Response) => {
+    try {
+      console.log("Trying to find specific");
+      console.log(req.query);
+      const animal = await prisma.animal.findMany({
+        where: {
+          birthdate: req.query.birthdate != null ? new Date(String(req.query.birthdate)) : undefined,
+          customerId: req.query.customerId != null ? Number(req.query.customerId) : undefined,
+          name: req.query.name != null ? String(req.query.name) : undefined, 
+          raceId: req.query.raceId != null ? Number(req.query.raceId) : undefined,
+          weight: req.query.weight != null ? Number(req.query.weight) : undefined, 
+        }}
+      );
+      console.log(animal);
+      return res.status(httpOK).json({ animal });
+    }
+    catch (error: any) {
+      return res.status(httpIntServerError).json({
+        error: "Fehler beim Suchen des Tieres",
+      });
+    }
+  };
 
 /**
  * Creates a new animal
@@ -54,3 +97,4 @@ export const createAnimal = async (
     });
   }
 };
+
