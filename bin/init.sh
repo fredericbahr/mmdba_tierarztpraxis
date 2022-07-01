@@ -1,7 +1,7 @@
 #!/bin/sh
 echo "\ninstalling global dependencies:"
 npm ci
-cd server
+cd ../server
 echo "\ninstalling server dependencies:"
 npm ci
 cd ../client

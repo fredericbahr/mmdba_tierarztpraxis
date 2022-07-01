@@ -82,8 +82,8 @@ export const AnimalRaceChooseStep = ({
   return (
     <>
       <VStack justify="center" align="center" w="full" spacing={8}>
-        <FormControl w="60">
-          <FormLabel>Tierrasse{raceId}</FormLabel>
+        <FormControl w="sm">
+          <FormLabel>Tierrasse</FormLabel>
           <Select
             isClearable
             isSearchable
@@ -91,6 +91,8 @@ export const AnimalRaceChooseStep = ({
             options={options}
             value={options.find((option) => option.value === raceId)}
             onChange={onRaceChange}
+            placeholder="Tierrasse auswählen..."
+            loadingMessage={() => "Lade Tierrassen..."}
           />
           <FormHelperText>Wählen Sie bitte einen Tierrasse</FormHelperText>
         </FormControl>

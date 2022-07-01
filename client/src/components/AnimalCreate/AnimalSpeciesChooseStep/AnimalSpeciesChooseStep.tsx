@@ -58,8 +58,8 @@ export const AnimalSpeziesChooseStep = ({
   return (
     <>
       <VStack justify="center" align="center" w="full" spacing={8}>
-        <FormControl w="60">
-          <FormLabel>Tierspezies{speciesId}</FormLabel>
+        <FormControl w="sm">
+          <FormLabel>Tierspezies</FormLabel>
           <Select
             isClearable
             isSearchable
@@ -67,6 +67,8 @@ export const AnimalSpeziesChooseStep = ({
             options={options}
             value={options.find((option) => option.value === speciesId)}
             onChange={onSpeciesChange}
+            placeholder="Spezies auswählen..."
+            loadingMessage={() => "Lade Spezies..."}
           />
           <FormHelperText>Wählen Sie bitte einen Tierspezies</FormHelperText>
         </FormControl>

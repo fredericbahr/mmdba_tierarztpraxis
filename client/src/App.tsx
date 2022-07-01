@@ -8,6 +8,7 @@ import { Animal } from "./pages/Animal/Animal";
 import { Customer } from "./pages/Customer/Customer";
 import { Home } from "./pages/Home/Home";
 import { Medicine } from "./pages/Medicine/Medicine";
+import { Treatment } from "./pages/Treatment/Treatment";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="animal" element={<Animal />} />
+          <Route path="treatment" element={<Treatment />} />
           <Route path="medicine" element={<Medicine />} />
           <Route path="customer" element={<Customer />} />
         </Route>
