@@ -10,7 +10,9 @@ import {
 } from "@chakra-ui/react";
 import { Step, Steps, useSteps } from "chakra-ui-steps";
 import React, { useState } from "react";
+import { useEffect } from "react";
 
+import { useCustomToast } from "../../hooks/useCustomToast";
 import { useFetch } from "../../hooks/useFetch";
 import { ISelectOptions } from "../../interfaces/selectInterface";
 import { IStep } from "../../interfaces/stepInterface";
@@ -18,6 +20,7 @@ import { AnimalChooseStep } from "../AnimalChooseStep/AnimalChooseStep";
 import { CustomerChooseStep } from "../CustomerChooseStep/CustomerChooseStep";
 import { TreatmentCreateStep } from "./TreatmentCreateStep";
 import { TreatmentDocumentationUploadStep } from "./TreatmentDocumentationUploadStep";
+import { TreatmentMedicineStep } from "./TreatmentMedicineStep";
 
 interface IProps {
   isOpen: boolean;
@@ -28,14 +31,17 @@ export const TreatmentCreateModal = ({ isOpen, onClose }: IProps) => {
   const { nextStep, prevStep, reset, activeStep } = useSteps({
     initialStep: 0,
   });
-  const { isLoading, error, post } = useFetch();
+  const { isLoading, error, uploadFormData } = useFetch();
+  const { showSuccessToast, showErrorToast } = useCustomToast();
 
   const [treatmentDiagnosis, setTreatmentDiagnosis] = useState("");
   const [treatmentNotes, setTreatmentNotes] = useState("");
   const [treatmentPrice, setTreatmentPrice] = useState(0);
-  const [treatmentDate, setTreatmentDate] = useState<Date | null>(null);
+  const [treatmentDate, setTreatmentDate] = useState<Date | null>(new Date());
   const [customerId, setCustomerId] = useState<number | null>(null);
   const [animalId, setAnimalId] = useState<number | null>(null);
+  const [medicineId, setMedicineId] = useState<number | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
 
   const handleTreatmentDiagnosisChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -69,8 +75,55 @@ export const TreatmentCreateModal = ({ isOpen, onClose }: IProps) => {
     setAnimalId(selected?.value ?? null);
   };
 
-  const handleTreatmentCreate = () => {
-    console.log("TreatmentCreateModal.handleTreatmentCreate");
+  const handleMedicineChange = (selected?: ISelectOptions<number> | null) => {
+    setMedicineId(selected?.value ?? null);
+  };
+
+  const handleFilesChange = (files: File[]) => {
+    console.log(files);
+    setFiles(files);
+  };
+
+  const handleReset = () => {
+    reset();
+    // setTreatmentDiagnosis("");
+    // setTreatmentNotes("");
+    // setTreatmentPrice(0);
+    // setTreatmentDate(new Date());
+    // setCustomerId(null);
+    // setAnimalId(null);
+    // setMedicineId(null);
+    // setFiles([]);
+  };
+
+  const handleTreatmentCreate = async () => {
+    const formData = new FormData();
+    formData.append("diagnosis", treatmentDiagnosis);
+    formData.append("notes", treatmentNotes);
+    formData.append("costs", treatmentPrice.toString());
+    formData.append("date", (treatmentDate ?? "").toString());
+    formData.append("customerId", (customerId ?? "").toString());
+    formData.append("animalId", (animalId ?? "").toString());
+    formData.append("medicineId", (medicineId ?? "").toString());
+
+    files.forEach((file) => {
+      formData.append("treatment-files", file);
+    });
+
+    const { treatment } = await uploadFormData("/api/treatment", formData);
+
+    if (!treatment || error) {
+      return showErrorToast(
+        "Fehler",
+        "Behandlung konnte nicht erstellt werden"
+      );
+    }
+
+    showSuccessToast(
+      "Behandlung erstellt",
+      "Behandlung wurde erfolgreich erstellt"
+    );
+    onClose();
   };
 
   const steps: IStep[] = [
@@ -110,9 +163,27 @@ export const TreatmentCreateModal = ({ isOpen, onClose }: IProps) => {
     },
     {
       label: "Dokumentation hochladen",
-      content: <TreatmentDocumentationUploadStep />,
+      content: (
+        <TreatmentDocumentationUploadStep
+          files={files}
+          onFilesChange={handleFilesChange}
+        />
+      ),
+    },
+    {
+      label: "Medikament verschreiben",
+      content: (
+        <TreatmentMedicineStep
+          medicineId={medicineId}
+          onMedicineChange={handleMedicineChange}
+        />
+      ),
     },
   ];
+
+  useEffect(() => {
+    handleReset();
+  }, [isOpen]);
 
   return (
     <Modal
@@ -133,7 +204,7 @@ export const TreatmentCreateModal = ({ isOpen, onClose }: IProps) => {
               flexWrap="wrap"
             >
               {steps.map(({ label, content }) => (
-                <Step label={label} key={label}>
+                <Step label={label} key={label} my={2}>
                   <Box marginTop={4}>{content}</Box>
                 </Step>
               ))}
