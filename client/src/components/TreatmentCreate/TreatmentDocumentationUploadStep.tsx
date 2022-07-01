@@ -4,15 +4,17 @@ import React from "react";
 import { FilePreview } from "../FilePreview/FilePreview";
 import { FileUpload } from "../FileUpload/FileUpload";
 
-export const TreatmentDocumentationUploadStep = () => {
-  const [files, setFiles] = React.useState<File[]>([]);
+interface IProps {
+  files: File[];
+  onFilesChange: (files: File[]) => void;
+}
 
+export const TreatmentDocumentationUploadStep = ({
+  files,
+  onFilesChange,
+}: IProps) => {
   const handleNewFiles = (newFiles: File[]) => {
-    setFiles([...files, ...newFiles]);
-  };
-
-  const handleFileChange = (files: File[]) => {
-    setFiles(files);
+    onFilesChange([...files, ...newFiles]);
   };
 
   return (
@@ -20,7 +22,7 @@ export const TreatmentDocumentationUploadStep = () => {
       <Heading>Dokumentation hochladen</Heading>
       <form>
         <FileUpload handleNewFiles={handleNewFiles} />
-        <FilePreview handleFileChange={handleFileChange} files={files} />
+        <FilePreview handleFileChange={onFilesChange} files={files} />
       </form>
     </Box>
   );

@@ -18,12 +18,14 @@ import { AnimalCreateModal } from "../AnimalCreate/AnimalCreateModal/AnimalCreat
 interface IProps {
   animalId: number | null;
   customerId?: number | null;
+  isRequired?: boolean;
   onAnimalChange: (selected?: ISelectOptions<number> | null) => void;
 }
 
 export const AnimalChooseStep = ({
   animalId,
   customerId = null,
+  isRequired = true,
   onAnimalChange,
 }: IProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -62,7 +64,7 @@ export const AnimalChooseStep = ({
   return (
     <>
       <VStack justify="center" align="center" w="full" spacing={8}>
-        <FormControl w="sm">
+        <FormControl w="sm" isRequired={isRequired}>
           <FormLabel>Tier</FormLabel>
           <Select
             isClearable
@@ -71,6 +73,8 @@ export const AnimalChooseStep = ({
             options={options}
             value={options.find((option) => option.value === animalId)}
             onChange={onAnimalChange}
+            placeholder="Tier auswählen..."
+            loadingMessage={() => "Tiere werden geladen..."}
           />
           <FormHelperText>Wählen Sie bitte ein Tier</FormHelperText>
         </FormControl>
