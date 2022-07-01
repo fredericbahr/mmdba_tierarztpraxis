@@ -93,6 +93,7 @@ model Video {
 model Finding {
   id          Int        @id @default(autoincrement())
   description String
+  content     String
   blob        Bytes
   treatment   Treatment? @relation(fields: [treatmentId], references: [id])
   treatmentId Int?
