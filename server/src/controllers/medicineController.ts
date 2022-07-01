@@ -24,21 +24,32 @@ export const getMedicines = async (req: Request, res: Response) => {
 export const createMedicine = async (req: Request, res: Response) => {
   const { name, dosis } = req.body;
 
-  if (!name || !dosis || !req.file) {
+  if (!name || !dosis) {
     return res.status(httpBadRequest).json({
       error: "Bitte alle Felder ausfüllen",
     });
   }
 
   try {
-    const description = (await PdfParse(req.file.buffer)).text;
+    if (req.file) {
+      const description = (await PdfParse(req.file.buffer)).text;
+
+      const medicine = await prisma.medicine.create({
+        data: {
+          name,
+          description,
+          dosis: Number(dosis),
+          blob: req.file.buffer,
+        },
+      });
+
+      return res.status(httpOK).json({ medicine });
+    }
 
     const medicine = await prisma.medicine.create({
       data: {
         name,
-        description,
         dosis: Number(dosis),
-        blob: req.file.buffer,
       },
     });
 

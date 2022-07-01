@@ -55,8 +55,8 @@ model Medicine {
   id          Int         @id @default(autoincrement())
   name        String
   dosis       Int
-  description String
-  blob        Bytes
+  description String?
+  blob        Bytes?
   treatments  Treatment[]
 }
 
