@@ -18,3 +18,8 @@ export interface IRaceOption {
   name: string;
   speciesId: number;
 }
+
+export interface IMedicineOption {
+  id: number;
+  name: string;
+}
