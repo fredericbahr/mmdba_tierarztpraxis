@@ -24,8 +24,6 @@ export const getMedicines = async (req: Request, res: Response) => {
 export const createMedicine = async (req: Request, res: Response) => {
   const { name, dosis } = req.body;
 
-  console.log("dosis", dosis);
-
   if (!name || !dosis || !req.file) {
     return res.status(httpBadRequest).json({
       error: "Bitte alle Felder ausfüllen",
@@ -44,7 +42,6 @@ export const createMedicine = async (req: Request, res: Response) => {
       },
     });
 
-    console.log("sucess");
     return res.status(httpOK).json({ medicine });
   } catch (error) {
     console.log(error);

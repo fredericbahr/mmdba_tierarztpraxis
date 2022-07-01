@@ -13,9 +13,7 @@ import React, { useEffect, useState } from "react";
 
 import { useCustomToast } from "../../../hooks/useCustomToast";
 import { useFetch } from "../../../hooks/useFetch";
-import { ISelectOptions } from "../../../interfaces/selectInterface";
 import { IStep } from "../../../interfaces/stepInterface";
-import { FileUpload } from "../../FileUpload/FileUpload";
 import { MedicineCreateStep } from "../MedicineCreateStep/MedicineCreateStep";
 import { MedicineDescriptionUpload } from "../MedicineDescriptionUpload/MedicineDescriptionUpload";
 
@@ -55,6 +53,13 @@ export const MedicineCreateModal = ({ isOpen, onClose }: IProps) => {
     setMedicineDescription(file);
   };
 
+  const handleReset = () => {
+    reset();
+    setMedicineName("");
+    setMedicineDosis(null);
+    setMedicineDescription(null);
+  };
+
   /**
    * Handles the creation of the animal
    */
@@ -63,8 +68,6 @@ export const MedicineCreateModal = ({ isOpen, onClose }: IProps) => {
     formData.append("name", medicineName);
     formData.append("dosis", (medicineDosis ?? "").toString());
     formData.append("medicine-files", medicineDescription ?? "");
-
-    console.log(formData);
 
     const response = await uploadFormData("/api/medicine", formData);
 
@@ -100,7 +103,7 @@ export const MedicineCreateModal = ({ isOpen, onClose }: IProps) => {
   ];
 
   useEffect(() => {
-    reset();
+    handleReset();
   }, [isOpen]);
 
   return (
