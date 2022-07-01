@@ -1,7 +1,11 @@
 import express from "express";
-import { createAnimal } from "../controllers/animalController";
+import { createAnimal, getAnimals, getAnimalsForCustomer } from "../controllers/animalController";
 
 const animalRouter = express.Router();
+
+animalRouter.get("/animals", getAnimals);
+
+animalRouter.get("/animals/:customerId", getAnimalsForCustomer);
 
 animalRouter.post("/animal", createAnimal);
 

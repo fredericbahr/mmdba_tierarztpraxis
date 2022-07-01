@@ -35,22 +35,6 @@ export const PreviewItem = ({
       className="preview-item"
     >
       {children}
-      {/* <Flex
-        justifyContent="center"
-        alignItems="center"
-        className="preview-overlay"
-        position="absolute"
-        top={0}
-        left={0}
-        width="100%"
-        height="100%"
-        backgroundColor="gray.700"
-        display="none"
-      >
-        <Tooltip title="PDF löschen">
-          <CloseButton color="white" onClick={() => handleDelete(index)} />
-        </Tooltip>
-      </Flex> */}
       <HStack>
         <Text wordBreak="break-all">{file.name}</Text>
         <CloseButton onClick={() => handleDelete(index)} />

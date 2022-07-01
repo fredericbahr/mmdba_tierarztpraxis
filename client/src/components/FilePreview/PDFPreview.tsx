@@ -16,7 +16,7 @@ export const PDFPreview = ({ files, handleDelete }: IProps) => {
   const { showErrorToast } = useCustomToast();
 
   return (
-    <Grid templateColumns="repeat(4, 1fr)" gridGap={8}>
+    <Grid templateColumns="repeat(4, 1fr)" gridGap={8} alignItems="center">
       {files.map((file, index) => {
         return (
           <PreviewItem
