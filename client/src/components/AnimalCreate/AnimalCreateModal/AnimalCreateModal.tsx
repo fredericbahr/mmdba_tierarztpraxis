@@ -191,4 +191,3 @@ export const AnimalCreateModal = ({ isOpen, onClose }: IProps) => {
     </Modal>
   );
 };
-
