@@ -9,20 +9,22 @@ import {
 import React, { useEffect } from "react";
 import Select from "react-select";
 
-import { useCustomToast } from "../../../hooks/useCustomToast";
-import { useFetch } from "../../../hooks/useFetch";
-import { ICustomerOption } from "../../../interfaces/autocompleteOptionInterfaces";
-import { ISelectOptions } from "../../../interfaces/selectInterface";
-import { CustomerCreateModal } from "../../CustomerCreate/CustomerCreateModal/CustomerCreateModal";
+import { useCustomToast } from "../../hooks/useCustomToast";
+import { useFetch } from "../../hooks/useFetch";
+import { ICustomerOption } from "../../interfaces/autocompleteOptionInterfaces";
+import { ISelectOptions } from "../../interfaces/selectInterface";
+import { CustomerCreateModal } from "../CustomerCreate/CustomerCreateModal/CustomerCreateModal";
 
 interface IProps {
+  isRequired?: boolean;
   customerId: number | null;
   onCustomerChange: (selected?: ISelectOptions<number> | null) => void;
 }
 
-export const AnimalCustomerChooseStep = ({
+export const CustomerChooseStep = ({
   customerId,
   onCustomerChange,
+  isRequired = true,
 }: IProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { showErrorToast } = useCustomToast();
@@ -58,7 +60,7 @@ export const AnimalCustomerChooseStep = ({
   return (
     <>
       <VStack justify="center" align="center" w="full" spacing={8}>
-        <FormControl w="sm">
+        <FormControl w="sm" isRequired={isRequired}>
           <FormLabel>Tierbesitzer</FormLabel>
           <Select
             isClearable
@@ -67,6 +69,8 @@ export const AnimalCustomerChooseStep = ({
             options={options}
             value={options.find((option) => option.value === customerId)}
             onChange={onCustomerChange}
+            placeholder="Besitzer auswählen..."
+            loadingMessage={() => "Besitzer werden geladen..."}
           />
           <FormHelperText>Wählen Sie bitte einen Besitzer</FormHelperText>
         </FormControl>

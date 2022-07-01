@@ -14,8 +14,9 @@ import React, { useEffect, useState } from "react";
 import { useCustomToast } from "../../../hooks/useCustomToast";
 import { useFetch } from "../../../hooks/useFetch";
 import { ISelectOptions } from "../../../interfaces/selectInterface";
+import { IStep } from "../../../interfaces/stepInterface";
+import { CustomerChooseStep } from "../../CustomerChooseStep/CustomerChooseStep";
 import { AnimalCreateStep } from "../AnimalCreateStep/AnimalCreateStep";
-import { AnimalCustomerChooseStep } from "../AnimalCustomerChooseStep/AnimalCustomerChooseStep";
 import { AnimalRaceChooseStep } from "../AnimalRaceChooseStep/AnimalRaceChooseStep";
 import { AnimalSpeziesChooseStep } from "../AnimalSpeciesChooseStep/AnimalSpeciesChooseStep";
 
@@ -29,7 +30,7 @@ export const AnimalCreateModal = ({ isOpen, onClose }: IProps) => {
     initialStep: 0,
   });
 
-  const { showErrorToast } = useCustomToast();
+  const { showErrorToast, showSuccessToast } = useCustomToast();
   const { isLoading, error, post } = useFetch();
 
   const [animalName, setAnimalName] = useState("");
@@ -95,7 +96,7 @@ export const AnimalCreateModal = ({ isOpen, onClose }: IProps) => {
     onClose();
   };
 
-  const steps = [
+  const steps: IStep[] = [
     {
       label: "Tier anlegen",
       content: (
@@ -112,7 +113,7 @@ export const AnimalCreateModal = ({ isOpen, onClose }: IProps) => {
     {
       label: "Besitzer auswählen",
       content: (
-        <AnimalCustomerChooseStep
+        <CustomerChooseStep
           customerId={customerId}
           onCustomerChange={handleCustomerIdChange}
         />
@@ -190,7 +191,3 @@ export const AnimalCreateModal = ({ isOpen, onClose }: IProps) => {
     </Modal>
   );
 };
-function showSuccessToast(arg0: string, arg1: string) {
-  throw new Error("Function not implemented.");
-}
-

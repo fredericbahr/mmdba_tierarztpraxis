@@ -1,0 +1,4 @@
+.preview-item:hover .preview-overlay {
+  display: flex;
+  opacity: 0.8;
+}

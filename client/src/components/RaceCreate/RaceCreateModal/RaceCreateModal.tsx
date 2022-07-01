@@ -113,6 +113,8 @@ export const RaceCreateModal = ({ isOpen, onClose }: IProps) => {
                     (option) => option.value === speciesId
                   )}
                   onChange={handleSpeciesChange}
+                  placeholder="Spezies auswählen..."
+                  loadingMessage={() => "Spezies werden geladen..."}
                 />
                 <FormHelperText>Wählen Sie bitte eine Spezies</FormHelperText>
               </FormControl>

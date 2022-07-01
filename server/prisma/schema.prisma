@@ -14,7 +14,7 @@ datasource db {
 model Animal {
   id         Int         @id @default(autoincrement())
   name       String
-  birthdate   DateTime
+  birthdate  DateTime
   weight     Int
   owner      Customer    @relation(fields: [customerId], references: [id])
   customerId Int
@@ -55,7 +55,8 @@ model Medicine {
   id          Int         @id @default(autoincrement())
   name        String
   dosis       Int
-  description String
+  description String?
+  blob        Bytes?
   treatments  Treatment[]
 }
 
