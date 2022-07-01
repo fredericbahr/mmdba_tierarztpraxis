@@ -282,7 +282,7 @@ async function repopulate() {
 
     const medicineToTreatment_laeuse = await prisma.medicine.create({
       data: {
-        description: "Läuse-Medizin", dosis: 12, name: "Permethrin", 
+        description: "Läuse-Medizin", dosis: 12, name: "Permethrin",
         treatments: {
           connect: {
             id: treatmentId[0].id
