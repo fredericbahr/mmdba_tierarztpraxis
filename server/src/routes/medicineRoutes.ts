@@ -1,6 +1,7 @@
 import express from "express";
 import {
   createMedicine,
+  getLatestMedicines,
   getMedicines,
 } from "../controllers/medicineController";
 import multer, { StorageEngine } from "multer";
@@ -17,5 +18,7 @@ medicineRouter.post(
 );
 
 medicineRouter.get("/medicines", getMedicines);
+
+medicineRouter.get("/medicines/latest/:amount?", getLatestMedicines);
 
 export default medicineRouter;

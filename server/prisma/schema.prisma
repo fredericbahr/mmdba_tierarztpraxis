@@ -16,6 +16,7 @@ model Animal {
   name       String
   birthdate  DateTime
   weight     Int
+  createdAt  DateTime    @default(now())
   owner      Customer    @relation(fields: [customerId], references: [id])
   customerId Int
   race       Race        @relation(fields: [raceId], references: [id])
@@ -41,6 +42,7 @@ model Treatment {
   costs      Int        @default(0)
   date       DateTime   @default(now())
   notes      String
+  createdAt  DateTime   @default(now())
   animal     Animal     @relation(fields: [animalId], references: [id])
   customer   Customer   @relation(fields: [customerId], references: [id])
   animalId   Int
@@ -57,6 +59,7 @@ model Medicine {
   dosis       Int
   description String?
   blob        Bytes?
+  createdAt   DateTime    @default(now())
   treatments  Treatment[]
 }
 
@@ -78,6 +81,7 @@ model Photo {
   id          Int        @id @default(autoincrement())
   description String
   blob        Bytes
+  createdAt   DateTime   @default(now())
   treatment   Treatment? @relation(fields: [treatmentId], references: [id])
   treatmentId Int?
 }
@@ -86,6 +90,7 @@ model Video {
   id          Int        @id @default(autoincrement())
   description String
   blob        Bytes
+  createdAt   DateTime   @default(now())
   treatment   Treatment? @relation(fields: [treatmentId], references: [id])
   treatmentId Int?
 }
@@ -95,6 +100,7 @@ model Finding {
   description String
   content     String
   blob        Bytes
+  createdAt   DateTime   @default(now())
   treatment   Treatment? @relation(fields: [treatmentId], references: [id])
   treatmentId Int?
 }

@@ -9,18 +9,51 @@ import PdfParse from "pdf-parse";
 
 const prisma = new PrismaClient();
 
+/**
+ * Gets all medicines from the database
+ * @param req Request object
+ * @param res Response object
+ */
 export const getMedicines = async (req: Request, res: Response) => {
   try {
     const medicines: Medicine[] = await prisma.medicine.findMany();
 
-    res.status(httpOK).json({ medicines });
+    return res.status(httpOK).json({ medicines });
   } catch (err) {
-    res
+    return res
       .status(httpIntServerError)
       .json({ error: "Fehler beim Abrufen der Medikamente" });
   }
 };
 
+/**
+ * Gets the latest medicines from the database
+ * An amount of medicines can be specified via url parameter
+ * Default amount is 10
+ * @param req Request object
+ * @param res Response object
+ */
+export const getLatestMedicines = async (req: Request, res: Response) => {
+  try {
+    const amount = parseInt(req.params.amount ?? 10);
+    const medicines: Medicine[] = await prisma.medicine.findMany({
+      orderBy: { createdAt: "desc" },
+      take: amount,
+    });
+
+    return res.status(httpOK).json({ medicines });
+  } catch (err) {
+    return res
+      .status(httpIntServerError)
+      .json({ error: "Fehler beim Abrufen der Medikamente" });
+  }
+};
+
+/**
+ * Creates a medicine in the database
+ * @param req Request object
+ * @param res Response object
+ */
 export const createMedicine = async (req: Request, res: Response) => {
   const { name, dosis } = req.body;
 
