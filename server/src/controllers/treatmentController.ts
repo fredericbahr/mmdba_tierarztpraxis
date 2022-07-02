@@ -55,6 +55,7 @@ export const createTreatment = async (
           create: findings.map((finding) => ({
             description: finding.text,
             blob: finding.buffer,
+            content: finding.text,
           })),
         },
         photos: {
