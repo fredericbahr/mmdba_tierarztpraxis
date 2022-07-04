@@ -1,4 +1,4 @@
-import { Flex, Grid, Heading, Spinner } from "@chakra-ui/react";
+import { Flex, Grid, GridItem, Heading, Spinner } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
 import { MedicineCard } from "../../components/MedicineCard/MedicineCard";
@@ -30,7 +30,7 @@ export const MedicineOverview = () => {
 
   return (
     <>
-      <Heading as="h3" size="xl">
+      <Heading as="h3" size="lg">
         Neusten Medikamente
       </Heading>
       {isLoading && (
@@ -39,9 +39,11 @@ export const MedicineOverview = () => {
         </Flex>
       )}
       {!isLoading && (
-        <Grid templateColumns="repeat(2, 1fr)" gap={8}>
+        <Grid templateColumns="repeat(3, 1fr)" gap={6} w="full">
           {medicine.map((medicine, index) => (
-            <MedicineCard medicine={medicine} key={index} />
+            <GridItem key={index}>
+              <MedicineCard medicine={medicine} />
+            </GridItem>
           ))}
         </Grid>
       )}

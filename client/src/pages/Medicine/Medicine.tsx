@@ -1,16 +1,22 @@
-import { Box, Stack } from "@chakra-ui/react";
+import { Box, Grid, GridItem, Stack, VStack } from "@chakra-ui/react";
 import React from "react";
 
+import { MedicineSearch } from "../../components/MedicineSearch/MedicineSearch";
 import { MedicineCreate } from "./MedicineCreate";
 import { MedicineOverview } from "./MedicineOverview";
 
 export const Medicine = () => {
   return (
-    <Stack spacing={8} mx={4} w="full">
-      <MedicineOverview />
-      <Box>
+    <Grid templateColumns="repeat(3, 1fr)" gridGap={8}>
+      <GridItem colSpan={2}>
+        <MedicineOverview />
+      </GridItem>
+      <GridItem>
+        <Box marginBottom={4}>
+          <MedicineSearch />
+        </Box>
         <MedicineCreate />
-      </Box>
-    </Stack>
+      </GridItem>
+    </Grid>
   );
 };
