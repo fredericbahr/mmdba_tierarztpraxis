@@ -3,6 +3,9 @@ import {
   createMedicine,
   getLatestMedicines,
   getMedicines,
+  handleAdvancedMedicineDescriptionSearch,
+  handleAdvancedMedicineNameSearch,
+  handleMedicineNameSearch,
 } from "../controllers/medicineController";
 import multer, { StorageEngine } from "multer";
 
@@ -20,5 +23,15 @@ medicineRouter.post(
 medicineRouter.get("/medicines", getMedicines);
 
 medicineRouter.get("/medicines/latest/:amount?", getLatestMedicines);
+
+medicineRouter.post("/medicine/search", handleMedicineNameSearch);
+medicineRouter.post(
+  "/medicine/search/advanced/name",
+  handleAdvancedMedicineNameSearch
+);
+medicineRouter.post(
+  "/medicine/search/advanced/description",
+  handleAdvancedMedicineDescriptionSearch
+);
 
 export default medicineRouter;

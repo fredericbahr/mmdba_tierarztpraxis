@@ -1,38 +1,23 @@
 import { Flex, Grid, GridItem, Heading, Spinner } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import { MedicineCard } from "../../components/MedicineCard/MedicineCard";
-import { useCustomToast } from "../../hooks/useCustomToast";
-import { useFetch } from "../../hooks/useFetch";
 import { IMedicine } from "../../interfaces/medicineInterface";
 
-export const MedicineOverview = () => {
-  const { isLoading, error, get } = useFetch();
-  const { showErrorToast } = useCustomToast();
+interface IProps {
+  isLoading: boolean;
+  medicines: IMedicine[];
+  heading?: string;
+}
 
-  const [medicine, setMedicine] = useState<IMedicine[]>([]);
-
-  useEffect(() => {
-    const fetchLatestMedicine = async () => {
-      const { medicines } = await get("/api/medicines/latest");
-
-      if (!medicines || error) {
-        return showErrorToast(
-          "Fehler",
-          "Fehler beim Laden der letzen Medikamente"
-        );
-      }
-
-      setMedicine(medicines);
-    };
-    fetchLatestMedicine();
-  }, []);
-
+export const MedicineOverview = ({ isLoading, medicines, heading }: IProps) => {
   return (
     <>
-      <Heading as="h3" size="lg">
-        Neusten Medikamente
-      </Heading>
+      {heading && (
+        <Heading as="h3" size="lg">
+          {heading}
+        </Heading>
+      )}
       {isLoading && (
         <Flex justifyContent="center" alignItems="center">
           <Spinner />
@@ -40,7 +25,7 @@ export const MedicineOverview = () => {
       )}
       {!isLoading && (
         <Grid templateColumns="repeat(3, 1fr)" gap={6} w="full">
-          {medicine.map((medicine, index) => (
+          {medicines.map((medicine: IMedicine, index: number) => (
             <GridItem key={index}>
               <MedicineCard medicine={medicine} />
             </GridItem>

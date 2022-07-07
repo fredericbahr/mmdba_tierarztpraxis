@@ -6,6 +6,10 @@ import {
   httpOK,
 } from "../config/statusCode";
 import PdfParse from "pdf-parse";
+import {
+  IMedicineKeywordSearch,
+  IMedicneAdvancedSearchRequest,
+} from "../interfaces/medicneInterface";
 
 const prisma = new PrismaClient();
 
@@ -92,5 +96,117 @@ export const createMedicine = async (req: Request, res: Response) => {
     return res
       .status(httpIntServerError)
       .json({ error: "Fehler beim Erstellen der Medizin" });
+  }
+};
+
+export const handleMedicineNameSearch = async (req: Request, res: Response) => {
+  const { name } = req.body;
+
+  if (!name) {
+    return res.status(httpBadRequest).json({
+      error: "Bitte einen Suchbegriff eingeben",
+    });
+  }
+
+  try {
+    const medicines: Medicine[] = await prisma.medicine.findMany({
+      where: {
+        name: {
+          contains: name,
+        },
+      },
+    });
+
+    return res.status(httpOK).json({ medicines });
+  } catch (err) {
+    return res
+      .status(httpIntServerError)
+      .json({ error: "Fehler beim Suchen der Medikamente" });
+  }
+};
+
+export const handleAdvancedMedicineNameSearch = async (
+  req: Request<never, never, IMedicneAdvancedSearchRequest>,
+  res: Response
+) => {
+  const { keywords } = req.body;
+
+  if (!keywords) {
+    return res.status(httpBadRequest).json({
+      error: "Bitte Suchbegriff eingeben",
+    });
+  }
+
+  try {
+    const query: string = keywords.reduce(
+      (acc: string, curr: IMedicineKeywordSearch, idx: number) => {
+        const { keyword, operator } = curr;
+        if (idx === 0) {
+          return keyword;
+        }
+
+        return acc + `${operator} ${keyword}`;
+      },
+      ""
+    );
+
+    const medicines: Medicine[] = await prisma.medicine.findMany({
+      where: {
+        name: {
+          search: query,
+        },
+      },
+    });
+
+    return res.status(httpOK).json({ medicines });
+  } catch (err) {
+    console.log(err);
+    return res
+      .status(httpIntServerError)
+      .json({ error: "Fehler beim Suchen der Medikamente" });
+  }
+};
+
+export const handleAdvancedMedicineDescriptionSearch = async (
+  req: Request<never, never, IMedicneAdvancedSearchRequest>,
+  res: Response
+) => {
+  const { keywords } = req.body;
+
+  
+  if (!keywords) {
+    return res.status(httpBadRequest).json({
+      error: "Bitte Suchbegriff eingeben",
+    });
+  }
+  
+  try {
+    const query: string = keywords.reduce(
+      (acc: string, curr: IMedicineKeywordSearch, idx: number) => {
+        const { keyword, operator } = curr;
+        if (idx === 0) {
+          return keyword;
+        }
+
+        return acc + `${operator} ${keyword}`;
+      },
+      ""
+    );
+
+    const medicines: Medicine[] = await prisma.medicine.findMany({
+      where: {
+        description: {
+          search: query,
+        },
+      },
+    });
+    
+    console.log("hi", medicines)
+    return res.status(httpOK).json({ medicines });
+  } catch (err) {
+    console.log(err);
+    return res
+      .status(httpIntServerError)
+      .json({ error: "Fehler beim Suchen der Medikamente" });
   }
 };
