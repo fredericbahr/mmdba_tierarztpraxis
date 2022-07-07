@@ -201,7 +201,6 @@ export const handleAdvancedMedicineDescriptionSearch = async (
       },
     });
     
-    console.log("hi", medicines)
     return res.status(httpOK).json({ medicines });
   } catch (err) {
     console.log(err);
