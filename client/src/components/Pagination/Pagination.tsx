@@ -81,7 +81,7 @@ export const Pagination = ({ count, currentPage, handleClick }: IProps) => {
         </>
       )}
 
-      {currentPage >= count - 1 && (
+      {currentPage >= count - 1 && count >3 && (
         <>
           {count > 3 && <Text>...</Text>}
           {count > 3 && (
