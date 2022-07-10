@@ -1,8 +1,7 @@
-import { Box, Button, Grid, GridItem, VStack } from "@chakra-ui/react";
+import { Box, Button, Grid, GridItem, Text,VStack } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
 import { MedicineSearch } from "../../components/MedicineSearch/MedicineSearch";
-import { Pagination } from "../../components/Pagination/Pagination";
 import { useCustomToast } from "../../hooks/useCustomToast";
 import { useFetch } from "../../hooks/useFetch";
 import { IMedicine } from "../../interfaces/medicineInterface";
@@ -15,7 +14,6 @@ export const Medicine = () => {
 
   const [medicines, setMedicines] = useState<IMedicine[]>([]);
   const [searchResults, setSearchResults] = useState<IMedicine[]>([]);
-  const [index, setIndex] = useState(1);
 
   useEffect(() => {
     const fetchLatestMedicine = async () => {
@@ -43,6 +41,7 @@ export const Medicine = () => {
               medicines={searchResults}
               heading="Suchergebnisse"
             />
+            <Text>{medicines.length}</Text>
             <Button variant="ghost" onClick={() => setSearchResults([])}>
               Suche zurücksetzen
             </Button>
@@ -55,7 +54,6 @@ export const Medicine = () => {
               medicines={medicines}
               heading="Neusten Medikamente"
             />
-            <Pagination count={10} currentPage={index} handleClick={setIndex} />
           </>
         )}
       </GridItem>

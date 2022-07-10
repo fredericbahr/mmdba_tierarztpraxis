@@ -47,44 +47,45 @@ export const MedicineCard = ({ medicine }: IProps) => {
             </VStack>
             <VStack alignItems="start">
               <Text>Beschreibung</Text>
+              {!medicine.description && <Text>---</Text>}
               {medicine.description && (
-              <Box>
-                {!showMore && (
-                  <>
-                    <Text
-                      fontSize="xs"
-                      maxHeight={!showMore ? "4.8rem" : "auto"}
-                      overflow="hidden"
-                    >
-                      {medicine.description.substring(0, 150)}{" "}
-                      {medicine.description.length > 150 ? "..." : ""}
-                    </Text>
-                    {medicine.description.length > 150 && (
-                      <Tooltip title="Mehr anzeigen">
-                        <IconButton
-                          aria-label="Show more"
-                          icon={<Icon as={CaretDown} />}
-                          variant="ghost"
-                          size="xs"
-                          onClick={() => setShowMore(true)}
-                        />
-                      </Tooltip>
-                    )}
-                  </>
-                )}
-                {showMore && (
-                  <>
-                    <Text fontSize="xs">{medicine.description}</Text>
-                    <IconButton
-                      aria-label="Show less"
-                      icon={<Icon as={CaretUp} />}
-                      variant="ghost"
-                      size="xs"
-                      onClick={() => setShowMore(false)}
-                    />
-                  </>
-                )}
-              </Box>
+                <Box>
+                  {!showMore && (
+                    <>
+                      <Text
+                        fontSize="xs"
+                        maxHeight={!showMore ? "4.8rem" : "auto"}
+                        overflow="hidden"
+                      >
+                        {medicine.description.substring(0, 150)}{" "}
+                        {medicine.description.length > 150 ? "..." : ""}
+                      </Text>
+                      {medicine.description.length > 150 && (
+                        <Tooltip title="Mehr anzeigen">
+                          <IconButton
+                            aria-label="Show more"
+                            icon={<Icon as={CaretDown} />}
+                            variant="ghost"
+                            size="xs"
+                            onClick={() => setShowMore(true)}
+                          />
+                        </Tooltip>
+                      )}
+                    </>
+                  )}
+                  {showMore && (
+                    <>
+                      <Text fontSize="xs">{medicine.description}</Text>
+                      <IconButton
+                        aria-label="Show less"
+                        icon={<Icon as={CaretUp} />}
+                        variant="ghost"
+                        size="xs"
+                        onClick={() => setShowMore(false)}
+                      />
+                    </>
+                  )}
+                </Box>
               )}
             </VStack>
           </HStack>
