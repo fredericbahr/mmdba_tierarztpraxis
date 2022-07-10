@@ -1,5 +1,5 @@
-import { Box, Button, Grid, GridItem, Text,VStack } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import { Box, Button, Grid, GridItem, Text, VStack } from "@chakra-ui/react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { MedicineSearch } from "../../components/MedicineSearch/MedicineSearch";
 import { useCustomToast } from "../../hooks/useCustomToast";
@@ -12,8 +12,24 @@ export const Medicine = () => {
   const { isLoading, error, get } = useFetch();
   const { showErrorToast } = useCustomToast();
 
+  const searchRef = useRef<any>();
+
   const [medicines, setMedicines] = useState<IMedicine[]>([]);
-  const [searchResults, setSearchResults] = useState<IMedicine[]>([]);
+  const [searchResults, setSearchResults] = useState<IMedicine[] | null>(null);
+
+  const handleConnectKeywordsWithOrClick = () => {
+    if (searchRef.current) {
+      searchRef.current.handleConnectKeywordsWithOr();
+    }
+  };
+
+  const handleSearchReset = () => {
+    if (searchRef.current) {
+      searchRef.current.resetSearch();
+    }
+
+    setSearchResults(null);
+  };
 
   useEffect(() => {
     const fetchLatestMedicine = async () => {
@@ -34,7 +50,22 @@ export const Medicine = () => {
   return (
     <Grid templateColumns="repeat(3, 1fr)" gridGap={8}>
       <GridItem colSpan={2}>
-        {searchResults.length > 0 && (
+        {searchResults?.length === 0 && (
+          <VStack spacing={4} marginTop={12}>
+            <Text>Es wurden keine Ergebnisse gefunden.</Text>
+            <Text>Wollen Sie die erweiterte Suchanfrage verodern?</Text>
+            <Button
+              onClick={() => handleConnectKeywordsWithOrClick()}
+              variant="ghost"
+            >
+              Suchanfrage verodern
+            </Button>
+            <Button onClick={() => handleSearchReset()} variant="ghost">
+              Suchanfrage zurücksetzen
+            </Button>
+          </VStack>
+        )}
+        {searchResults && searchResults.length > 0 && (
           <VStack spacing={8}>
             <MedicineOverview
               isLoading={false}
@@ -46,7 +77,7 @@ export const Medicine = () => {
             </Button>
           </VStack>
         )}
-        {searchResults.length === 0 && (
+        {!searchResults && (
           <>
             <MedicineOverview
               isLoading={isLoading}
@@ -58,7 +89,7 @@ export const Medicine = () => {
       </GridItem>
       <GridItem>
         <Box marginBottom={4}>
-          <MedicineSearch setResults={setSearchResults} />
+          <MedicineSearch ref={searchRef} setResults={setSearchResults} />
         </Box>
         <MedicineCreate />
       </GridItem>

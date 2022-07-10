@@ -16,6 +16,8 @@ import {
 } from "@chakra-ui/react";
 import { MagnifyingGlass } from "phosphor-react";
 import React, { useState } from "react";
+import { useEffect } from "react";
+import { forwardRef } from "react";
 
 import { useCustomToast } from "../../hooks/useCustomToast";
 import { useFetch } from "../../hooks/useFetch";
@@ -31,7 +33,7 @@ interface IProps {
   setResults: (results: any) => void;
 }
 
-export const MedicineSearch = ({ setResults }: IProps) => {
+const MedicineSearchBasic = ({ setResults }: IProps, ref: any) => {
   const { isLoading, error, post } = useFetch();
   const { showErrorToast } = useCustomToast();
 
@@ -41,6 +43,10 @@ export const MedicineSearch = ({ setResults }: IProps) => {
   >([{ keyword: "", operator: "&" }]);
   const [keywordSearchAmount, setKeywordSearchAmount] = useState(1);
   const [searchTarget, setSearchTarget] = useState<ISearchTarget>("name");
+  const [
+    isConnectKeywordsWithOrTriggered,
+    setIsConnectKeywordsWithOrTriggered,
+  ] = useState(false);
 
   const handleMedicineNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMedicineNameSearch(e.target.value);
@@ -124,6 +130,35 @@ export const MedicineSearch = ({ setResults }: IProps) => {
     setResults(medicines);
   };
 
+  const handleConnectKeywordsWithOr = () => {
+    const newMedicineKeywordsSearch: IMedicneAdvancedSearchKeyword[] =
+      medicineKeywordsSearch.map((keywordSearch) => ({
+        ...keywordSearch,
+        operator: "|",
+      }));
+    setMedicineKeywordsSearch(newMedicineKeywordsSearch);
+    setIsConnectKeywordsWithOrTriggered(true);
+  };
+
+  const resetSearch = () => {
+    setMedicineNameSearch("");
+    setMedicineKeywordsSearch([{ keyword: "", operator: "&" }]);
+    setKeywordSearchAmount(1);
+    setSearchTarget("name");
+    setIsConnectKeywordsWithOrTriggered(false);
+  };
+
+  useEffect(() => {
+    ref.current = { handleConnectKeywordsWithOr, resetSearch };
+  });
+
+  useEffect(() => {
+    if (isConnectKeywordsWithOrTriggered) {
+      handleSearch();
+      setIsConnectKeywordsWithOrTriggered(false);
+    }
+  }, [isConnectKeywordsWithOrTriggered]);
+
   return (
     <>
       <Heading as="h3" size="lg">
@@ -138,6 +173,7 @@ export const MedicineSearch = ({ setResults }: IProps) => {
                 id="nameSearch"
                 type="text"
                 placeholder="Medikamentname..."
+                value={medicineNameSearch}
                 disabled={
                   medicineKeywordsSearch.length > 1 ||
                   medicineKeywordsSearch[0].keyword !== ""
@@ -184,3 +220,5 @@ export const MedicineSearch = ({ setResults }: IProps) => {
     </>
   );
 };
+
+export const MedicineSearch = forwardRef(MedicineSearchBasic);

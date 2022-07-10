@@ -173,13 +173,12 @@ export const handleAdvancedMedicineDescriptionSearch = async (
 ) => {
   const { keywords } = req.body;
 
-  
   if (!keywords) {
     return res.status(httpBadRequest).json({
       error: "Bitte Suchbegriff eingeben",
     });
   }
-  
+
   try {
     const query: string = keywords.reduce(
       (acc: string, curr: IMedicineKeywordSearch, idx: number) => {
@@ -193,6 +192,8 @@ export const handleAdvancedMedicineDescriptionSearch = async (
       ""
     );
 
+    console.log(query);
+
     const medicines: Medicine[] = await prisma.medicine.findMany({
       where: {
         description: {
@@ -200,7 +201,7 @@ export const handleAdvancedMedicineDescriptionSearch = async (
         },
       },
     });
-    
+
     return res.status(httpOK).json({ medicines });
   } catch (err) {
     console.log(err);
