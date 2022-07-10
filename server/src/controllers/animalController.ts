@@ -53,23 +53,6 @@ export const getAnimalQuery = async (
   };
 
 /**
- * Gets all animals
- * @param req Request Object
- * @param res Response Object
- */
-export const getAnimals = async (req: Request, res: Response) => {
-  try {
-    const animals = await prisma.animal.findMany({});
-
-    return res.status(httpOK).json({ animals });
-  } catch (error: any) {
-    return res.status(httpIntServerError).json({
-      error: "Fehelr beim Abrufen der Tiere",
-    });
-  }
-};
-
-/**
  * Gets the animals for a customer
  * @param req Request Object
  * @param res Response Object

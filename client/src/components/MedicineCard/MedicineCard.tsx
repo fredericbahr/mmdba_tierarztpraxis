@@ -47,6 +47,7 @@ export const MedicineCard = ({ medicine }: IProps) => {
             </VStack>
             <VStack alignItems="start">
               <Text>Beschreibung</Text>
+              {medicine.description && (
               <Box>
                 {!showMore && (
                   <>
@@ -84,6 +85,7 @@ export const MedicineCard = ({ medicine }: IProps) => {
                   </>
                 )}
               </Box>
+              )}
             </VStack>
           </HStack>
           {medicine.blob && (
