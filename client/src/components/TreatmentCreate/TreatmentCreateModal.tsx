@@ -86,14 +86,14 @@ export const TreatmentCreateModal = ({ isOpen, onClose }: IProps) => {
 
   const handleReset = () => {
     reset();
-    // setTreatmentDiagnosis("");
-    // setTreatmentNotes("");
-    // setTreatmentPrice(0);
-    // setTreatmentDate(new Date());
-    // setCustomerId(null);
-    // setAnimalId(null);
-    // setMedicineId(null);
-    // setFiles([]);
+    setTreatmentDiagnosis("");
+    setTreatmentNotes("");
+    setTreatmentPrice(0);
+    setTreatmentDate(new Date());
+    setCustomerId(null);
+    setAnimalId(null);
+    setMedicineId(null);
+    setFiles([]);
   };
 
   const handleTreatmentCreate = async () => {

@@ -22,6 +22,7 @@ import { forwardRef } from "react";
 import { useCustomToast } from "../../hooks/useCustomToast";
 import { useFetch } from "../../hooks/useFetch";
 import {
+  IMedicine,
   IMedicneAdvancedSearchKeyword,
   ISearchOperator,
   ISearchTarget,
@@ -30,10 +31,10 @@ import { ISelectOptions } from "../../interfaces/selectInterface";
 import { MedicineAdvancedSearch } from "./MedicineAdvancedSearch";
 
 interface IProps {
-  setResults: (results: any) => void;
+  setResults: (results: IMedicine[]) => void;
 }
 
-const MedicineSearchBasic = ({ setResults }: IProps, ref: any) => {
+const MedicineSearchBasic = ({ setResults }: IProps, ref?: any) => {
   const { isLoading, error, post } = useFetch();
   const { showErrorToast } = useCustomToast();
 
@@ -149,7 +150,9 @@ const MedicineSearchBasic = ({ setResults }: IProps, ref: any) => {
   };
 
   useEffect(() => {
-    ref.current = { handleConnectKeywordsWithOr, resetSearch };
+    if (ref) {
+      ref.current = { handleConnectKeywordsWithOr, resetSearch };
+    }
   });
 
   useEffect(() => {

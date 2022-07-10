@@ -12,7 +12,9 @@ import Select from "react-select";
 import { useCustomToast } from "../../hooks/useCustomToast";
 import { useFetch } from "../../hooks/useFetch";
 import { IMedicineOption } from "../../interfaces/autocompleteOptionInterfaces";
+import { IMedicine } from "../../interfaces/medicineInterface";
 import { ISelectOptions } from "../../interfaces/selectInterface";
+import { MedicineChooseModal } from "../MedicineChooseModal/MedicineChooseModal";
 import { MedicineCreateModal } from "../MedicineCreate/MedicineCreateModal/MedicineCreateModal";
 
 interface IProps {
@@ -24,11 +26,28 @@ export const TreatmentMedicineStep = ({
   medicineId,
   onMedicineChange,
 }: IProps) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenMedicineChooseModal,
+    onOpen: onOpenMedicineChooseModal,
+    onClose: onCloseMedicineChooseModal,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenMedicineCreateModal,
+    onOpen: onOpenMedicineCreateModal,
+    onClose: onCloseMedicineCreateModal,
+  } = useDisclosure();
   const { showErrorToast } = useCustomToast();
 
   const [options, setOptions] = React.useState<ISelectOptions<number>[]>([]);
   const { isLoading, error, get } = useFetch();
+
+  const handleMedicineChoose = (medicine: IMedicine | null) => {
+    if (medicine) {
+      return onMedicineChange({ value: medicine.id, label: medicine.name });
+    }
+
+    onMedicineChange(null);
+  };
 
   useEffect(() => {
     const fetchOptions = async () => {
@@ -50,10 +69,10 @@ export const TreatmentMedicineStep = ({
       }
     };
 
-    if (!isOpen) {
+    if (!isOpenMedicineCreateModal) {
       fetchOptions();
     }
-  }, [isOpen]);
+  }, [isOpenMedicineCreateModal]);
 
   return (
     <>
@@ -72,9 +91,20 @@ export const TreatmentMedicineStep = ({
           />
           <FormHelperText>Wählen Sie bitte eine Medizin</FormHelperText>
         </FormControl>
-        <Button onClick={onOpen}>Medizin anlegen</Button>
+        <Button onClick={onOpenMedicineChooseModal} variant="ghost">
+          Erweiterte Suche
+        </Button>
+        <Button onClick={onOpenMedicineCreateModal}>Medizin anlegen</Button>
       </VStack>
-      <MedicineCreateModal isOpen={isOpen} onClose={onClose} />
+      <MedicineCreateModal
+        isOpen={isOpenMedicineCreateModal}
+        onClose={onCloseMedicineCreateModal}
+      />
+      <MedicineChooseModal
+        isOpen={isOpenMedicineChooseModal}
+        onClose={onCloseMedicineChooseModal}
+        setSelectedMedicine={handleMedicineChoose}
+      />
     </>
   );
 };

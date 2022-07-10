@@ -6,7 +6,7 @@ import { TreatmentCreate } from "./TreatmentCreate";
 export const Treatment = () => {
   return (
     <>
-      <Heading>Treatment</Heading>
+      <Heading>Behandlungen</Heading>
       <TreatmentCreate></TreatmentCreate>
     </>
   );
