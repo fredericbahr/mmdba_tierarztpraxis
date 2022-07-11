@@ -16,15 +16,15 @@ const videos: Buffer[] = [];
 async function deleteAllEntries() {
   //delete all table entries
   try {
-    const deleteTreatment = await prisma.treatment.deleteMany({});
-    const deleteAnimal = await prisma.animal.deleteMany({});
-    const deleteCustomer = await prisma.customer.deleteMany({});
-    const deleteMedicine = await prisma.medicine.deleteMany({});
-    const deleteRace = await prisma.race.deleteMany({});
-    const deleteSpecies = await prisma.species.deleteMany({});
-    const deletePhoto = await prisma.photo.deleteMany({});
-    const deleteVideo = await prisma.video.deleteMany({});
-    const deleteFinding = await prisma.finding.deleteMany({});
+    await prisma.treatment.deleteMany({});
+    await prisma.animal.deleteMany({});
+    await prisma.customer.deleteMany({});
+    await prisma.medicine.deleteMany({});
+    await prisma.race.deleteMany({});
+    await prisma.species.deleteMany({});
+    await prisma.photo.deleteMany({});
+    await prisma.video.deleteMany({});
+    await prisma.finding.deleteMany({});
   } catch (e) {
     console.log("Failure in deleting entries");
   }
@@ -209,7 +209,6 @@ async function repopulate() {
       },
     });
 
-
     const animalId = await prisma.animal.findMany({
       select: {
         id: true,
@@ -276,39 +275,45 @@ async function repopulate() {
 
     const treatmentId = await prisma.treatment.findMany({
       select: {
-        id: true
-      }
+        id: true,
+      },
     });
 
     const medicineToTreatment_laeuse = await prisma.medicine.create({
       data: {
-        description: "Läuse-Medizin", dosis: 12, name: "Permethrin",
+        description: "Läuse-Medizin",
+        dosis: 12,
+        name: "Permethrin",
         treatments: {
           connect: {
-            id: treatmentId[0].id
-          }
-        }
-      }
+            id: treatmentId[0].id,
+          },
+        },
+      },
     });
     const medicineToTreatment_zahn = await prisma.medicine.create({
       data: {
-        description: "Anti-Infekt", dosis: 3, name: "Angocin",
+        description: "Anti-Infekt",
+        dosis: 3,
+        name: "Angocin",
         treatments: {
           connect: {
-            id: treatmentId[1].id
-          }
-        }
-      }
+            id: treatmentId[1].id,
+          },
+        },
+      },
     });
     const medicineToTreatment_erkalt = await prisma.medicine.create({
       data: {
-        description: "Ambiotika", dosis: 7, name: "Roxithromycin",
+        description: "Ambiotika",
+        dosis: 7,
+        name: "Roxithromycin",
         treatments: {
           connect: {
-            id: treatmentId[1].id
-          }
-        }
-      }
+            id: treatmentId[1].id,
+          },
+        },
+      },
     });
     console.log("Passed medicine");
 

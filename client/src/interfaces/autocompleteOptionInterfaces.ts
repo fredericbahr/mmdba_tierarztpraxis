@@ -1,3 +1,5 @@
+import { ISearchOperator } from "./medicineInterface";
+
 export interface ICustomerOption {
   id: number;
   name: string;
@@ -22,4 +24,9 @@ export interface IRaceOption {
 export interface IMedicineOption {
   id: number;
   name: string;
+}
+
+export interface IMedicineSearchOperatorOptions {
+  value: ISearchOperator
+  label: string
 }
