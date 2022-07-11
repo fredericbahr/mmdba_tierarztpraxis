@@ -37,7 +37,9 @@ export const MedicineChooseStep = ({
           .map((medicine: IMedicine, index: number) => (
             <GridItem
               key={index}
-              onClick={() => handleMedicineClick(index)}
+              onClick={() =>
+                handleMedicineClick((page - 1) * showAmount + index)
+              }
               cursor="pointer"
             >
               <MedicineCard medicine={medicine} />

@@ -38,6 +38,12 @@ export const MedicineChooseModal = ({
   });
   const [medicines, setMedicines] = useState<IMedicine[]>([]);
 
+  const handleReset = () => {
+    reset();
+    setMedicines([]);
+    onClose();
+  };
+
   const steps: IStep[] = [
     {
       label: "Medikamenten suchen",
@@ -49,17 +55,11 @@ export const MedicineChooseModal = ({
         <MedicineChooseStep
           medicines={medicines}
           setSelectedMedicine={setSelectedMedicine}
-          onClose={onClose}
+          onClose={handleReset}
         />
       ),
     },
   ];
-
-  const handleReset = () => {
-    reset();
-    setMedicines([]);
-    onClose();
-  };
 
   useEffect(() => {
     if (activeStep === 0 && medicines.length > 1) {
