@@ -21,6 +21,33 @@ export const getTreatments = async (req: Request, res: Response) => {
   }
 };
 
+export const getLatestTreatments = async (
+  req: Request<{ limit: string | undefined }>,
+  res: Response
+) => {
+  try {
+    const limit = Number(req.params.limit || 10);
+    const treatments = await prisma.treatment.findMany({
+      orderBy: { createdAt: "desc" },
+      take: limit,
+      include: {
+        animal: true,
+        customer: true,
+        medicines: true,
+        findings: true,
+        photos: true,
+        videos: true,
+      },
+    });
+
+    res.status(httpOK).json({ treatments });
+  } catch (error: any) {
+    res
+      .status(httpIntServerError)
+      .json({ error: "Fehler beim Abrufen der letzten Behanldungen" });
+  }
+};
+
 export const createTreatment = async (
   req: Request<never, never, Partial<Treatment>>,
   res: Response
@@ -53,7 +80,7 @@ export const createTreatment = async (
         },
         findings: {
           create: findings.map((finding) => ({
-            description: finding.text,
+            description: "",
             blob: finding.buffer,
             content: finding.text,
           })),
