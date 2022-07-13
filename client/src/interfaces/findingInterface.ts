@@ -4,7 +4,7 @@ export interface IFinding {
   id: number;
   description: string;
   content: string;
-  blob: Blob;
+  blob: Buffer;
   treatment?: ITreatment;
   treatmendId?: number;
 }

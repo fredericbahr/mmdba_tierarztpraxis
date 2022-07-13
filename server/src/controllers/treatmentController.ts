@@ -7,6 +7,8 @@ import {
   httpOK,
 } from "../config/statusCode";
 
+import fs from "fs";
+
 const prisma = new PrismaClient();
 
 export const getTreatments = async (req: Request, res: Response) => {
@@ -38,7 +40,7 @@ export const getLatestTreatments = async (
         photos: true,
         videos: true,
       },
-    });
+    });  
 
     res.status(httpOK).json({ treatments });
   } catch (error: any) {

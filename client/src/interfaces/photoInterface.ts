@@ -1,7 +1,7 @@
 export interface IPhoto {
   id: number;
   description: string;
-  blob: Blob;
+  blob: Buffer;
   treatment?: number;
   treatmentId?: number;
 }

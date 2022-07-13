@@ -25,7 +25,6 @@ export const Treatment = () => {
         );
       }
 
-      console.log(treatments);
       setTreatments(treatments);
     };
     fetchLatestTreatment();
