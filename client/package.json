@@ -13,6 +13,7 @@
     "@chakra-ui/react": "^2.1.2",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
+    "buffer": "^6.0.3",
     "chakra-ui-steps": "^1.7.3",
     "framer-motion": "^6.3.10",
     "phosphor-react": "^1.4.1",

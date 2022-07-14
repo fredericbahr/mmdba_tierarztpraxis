@@ -32,7 +32,7 @@ export const PDFPreview = ({ files, handleDelete }: IProps) => {
                 showErrorToast("Fehler", "Fehler beim Laden einer PDF Datei");
               }}
             >
-              <Page pageNumber={1} />
+              <Page pageNumber={1} renderMode="svg" />
             </Document>
           </PreviewItem>
         );

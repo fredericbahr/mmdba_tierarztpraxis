@@ -1,13 +1,56 @@
-import { Heading } from "@chakra-ui/react";
-import React from "react";
+import { Box, Grid, GridItem, Heading } from "@chakra-ui/react";
+import React, { useEffect } from "react";
 
+import { useCustomToast } from "../../hooks/useCustomToast";
+import { useFetch } from "../../hooks/useFetch";
+import { ITreatment } from "../../interfaces/treatmentInterface";
 import { TreatmentCreate } from "./TreatmentCreate";
+import { TreatmentOverview } from "./TreatmentOverview";
 
 export const Treatment = () => {
+  const [treatments, setTreatments] = React.useState<ITreatment[]>([]);
+
+  const { isLoading, error, get } = useFetch();
+
+  const { showErrorToast } = useCustomToast();
+
+  const addTreatment = (treatment: ITreatment) => {
+    setTreatments([...treatments, treatment]);
+  };
+
+  const deleteTreatment = (id: number) => {
+    setTreatments(treatments.filter((treatment) => treatment.id !== id));
+  };
+
+  useEffect(() => {
+    const fetchLatestTreatment = async () => {
+      const { treatments } = await get("/api/treatments/latest/10");
+
+      if (!treatments || error) {
+        return showErrorToast(
+          "Fehler",
+          "Fehler beim Laden der letzen Behandlungen"
+        );
+      }
+
+      setTreatments(treatments);
+    };
+    fetchLatestTreatment();
+  }, []);
+
   return (
-    <>
-      <Heading>Behandlungen</Heading>
-      <TreatmentCreate></TreatmentCreate>
-    </>
+    <Grid templateColumns="repeat(3, 1fr)" gridGap={8}>
+      <GridItem colSpan={2}>
+        <Heading>Behandlungen</Heading>
+        <TreatmentOverview
+          treatments={treatments}
+          isLoading={isLoading}
+          deleteTreatment={deleteTreatment}
+        />
+      </GridItem>
+      <GridItem>
+        <TreatmentCreate addTreatment={addTreatment} />
+      </GridItem>
+    </Grid>
   );
 };

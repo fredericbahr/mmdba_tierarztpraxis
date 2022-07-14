@@ -16,6 +16,7 @@ import { useCustomToast } from "../../hooks/useCustomToast";
 import { useFetch } from "../../hooks/useFetch";
 import { ISelectOptions } from "../../interfaces/selectInterface";
 import { IStep } from "../../interfaces/stepInterface";
+import { ITreatment } from "../../interfaces/treatmentInterface";
 import { AnimalChooseStep } from "../AnimalChooseStep/AnimalChooseStep";
 import { CustomerChooseStep } from "../CustomerChooseStep/CustomerChooseStep";
 import { TreatmentCreateStep } from "./TreatmentCreateStep";
@@ -25,9 +26,14 @@ import { TreatmentMedicineStep } from "./TreatmentMedicineStep";
 interface IProps {
   isOpen: boolean;
   onClose: () => void;
+  addTreatment: (treatment: ITreatment) => void;
 }
 
-export const TreatmentCreateModal = ({ isOpen, onClose }: IProps) => {
+export const TreatmentCreateModal = ({
+  isOpen,
+  onClose,
+  addTreatment,
+}: IProps) => {
   const { nextStep, prevStep, reset, activeStep } = useSteps({
     initialStep: 0,
   });
@@ -123,6 +129,7 @@ export const TreatmentCreateModal = ({ isOpen, onClose }: IProps) => {
       "Behandlung erstellt",
       "Behandlung wurde erfolgreich erstellt"
     );
+    addTreatment(treatment);
     onClose();
   };
 
@@ -191,11 +198,11 @@ export const TreatmentCreateModal = ({ isOpen, onClose }: IProps) => {
       onClose={onClose}
       size="6xl"
       isCentered
-      scrollBehavior="outside"
+      scrollBehavior="inside"
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalBody>
+        <ModalBody minH="50vh">
           <Flex flexDir="column" marginTop={4}>
             <Steps
               colorScheme="blue"

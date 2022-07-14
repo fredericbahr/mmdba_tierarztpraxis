@@ -7,7 +7,16 @@ import {
   httpOK,
 } from "../config/statusCode";
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  log: [{ level: "query", emit: "event" }],
+});
+
+// prisma.$on("query", (e) => {
+//   console.log("Query: " + e.query);
+//   console.log("Params: " + e.params);
+//   console.log("Duration: " + e.duration + "ms");
+//   console.log();
+// });
 
 export const getTreatments = async (req: Request, res: Response) => {
   try {
@@ -18,6 +27,33 @@ export const getTreatments = async (req: Request, res: Response) => {
     res
       .status(httpIntServerError)
       .json({ error: "Fehler beim Abrufen der Behanldungen" });
+  }
+};
+
+export const getLatestTreatments = async (
+  req: Request<{ limit: string | undefined }>,
+  res: Response
+) => {
+  try {
+    const limit = Number(req.params.limit || 10);
+    const treatments = await prisma.treatment.findMany({
+      orderBy: { createdAt: "desc" },
+      take: limit,
+      include: {
+        animal: true,
+        customer: true,
+        medicines: true,
+        findings: true,
+        photos: true,
+        videos: true,
+      },
+    });
+
+    res.status(httpOK).json({ treatments });
+  } catch (error: any) {
+    res
+      .status(httpIntServerError)
+      .json({ error: "Fehler beim Abrufen der letzten Behanldungen" });
   }
 };
 
@@ -53,7 +89,7 @@ export const createTreatment = async (
         },
         findings: {
           create: findings.map((finding) => ({
-            description: finding.text,
+            description: "",
             blob: finding.buffer,
             content: finding.text,
           })),
@@ -62,12 +98,14 @@ export const createTreatment = async (
           create: photos.map((photo) => ({
             description: "",
             blob: photo.buffer,
+            mimeType: photo.mimetype,
           })),
         },
         videos: {
           create: videos.map((video) => ({
             description: "",
             blob: video.buffer,
+            mimeType: video.mimetype,
           })),
         },
       },
@@ -114,4 +152,29 @@ const getPhotos = (files: Express.Multer.File[]) => {
  */
 const getVideos = (files: Express.Multer.File[]) => {
   return files.filter((file) => file.mimetype.startsWith("video/"));
+};
+
+export const deleteTreatment = async (
+  req: Request<{ id: string }>,
+  res: Response
+) => {
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(httpBadRequest).json({
+      error: "Bitte eine Behandlungs-ID angeben",
+    });
+  }
+
+  try {
+    const deletedTreatment = await prisma.treatment.delete({
+      where: { id: Number(id) },
+    });
+
+    return res.status(httpOK).json({ deletedTreatment });
+  } catch (error: any) {
+    return res
+      .status(httpIntServerError)
+      .json({ error: "Fehler beim Löschen der Behandlung" });
+  }
 };
