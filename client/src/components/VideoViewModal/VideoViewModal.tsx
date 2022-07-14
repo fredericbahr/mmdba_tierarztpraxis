@@ -19,8 +19,8 @@ interface IProps {
 }
 
 export const VideoViewModal = ({ videos, isOpen, onClose }: IProps) => {
-  const getURL = (blob: any) => {
-    return `data:video/mp4;base64,${Buffer.from(blob).toString("base64")}`;
+  const getURL = (blob: Buffer, mimeType: string) => {
+    return `data:${mimeType};base64,${Buffer.from(blob).toString("base64")}`;
   };
 
   return (
@@ -33,7 +33,10 @@ export const VideoViewModal = ({ videos, isOpen, onClose }: IProps) => {
             <Carousel>
               {videos.map((video) => (
                 <video controls key={video.id} width="95%">
-                  <source src={getURL(video.blob)} type="video/mp4" />
+                  <source
+                    src={getURL(video.blob, video.mimeType)}
+                    type="video/mp4"
+                  />
                 </video>
               ))}
             </Carousel>

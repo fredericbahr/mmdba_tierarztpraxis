@@ -1,3 +1,5 @@
+import "./FindingViewModal.css";
+
 import {
   HStack,
   Icon,

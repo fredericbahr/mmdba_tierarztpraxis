@@ -2,6 +2,7 @@ import express from "express";
 import multer, { StorageEngine } from "multer";
 import {
   createTreatment,
+  deleteTreatment,
   getLatestTreatments,
   getTreatments,
 } from "../controllers/treatmentController";
@@ -20,5 +21,7 @@ treatmentRouter.post(
   formData.array("treatment-files"),
   createTreatment
 );
+
+treatmentRouter.delete("/treatment/:id", deleteTreatment);
 
 export default treatmentRouter;

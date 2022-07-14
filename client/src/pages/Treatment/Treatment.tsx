@@ -11,13 +11,21 @@ export const Treatment = () => {
   const [treatments, setTreatments] = React.useState<ITreatment[]>([]);
 
   const { isLoading, error, get } = useFetch();
+
   const { showErrorToast } = useCustomToast();
+
+  const addTreatment = (treatment: ITreatment) => {
+    setTreatments([...treatments, treatment]);
+  };
+
+  const deleteTreatment = (id: number) => {
+    setTreatments(treatments.filter((treatment) => treatment.id !== id));
+  };
 
   useEffect(() => {
     const fetchLatestTreatment = async () => {
       const { treatments } = await get("/api/treatments/latest/10");
 
-      console.log("Treatment.tsx: useEffect");
       if (!treatments || error) {
         return showErrorToast(
           "Fehler",
@@ -34,10 +42,14 @@ export const Treatment = () => {
     <Grid templateColumns="repeat(3, 1fr)" gridGap={8}>
       <GridItem colSpan={2}>
         <Heading>Behandlungen</Heading>
-        <TreatmentOverview treatments={treatments} isLoading={isLoading} />
+        <TreatmentOverview
+          treatments={treatments}
+          isLoading={isLoading}
+          deleteTreatment={deleteTreatment}
+        />
       </GridItem>
       <GridItem>
-        <TreatmentCreate />
+        <TreatmentCreate addTreatment={addTreatment} />
       </GridItem>
     </Grid>
   );

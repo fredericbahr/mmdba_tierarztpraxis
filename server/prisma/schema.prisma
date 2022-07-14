@@ -81,6 +81,7 @@ model Photo {
   id          Int        @id @default(autoincrement())
   description String
   blob        Bytes
+  mimeType    String
   createdAt   DateTime   @default(now())
   treatment   Treatment? @relation(fields: [treatmentId], references: [id])
   treatmentId Int?
@@ -90,6 +91,7 @@ model Video {
   id          Int        @id @default(autoincrement())
   description String
   blob        Bytes
+  mimeType    String
   createdAt   DateTime   @default(now())
   treatment   Treatment? @relation(fields: [treatmentId], references: [id])
   treatmentId Int?

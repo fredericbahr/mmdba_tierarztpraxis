@@ -21,8 +21,8 @@ interface IProps {
 }
 
 export const PhotoViewModal = ({ photos, isOpen, onClose }: IProps) => {
-  const getURL = (blob: any) => {
-    return `data:image/jpg;base64,${Buffer.from(blob).toString("base64")}`;
+  const getURL = (blob: Buffer, mimeType: string) => {
+    return `data:${mimeType};base64,${Buffer.from(blob).toString("base64")}`;
   };
 
   return (
@@ -37,7 +37,7 @@ export const PhotoViewModal = ({ photos, isOpen, onClose }: IProps) => {
                 <Image
                   width="30vw"
                   key={photo.id}
-                  src={getURL(photo.blob)}
+                  src={getURL(photo.blob, photo.mimeType)}
                   alt="Behandlungsfoto"
                 />
               );

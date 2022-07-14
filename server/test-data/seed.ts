@@ -320,6 +320,7 @@ async function repopulate() {
     const lauesePhoto = await prisma.photo.create({
       data: {
         blob: photos[0],
+        mimeType: "image/jpeg",
         description: "Läuse-Befall, linkes Ohr",
         treatment: {
           connect: {
@@ -331,6 +332,7 @@ async function repopulate() {
     const canisPhoto = await prisma.photo.create({
       data: {
         blob: photos[1],
+        mimeType: "image/jpeg",
         description: "Canis maior, eiternd",
         treatment: {
           connect: {
@@ -342,6 +344,7 @@ async function repopulate() {
     const erkaltPhoto = await prisma.photo.create({
       data: {
         blob: photos[2],
+        mimeType: "image/jpeg",
         description: "Erkältung",
         treatment: {
           connect: {
@@ -355,6 +358,7 @@ async function repopulate() {
     const laueseVideo = await prisma.video.create({
       data: {
         blob: videos[0],
+        mimeType: "video/mp4",
         description: "Läuse-Befall, linkes Ohr",
         treatment: {
           connect: {
@@ -367,6 +371,7 @@ async function repopulate() {
     const canisVideo = await prisma.video.create({
       data: {
         blob: videos[1],
+        mimeType: "video/mp4",
         description: "Canis maior, eiternd",
         treatment: {
           connect: {
@@ -378,6 +383,7 @@ async function repopulate() {
     const erkaltVideo = await prisma.video.create({
       data: {
         blob: videos[2],
+        mimeType: "video/mp4",
         description: "Erkältung",
         treatment: {
           connect: {

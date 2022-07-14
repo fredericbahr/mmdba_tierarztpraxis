@@ -7,9 +7,16 @@ import {
   httpOK,
 } from "../config/statusCode";
 
-import fs from "fs";
+const prisma = new PrismaClient({
+  log: [{ level: "query", emit: "event" }],
+});
 
-const prisma = new PrismaClient();
+// prisma.$on("query", (e) => {
+//   console.log("Query: " + e.query);
+//   console.log("Params: " + e.params);
+//   console.log("Duration: " + e.duration + "ms");
+//   console.log();
+// });
 
 export const getTreatments = async (req: Request, res: Response) => {
   try {
@@ -40,7 +47,7 @@ export const getLatestTreatments = async (
         photos: true,
         videos: true,
       },
-    });  
+    });
 
     res.status(httpOK).json({ treatments });
   } catch (error: any) {
@@ -91,12 +98,14 @@ export const createTreatment = async (
           create: photos.map((photo) => ({
             description: "",
             blob: photo.buffer,
+            mimeType: photo.mimetype,
           })),
         },
         videos: {
           create: videos.map((video) => ({
             description: "",
             blob: video.buffer,
+            mimeType: video.mimetype,
           })),
         },
       },
@@ -143,4 +152,29 @@ const getPhotos = (files: Express.Multer.File[]) => {
  */
 const getVideos = (files: Express.Multer.File[]) => {
   return files.filter((file) => file.mimetype.startsWith("video/"));
+};
+
+export const deleteTreatment = async (
+  req: Request<{ id: string }>,
+  res: Response
+) => {
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(httpBadRequest).json({
+      error: "Bitte eine Behandlungs-ID angeben",
+    });
+  }
+
+  try {
+    const deletedTreatment = await prisma.treatment.delete({
+      where: { id: Number(id) },
+    });
+
+    return res.status(httpOK).json({ deletedTreatment });
+  } catch (error: any) {
+    return res
+      .status(httpIntServerError)
+      .json({ error: "Fehler beim Löschen der Behandlung" });
+  }
 };
