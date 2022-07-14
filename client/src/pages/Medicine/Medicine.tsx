@@ -41,7 +41,6 @@ export const Medicine = () => {
               medicines={searchResults}
               heading="Suchergebnisse"
             />
-            <Text>{medicines.length}</Text>
             <Button variant="ghost" onClick={() => setSearchResults([])}>
               Suche zurücksetzen
             </Button>

@@ -13,6 +13,7 @@ import React, { useEffect, useState } from "react";
 
 import { useCustomToast } from "../../hooks/useCustomToast";
 import { useFetch } from "../../hooks/useFetch";
+import { IAnimals } from "../../interfaces/animalInterface";
 import { ISelectOptions } from "../../interfaces/selectInterface";
 import { SearchAnimalStep } from "./SearchAnimalStep";
 import { SearchCustomerStep } from "./SearchCustomerStep";
@@ -22,9 +23,10 @@ import { SearchSpeciesChooseStep } from "./SearchSpeciesChooseStep";
 interface IProps {
   isOpen: boolean;
   onClose: () => void;
+  setResults: (results: any) => void;
 }
 
-export const SearchAnimalModal = ({ isOpen, onClose }: IProps) => {
+export const SearchAnimalModal = ({ isOpen, onClose, setResults }: IProps) => {
   const { nextStep, prevStep, reset, activeStep } = useSteps({
     initialStep: 0,
   });
@@ -38,6 +40,12 @@ export const SearchAnimalModal = ({ isOpen, onClose }: IProps) => {
   const [customerId, setCustomerId] = useState<number | null>(null);
   const [speciesId, setSpeciesId] = useState<number | null>(null);
   const [raceId, setRaceId] = useState<number | null>(null);
+
+  const [animals, setAnimals] = useState<IAnimals[]>([]);
+
+  useEffect(() => {
+    setResults(animals);
+  }, [animals]);
 
   const handleAnimalNameChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -81,11 +89,12 @@ export const SearchAnimalModal = ({ isOpen, onClose }: IProps) => {
       raceId: raceId,
       speciesId: speciesId,
     };
-    const empty_query = Object.keys(parameters).length === 1 && parameters.name === "" ? false : true;
+    const empty_query = (Object.keys(parameters).length === 1 && parameters.name.length === 0) ? false : true;
 
-    let data = undefined;
     if (!empty_query) {
-      data = await get("/api/animal/");
+      const data = await get("/api/animal/");
+      console.log(data);
+      setAnimals(data.animal);
     }
     else {
       let query="";
@@ -108,10 +117,11 @@ export const SearchAnimalModal = ({ isOpen, onClose }: IProps) => {
         query += "speciesId=" + String(parameters.speciesId);
       }
       if (query.slice(-1)=="&") query = query.slice(0,-1);
-      data = await get("api/animal/data/?"+query);
+      const data = await get("api/animal/data/?"+query);
+      setAnimals(data.animal);
     }
 
-    if (error || !data) {
+    if (error || !animals) {
       return showErrorToast(
         "Fehler",
         error || "Fehler beim Suchen des Tieres"
@@ -119,7 +129,6 @@ export const SearchAnimalModal = ({ isOpen, onClose }: IProps) => {
     }
 
     showSuccessToast("Erfolgreich", "Tiere wurden erfolgreich gefunden");
-
     onClose();
   };
 
@@ -227,5 +236,5 @@ export const SearchAnimalModal = ({ isOpen, onClose }: IProps) => {
   );
 };
 function showSuccessToast(arg0: string, arg1: string) {
-  throw new Error("Function not implemented.");
+   console.log("Search was succesfull");
 }
