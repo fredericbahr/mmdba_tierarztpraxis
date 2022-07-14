@@ -210,3 +210,30 @@ export const handleAdvancedMedicineDescriptionSearch = async (
       .json({ error: "Fehler beim Suchen der Medikamente" });
   }
 };
+
+export const handleMedicineDelete = async (
+  req: Request<{ id: string }>,
+  res: Response
+) => {
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(httpBadRequest).json({
+      error: "Bitte eine Medikamenten-Id angeben",
+    });
+  }
+
+  try {
+    const deletedMedicine = await prisma.medicine.delete({
+      where: {
+        id: Number(id),
+      },
+    });
+
+    return res.status(httpOK).json({ deletedMedicine });
+  } catch (err) {
+    return res
+      .status(httpIntServerError)
+      .json({ error: "Fehler beim Löschen des Medikamentes" });
+  }
+};

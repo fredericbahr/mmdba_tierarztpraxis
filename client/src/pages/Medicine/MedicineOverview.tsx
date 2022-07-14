@@ -18,6 +18,7 @@ interface IProps {
   medicines: IMedicine[];
   heading?: string;
   showAmount?: number;
+  deleteMedicine: (id: number) => void;
 }
 
 export const MedicineOverview = ({
@@ -25,6 +26,7 @@ export const MedicineOverview = ({
   medicines,
   heading,
   showAmount = 6,
+  deleteMedicine,
 }: IProps) => {
   const [page, setPage] = useState(1);
 
@@ -54,15 +56,20 @@ export const MedicineOverview = ({
               )
               .map((medicine: IMedicine, index: number) => (
                 <GridItem key={index}>
-                  <MedicineCard medicine={medicine} />
+                  <MedicineCard
+                    medicine={medicine}
+                    deleteMedicine={deleteMedicine}
+                  />
                 </GridItem>
               ))}
           </Grid>
-          <Pagination
-            count={Math.ceil(medicines.length / showAmount)}
-            currentPage={page}
-            handleClick={handlePagination}
-          />
+          {medicines.length > 0 && (
+            <Pagination
+              count={Math.ceil(medicines.length / showAmount)}
+              currentPage={page}
+              handleClick={handlePagination}
+            />
+          )}
         </VStack>
       )}
     </>
