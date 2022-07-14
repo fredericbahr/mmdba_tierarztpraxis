@@ -31,6 +31,10 @@ export const Medicine = () => {
     setSearchResults(null);
   };
 
+  const handleMedicineDelete = (id: number) => {
+    setMedicines(medicines.filter((medicine: IMedicine) => medicine.id !== id));
+  };
+
   useEffect(() => {
     const fetchLatestMedicine = async () => {
       const { medicines } = await get("/api/medicines/latest/6");
@@ -71,6 +75,7 @@ export const Medicine = () => {
               isLoading={false}
               medicines={searchResults}
               heading="Suchergebnisse"
+              deleteMedicine={handleMedicineDelete}
             />
             <Button variant="ghost" onClick={() => setSearchResults([])}>
               Suche zurücksetzen
@@ -83,6 +88,7 @@ export const Medicine = () => {
               isLoading={isLoading}
               medicines={medicines}
               heading="Neusten Medikamente"
+              deleteMedicine={handleMedicineDelete}
             />
           </>
         )}

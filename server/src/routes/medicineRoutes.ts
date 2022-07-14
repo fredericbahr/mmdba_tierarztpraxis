@@ -5,6 +5,7 @@ import {
   getMedicines,
   handleAdvancedMedicineDescriptionSearch,
   handleAdvancedMedicineNameSearch,
+  handleMedicineDelete,
   handleMedicineNameSearch,
 } from "../controllers/medicineController";
 import multer, { StorageEngine } from "multer";
@@ -33,5 +34,7 @@ medicineRouter.post(
   "/medicine/search/advanced/description",
   handleAdvancedMedicineDescriptionSearch
 );
+
+medicineRouter.delete("/medicine/:id", handleMedicineDelete);
 
 export default medicineRouter;
