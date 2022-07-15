@@ -3,11 +3,18 @@ export interface IAnimals {
     name: string;
     birthdate: Date;
     weight: number;
-    customer: number;
+    owner: IOwner;
     species: string;
-    race: string;
+    race: IRace;
+  }
+
+  export interface IOwner {
+    name: string;
   }
   
+  export interface IRace {
+    name: string;
+  }
   export interface IAnimalAdvancedSearchKeyword {
     keyword: string;
     operator: ISearchOperator | undefined;
@@ -15,5 +22,5 @@ export interface IAnimals {
   
   export type ISearchOperator = "&" | "|" | "<->";
   
-  export type ISearchTarget = "name" | "birthdate" | "weight" | "customer" | "species" | "race";
+  export type ISearchTarget = "name" | "birthdate" | "weight" | "owner" | "species" | "race";
   

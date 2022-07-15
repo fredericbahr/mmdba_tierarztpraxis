@@ -6,7 +6,7 @@ import {
   httpIntServerError,
   httpOK,
 } from "../config/statusCode";
-import { ICreateAnimalRequest, ISearchAnimalRequest } from "../interfaces/animalInterface";
+import { IAnimalConstructionSet, ICreateAnimalRequest, ISearchAnimalRequest } from "../interfaces/animalInterface";
 
 const prisma = new PrismaClient();
 
@@ -15,7 +15,20 @@ export const getAnimals = async (
   res: Response
 ) => {
   try {
-    const animals = await prisma.animal.findMany();
+    const animals = await prisma.animal.findMany({
+      include: {
+        owner: {
+          select: {
+            name: true
+          }
+        },
+        race: {
+          select: {
+            name: true
+          }
+        },
+      }
+    });
     console.log("Trying to find all");
     console.log(animals);
     return res.status(httpOK).json({ animals });
@@ -40,9 +53,22 @@ export const getAnimalQuery = async (
           name: req.query.name != null && req.query.name != "" ? String(req.query.name) : undefined, 
           raceId: req.query.raceId != null ? Number(req.query.raceId) : undefined,
           weight: req.query.weight != null ? Number(req.query.weight) : undefined, 
-        }}
+        },
+      include: {
+        owner:  {
+          select: {
+            name: true
+          }
+        },
+        race:  {
+          select: {
+            name: true
+          }
+        },
+      }}
       );
       console.log(animal);
+
       return res.status(httpOK).json({ animal });
     }
     catch (error: any) {

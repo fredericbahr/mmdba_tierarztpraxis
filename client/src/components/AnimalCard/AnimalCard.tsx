@@ -6,6 +6,7 @@ import {
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
+import format from "date-fns/format";
 import { CaretDown, CaretUp } from "phosphor-react";
 import React, { useState } from "react";
 
@@ -35,10 +36,13 @@ export const AnimalCard = ({ animals }: IProps) => {
           >
             <VStack>
               <Text>Geburtstag</Text>
-              <Text fontSize="xs">{String(animals.birthdate)}</Text>
+              <Text fontSize="xs">{format(new Date(animals.birthdate), "dd.MM.yyyy")}</Text>
+            </VStack>
+            <VStack>
+              <Text>Spezies: {animals.race.name}</Text>
             </VStack>
             <VStack alignItems="start">
-              <Text>Beschreibung</Text>
+              <Text>Besitzer: {animals.owner.name}</Text>
             </VStack>
           </HStack>
         </VStack>
