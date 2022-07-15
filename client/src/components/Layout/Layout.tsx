@@ -1,4 +1,4 @@
-import { FirstAidKit, HourglassMedium, House, PawPrint, Pill, Users } from "phosphor-react";
+import { FirstAidKit, House, PawPrint, Pill, Users } from "phosphor-react";
 import React from "react";
 import { Outlet } from "react-router-dom";
 

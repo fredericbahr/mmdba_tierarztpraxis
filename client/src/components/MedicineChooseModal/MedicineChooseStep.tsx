@@ -1,8 +1,7 @@
-import { Flex, Grid, GridItem, VStack } from "@chakra-ui/react";
+import { Grid, GridItem, VStack } from "@chakra-ui/react";
 import React from "react";
 
 import { IMedicine } from "../../interfaces/medicineInterface";
-import { ISelectOptions } from "../../interfaces/selectInterface";
 import { MedicineCard } from "../MedicineCard/MedicineCard";
 import { Pagination } from "../Pagination/Pagination";
 

@@ -1,12 +1,4 @@
-import {
-  Box,
-  Drawer,
-  DrawerContent,
-  Icon,
-  IconButton,
-  useDisclosure,
-} from "@chakra-ui/react";
-import { List } from "phosphor-react";
+import { Box, Drawer, DrawerContent, useDisclosure } from "@chakra-ui/react";
 import React from "react";
 
 import { MobileNav } from "./MobileNav";

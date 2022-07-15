@@ -1,4 +1,4 @@
-import { Box, Flex, VStack } from "@chakra-ui/react";
+import { VStack } from "@chakra-ui/react";
 import React, { useState } from "react";
 
 import { Track } from "./Track";

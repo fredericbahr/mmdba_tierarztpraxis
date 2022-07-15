@@ -32,7 +32,7 @@ export const TreatmentTableRow = ({
   handleFindingClick,
   deleteTreatment,
 }: IProps) => {
-  const { isLoading, error, get, deleteFetch } = useFetch();
+  const { isLoading, error, deleteFetch } = useFetch();
   const { showErrorToast } = useCustomToast();
 
   const renderMedicines = (medicines: IMedicine[]) => {

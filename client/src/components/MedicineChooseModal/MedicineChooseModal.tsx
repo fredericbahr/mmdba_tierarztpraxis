@@ -7,17 +7,12 @@ import {
   ModalCloseButton,
   ModalContent,
   ModalFooter,
-  ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/react";
 import { Step, Steps, useSteps } from "chakra-ui-steps";
 import React, { useEffect, useState } from "react";
 
-import { useCustomToast } from "../../hooks/useCustomToast";
-import { useFetch } from "../../hooks/useFetch";
-import { IMedicineOption } from "../../interfaces/autocompleteOptionInterfaces";
 import { IMedicine } from "../../interfaces/medicineInterface";
-import { ISelectOptions } from "../../interfaces/selectInterface";
 import { IStep } from "../../interfaces/stepInterface";
 import { MedicineChooseStep } from "./MedicineChooseStep";
 import { MedicineSearchStep } from "./MedicineSearchStep";
