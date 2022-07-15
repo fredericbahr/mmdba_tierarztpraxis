@@ -66,7 +66,6 @@ export const MedicineChooseModal = ({
     <Modal isOpen={isOpen} onClose={handleReset} size="6xl" isCentered>
       <ModalOverlay />
       <ModalContent>
-        <ModalCloseButton />
         <ModalBody>
           <Flex flexDir="column" marginTop={4}>
             <Steps

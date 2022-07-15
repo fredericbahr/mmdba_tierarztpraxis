@@ -1,4 +1,4 @@
-import { Box, Grid, GridItem, Heading } from "@chakra-ui/react";
+import { Grid, GridItem, Heading, VStack } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 
 import { useCustomToast } from "../../hooks/useCustomToast";
@@ -6,6 +6,7 @@ import { useFetch } from "../../hooks/useFetch";
 import { ITreatment } from "../../interfaces/treatmentInterface";
 import { TreatmentCreate } from "./TreatmentCreate";
 import { TreatmentOverview } from "./TreatmentOverview";
+import { TreatmentSearch } from "./TreatmentSearch";
 
 export const Treatment = () => {
   const [treatments, setTreatments] = React.useState<ITreatment[]>([]);
@@ -49,7 +50,10 @@ export const Treatment = () => {
         />
       </GridItem>
       <GridItem>
-        <TreatmentCreate addTreatment={addTreatment} />
+        <VStack spacing={8} alignItems="start">
+          <TreatmentSearch />
+          <TreatmentCreate addTreatment={addTreatment} />
+        </VStack>
       </GridItem>
     </Grid>
   );
