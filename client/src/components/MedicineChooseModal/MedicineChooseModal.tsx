@@ -57,7 +57,7 @@ export const MedicineChooseModal = ({
   ];
 
   useEffect(() => {
-    if (activeStep === 0 && medicines.length > 1) {
+    if (activeStep === 0 && medicines.length > 0) {
       nextStep();
     }
   }, [medicines]);

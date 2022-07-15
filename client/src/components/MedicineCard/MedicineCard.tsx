@@ -23,10 +23,13 @@ import { PDFFullScreenModal } from "../PDFFullScreenModal/PDFFullScreenModal";
 
 interface IProps {
   medicine: IMedicine;
-  deleteMedicine: (id: number) => void;
+  deleteMedicine?: (id: number) => void;
 }
 
-export const MedicineCard = ({ medicine, deleteMedicine }: IProps) => {
+export const MedicineCard = ({
+  medicine,
+  deleteMedicine = undefined,
+}: IProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isLoading, error, deleteFetch } = useFetch();
   const { showErrorToast } = useCustomToast();
@@ -40,7 +43,9 @@ export const MedicineCard = ({ medicine, deleteMedicine }: IProps) => {
       return showErrorToast("Fehler", "Fehler beim Löschen des Medikaments");
     }
 
-    deleteMedicine(id);
+    if (deleteMedicine) {
+      deleteMedicine(id);
+    }
   };
 
   return (
@@ -51,14 +56,16 @@ export const MedicineCard = ({ medicine, deleteMedicine }: IProps) => {
             <Heading as="h4" size="md" width="full">
               {medicine.name}
             </Heading>
-            <IconButton
-              icon={<Icon as={TrashSimple} />}
-              aria-label="Löschen"
-              colorScheme="red"
-              variant="ghost"
-              isLoading={isLoading}
-              onClick={() => handleDelete(medicine.id)}
-            />
+            {deleteMedicine && (
+              <IconButton
+                icon={<Icon as={TrashSimple} />}
+                aria-label="Löschen"
+                colorScheme="red"
+                variant="ghost"
+                isLoading={isLoading}
+                onClick={() => handleDelete(medicine.id)}
+              />
+            )}
           </HStack>
           <HStack
             w="full"
