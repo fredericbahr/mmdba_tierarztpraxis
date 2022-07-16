@@ -1,5 +1,13 @@
 import {
+  Box,
   Button,
+  Divider,
+  HStack,
+  Icon,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -7,7 +15,11 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Stack,
+  Text,
+  VStack,
 } from "@chakra-ui/react";
+import { CaretDown, Plus } from "phosphor-react";
 import React from "react";
 import { useState } from "react";
 
@@ -23,14 +35,46 @@ interface IProps {
 export const TreatmentSearchModal = ({ isOpen, onClose }: IProps) => {
   const { isLoading, error, post } = useFetch();
 
-  const [searchQuery, setSearchQuery] = useState<ITreatmentSearchQuery[]>([]);
+  const [searchQuery, setSearchQuery] = useState<ITreatmentSearchQuery[]>([
+    {
+      queries: [
+        {
+          field: "",
+          condition: undefined,
+          value: "",
+        },
+      ],
+    },
+  ]);
 
   const handleQueryChange = (
     changedQuery: ITreatmentSearchQuery,
     idx: number
   ) => {
-    const filteredSearchQuery = searchQuery.filter((_, i) => i !== idx);
-    setSearchQuery([...filteredSearchQuery, changedQuery]);
+    const mappedQuery = searchQuery.map((query, i) => {
+      if (i === idx) {
+        return changedQuery;
+      }
+      return query;
+    });
+
+    setSearchQuery(mappedQuery);
+  };
+
+  const handleQueryAdd = () => {
+    setSearchQuery([
+      ...searchQuery,
+      {
+        queries: [
+          {
+            field: "",
+            condition: undefined,
+            value: "",
+          },
+        ],
+        connector: "AND",
+      },
+    ]);
   };
 
   const handleSearch = () => {};
@@ -42,15 +86,25 @@ export const TreatmentSearchModal = ({ isOpen, onClose }: IProps) => {
         <ModalHeader>Behandlung suchen</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <>
+          <Stack>
             {searchQuery.map((query, idx) => (
               <TreatmentSearchGroupedQuery
-                groupedQuery={query}
                 key={idx}
+                groupedQuery={query}
+                showConnector={idx !== 0}
                 onQueryChange={(newQuery) => handleQueryChange(newQuery, idx)}
               />
             ))}
-          </>
+            <HStack>
+              <Divider />
+              <Box>
+                <Button leftIcon={<Icon as={Plus} />} onClick={handleQueryAdd}>
+                  Hinzufügen
+                </Button>
+              </Box>
+              <Divider />
+            </HStack>
+          </Stack>
         </ModalBody>
 
         <ModalFooter>

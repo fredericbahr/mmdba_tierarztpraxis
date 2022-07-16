@@ -1,7 +1,10 @@
 import {
+  Box,
   Button,
   FormControl,
   FormLabel,
+  Grid,
+  GridItem,
   HStack,
   Icon,
   Input,
@@ -9,10 +12,11 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Text,
 } from "@chakra-ui/react";
 import { CaretDown } from "phosphor-react";
 import React from "react";
-import Select from "react-select";
+import Select, { components } from "react-select";
 
 import { ISelectOptions } from "../../../interfaces/selectInterface";
 import {
@@ -24,21 +28,39 @@ import {
 interface IProps {
   query: ITreatmentSingleQuery;
   fieldOptions: ISelectOptions<string>[];
+  displayInnerConnector: boolean;
   onQueryChange: (newQuery: ITreatmentSingleQuery) => void;
 }
+
+const { Option } = components;
+const IconOption = (props: any) => (
+  <Option {...props}>
+    <Grid templateColumns="auto 1fr">
+      <Text marginRight={6} minWidth="20px">
+        {props.data.icon}
+      </Text>
+      <Text>{props.data.label}</Text>
+    </Grid>
+  </Option>
+);
 
 export const TreatmentSearchSingleQuery = ({
   query,
   fieldOptions,
+  displayInnerConnector,
   onQueryChange,
 }: IProps) => {
   const conditionOptions: ISelectOptions<ITreatmentSearchCondition>[] = [
-    { value: "IS", label: "ist gleich" },
-    { value: "IS_NOT", label: "ist nicht gleich" },
-    { value: "IS_GREATER_THAN", label: "ist größer als" },
-    { value: "IS_LESS_THAN", label: "ist kleiner als" },
-    { value: "IS_GREATER_THAN_OR_EQUAL", label: "ist größer gleich" },
-    { value: "IS_LESS_THAN_OR_EQUAL", label: "ist kleiner gleich" },
+    { value: "IS", label: "ist gleich", icon: "=" },
+    { value: "IS_NOT", label: "ist nicht gleich", icon: "!=" },
+    { value: "IS_GREATER_THAN", label: "ist größer als", icon: ">" },
+    { value: "IS_LESS_THAN", label: "ist kleiner als", icon: "<" },
+    {
+      value: "IS_GREATER_THAN_OR_EQUAL",
+      label: "ist größer gleich",
+      icon: ">=",
+    },
+    { value: "IS_LESS_THAN_OR_EQUAL", label: "ist kleiner gleich", icon: "<=" },
   ];
 
   const connectorOptions: ISelectOptions<ITreatmentSearchInnerConnector>[] = [
@@ -57,9 +79,7 @@ export const TreatmentSearchSingleQuery = ({
   const handleConditionChange = (
     selected: ISelectOptions<ITreatmentSearchCondition> | null
   ) => {
-    if (selected) {
-      onQueryChange({ ...query, condition: selected.value });
-    }
+    onQueryChange({ ...query, condition: selected?.value || undefined });
   };
 
   const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,53 +93,75 @@ export const TreatmentSearchSingleQuery = ({
   };
 
   return (
-    <HStack>
-      <Menu>
-        {query.connector && (
-          <MenuButton as={Button} rightIcon={<Icon as={CaretDown} />}>
-            {query.connector}
-          </MenuButton>
-        )}
-        <MenuList>
-          {connectorOptions.map((option, idx) => (
-            <MenuItem
-              key={idx}
-              onClick={() => handleConnectorChange(option.value)}
+    <Grid templateColumns="repeat(7, 1fr)" w="full" gap={4}>
+      <GridItem>
+        <Menu>
+          {displayInnerConnector && (
+            <MenuButton
+              as={Button}
+              rightIcon={<Icon as={CaretDown} />}
+              w="full"
+              fontSize="sm"
             >
-              {option.label}
-            </MenuItem>
-          ))}
-        </MenuList>
-      </Menu>
-
-      <FormControl w="sm">
-        <FormLabel>Spalte</FormLabel>
-        <Select
-          isClearable
-          isSearchable
-          options={fieldOptions}
-          value={fieldOptions.find((option) => option.value === query.field)}
-          onChange={handleFieldChange}
-          placeholder="Spalte auswählen..."
-        />
-      </FormControl>
-      <FormControl w="sm">
-        <FormLabel>Bedingung</FormLabel>
-        <Select
-          isClearable
-          isSearchable
-          options={conditionOptions}
-          value={conditionOptions.find(
-            (option) => option.value === query.condition
+              {connectorOptions
+                .find((option) => option.value === query.connector)
+                ?.label.toUpperCase()}
+            </MenuButton>
           )}
-          onChange={handleConditionChange}
-          placeholder="Bedingung auswählen..."
-        />
-      </FormControl>
-      <FormControl>
-        <FormLabel>Kriterium</FormLabel>
-        <Input type="text" onChange={handleValueChange} value={query.value} />
-      </FormControl>
-    </HStack>
+          {!displayInnerConnector && <Box></Box>}
+          <MenuList>
+            {connectorOptions.map((option, idx) => (
+              <MenuItem
+                key={idx}
+                onClick={() => handleConnectorChange(option.value)}
+              >
+                {option.label}
+              </MenuItem>
+            ))}
+          </MenuList>
+        </Menu>
+      </GridItem>
+
+      <GridItem colSpan={2}>
+        <FormControl>
+          <Select
+            isClearable
+            isSearchable
+            options={fieldOptions}
+            value={fieldOptions.find((option) => option.value === query.field)}
+            onChange={handleFieldChange}
+            placeholder="Spalte auswählen..."
+          />
+        </FormControl>
+      </GridItem>
+
+      <GridItem colSpan={2}>
+        <FormControl>
+          <Select
+            isClearable
+            isSearchable
+            options={conditionOptions}
+            value={conditionOptions.find(
+              (option) => option.value === query.condition
+            )}
+            onChange={handleConditionChange}
+            placeholder="Bedingung auswählen..."
+            components={{ Option: IconOption }}
+          />
+        </FormControl>
+      </GridItem>
+
+      <GridItem colSpan={2}>
+        <FormControl>
+          <Input
+            type="text"
+            onChange={handleValueChange}
+            value={query.value}
+            placeholder="Wert eingeben"
+            backgroundColor="white"
+          />
+        </FormControl>
+      </GridItem>
+    </Grid>
   );
 };

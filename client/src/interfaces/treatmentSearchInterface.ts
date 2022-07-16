@@ -6,7 +6,7 @@ export interface ITreatmentSearchQuery {
 export interface ITreatmentSingleQuery {
   field: string;
   value: string;
-  condition: ITreatmentSearchCondition;
+  condition: ITreatmentSearchCondition | undefined;
   connector?: ITreatmentSearchInnerConnector;
 }
 
