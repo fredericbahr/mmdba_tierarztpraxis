@@ -1,5 +1,5 @@
 import { Grid, GridItem, Heading, VStack } from "@chakra-ui/react";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useCustomToast } from "../../hooks/useCustomToast";
 import { useFetch } from "../../hooks/useFetch";
@@ -9,7 +9,8 @@ import { TreatmentOverview } from "./TreatmentOverview";
 import { TreatmentSearch } from "./TreatmentSearch";
 
 export const Treatment = () => {
-  const [treatments, setTreatments] = React.useState<ITreatment[]>([]);
+  const [treatments, setTreatments] = useState<ITreatment[]>([]);
+  const [searchResults, setSearchResults] = useState<ITreatment[] | null>(null);
 
   const { isLoading, error, get } = useFetch();
 
@@ -21,6 +22,10 @@ export const Treatment = () => {
 
   const deleteTreatment = (id: number) => {
     setTreatments(treatments.filter((treatment) => treatment.id !== id));
+  };
+
+  const handleSearchResults = (searchResults: ITreatment[] | null) => {
+    setSearchResults(searchResults);
   };
 
   useEffect(() => {
@@ -51,7 +56,7 @@ export const Treatment = () => {
       </GridItem>
       <GridItem>
         <VStack spacing={8} alignItems="start">
-          <TreatmentSearch />
+          <TreatmentSearch setSearchResults={handleSearchResults} />
           <TreatmentCreate addTreatment={addTreatment} />
         </VStack>
       </GridItem>

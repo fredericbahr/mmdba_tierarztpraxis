@@ -31,19 +31,21 @@ interface IProbs {
   groupedQuery: ITreatmentSearchQuery;
   showConnector: boolean;
   onQueryChange: (changedQuery: ITreatmentSearchQuery) => void;
+  onQueryRemove: () => void;
 }
 
 export const TreatmentSearchGroupedQuery = ({
   groupedQuery,
   showConnector,
   onQueryChange,
+  onQueryRemove,
 }: IProbs) => {
   const connectorOptions: ISelectOptions<ITreatmentSearchOuterConnector>[] = [
     { value: "AND", label: "und" },
     { value: "OR", label: "oder" },
   ];
 
-  const handleQueryChange = (
+  const handleSingleQueryChange = (
     changedQuery: ITreatmentSingleQuery,
     idx: number
   ) => {
@@ -57,22 +59,22 @@ export const TreatmentSearchGroupedQuery = ({
     onQueryChange({ ...groupedQuery, queries: mappedQueries });
   };
 
-  const handleQueryAdd = () => {
+  const handleSingleQueryAdd = () => {
     onQueryChange({
       ...groupedQuery,
       queries: [
         ...groupedQuery.queries,
-        { field: "", condition: undefined, value: "", connector: "AND" },
+        { field: undefined, condition: undefined, value: "", connector: "AND" },
       ],
     });
   };
 
-  const handleQueryRemove = (idx: number) => {
+  const handleSingleQueryRemove = (idx: number) => {
     const mappedQueries = groupedQuery.queries.filter((_, i) => i !== idx);
     onQueryChange({ ...groupedQuery, queries: mappedQueries });
   };
 
-  const handleConnectorChange = (
+  const handleGroupedConnectorChange = (
     changedConnector: ITreatmentSearchOuterConnector
   ) => {
     onQueryChange({ ...groupedQuery, connector: changedConnector });
@@ -99,7 +101,7 @@ export const TreatmentSearchGroupedQuery = ({
                 {connectorOptions.map((option, idx) => (
                   <MenuItem
                     key={idx}
-                    onClick={() => handleConnectorChange(option.value)}
+                    onClick={() => handleGroupedConnectorChange(option.value)}
                   >
                     {option.label}
                   </MenuItem>
@@ -110,57 +112,75 @@ export const TreatmentSearchGroupedQuery = ({
           <Divider />
         </HStack>
       )}
-      <VStack
-        backgroundColor="gray.100"
-        w="full"
-        borderRadius={2}
-        padding={4}
-        spacing={4}
-      >
-        {groupedQuery.queries.map((query, index) => (
-          <Grid key={index} w="full" templateColumns="1fr auto" gap={4}>
-            <GridItem>
-              <TreatmentSearchSingleQuery
-                query={query}
-                displayInnerConnector={index !== 0}
-                fieldOptions={[]}
-                onQueryChange={(newQuery) => handleQueryChange(newQuery, index)}
-              />
-            </GridItem>
-            <GridItem>
-              {index !== 0 && (
-                <Tooltip label="Filter löschen" hasArrow>
-                  <IconButton
-                    icon={<Icon as={TrashSimple} />}
-                    aria-label="Löschen"
-                    onClick={() => handleQueryRemove(index)}
-                    colorScheme="red"
-                    variant="ghost"
-                  />
-                </Tooltip>
-              )}
-              {index === 0 && (
-                <Tooltip label="Filter löschen" hasArrow>
-                  <IconButton
-                    icon={<Icon as={TrashSimple} />}
-                    aria-label="Löschen"
-                    onClick={() => handleQueryRemove(index)}
-                    visibility="hidden"
-                  />
-                </Tooltip>
-              )}
-            </GridItem>
-          </Grid>
-        ))}
-        <Button
-          leftIcon={<Icon as={Plus} />}
-          onClick={handleQueryAdd}
-          aria-label="Add filter"
-          variant="ghost"
+      <HStack>
+        <VStack
+          backgroundColor="gray.100"
+          w="full"
+          borderRadius={2}
+          padding={4}
+          spacing={4}
         >
-          Filter hinzufügen
-        </Button>
-      </VStack>
+          {groupedQuery.queries.map((query, index) => (
+            <Grid
+              key={index}
+              w="full"
+              templateColumns="1fr auto"
+              gap={4}
+              flex={1}
+            >
+              <GridItem>
+                <TreatmentSearchSingleQuery
+                  query={query}
+                  displayInnerConnector={index !== 0}
+                  fieldOptions={[]}
+                  onQueryChange={(newQuery) =>
+                    handleSingleQueryChange(newQuery, index)
+                  }
+                />
+              </GridItem>
+              <GridItem>
+                {index !== 0 && (
+                  <Tooltip label="Filter löschen" hasArrow>
+                    <IconButton
+                      icon={<Icon as={TrashSimple} />}
+                      aria-label="Löschen"
+                      onClick={() => handleSingleQueryRemove(index)}
+                      colorScheme="red"
+                      variant="ghost"
+                    />
+                  </Tooltip>
+                )}
+                {index === 0 && (
+                  <Tooltip label="Filter löschen" hasArrow>
+                    <IconButton
+                      icon={<Icon as={TrashSimple} />}
+                      aria-label="Löschen"
+                      onClick={() => handleSingleQueryRemove(index)}
+                      visibility="hidden"
+                    />
+                  </Tooltip>
+                )}
+              </GridItem>
+            </Grid>
+          ))}
+          <Button
+            leftIcon={<Icon as={Plus} />}
+            onClick={handleSingleQueryAdd}
+            aria-label="Add filter"
+            variant="ghost"
+          >
+            Filter hinzufügen
+          </Button>
+        </VStack>
+        <Tooltip label="Gruppierte Query löschen" hasArrow>
+          <IconButton
+            icon={<Icon as={TrashSimple} />}
+            aria-label="Löschen"
+            colorScheme="red"
+            onClick={onQueryRemove}
+          />
+        </Tooltip>
+      </HStack>
     </Stack>
   );
 };

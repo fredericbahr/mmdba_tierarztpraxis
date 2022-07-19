@@ -21,6 +21,7 @@ import Select, { components } from "react-select";
 import { ISelectOptions } from "../../../interfaces/selectInterface";
 import {
   ITreatmentSearchCondition,
+  ITreatmentSearchField,
   ITreatmentSearchInnerConnector,
   ITreatmentSingleQuery,
 } from "../../../interfaces/treatmentSearchInterface";
@@ -46,10 +47,18 @@ const IconOption = (props: any) => (
 
 export const TreatmentSearchSingleQuery = ({
   query,
-  fieldOptions,
   displayInnerConnector,
   onQueryChange,
 }: IProps) => {
+  const fieldOptions: ISelectOptions<ITreatmentSearchField>[] = [
+    { value: "date", label: "Datum" },
+    { value: "diagnosis", label: "Diagnose" },
+    { value: "notes", label: "Notizen" },
+    { value: "costs", label: "Kosten" },
+    { value: "customer", label: "Kunde" },
+    { value: "animal", label: "Tier" },
+  ];
+
   const conditionOptions: ISelectOptions<ITreatmentSearchCondition>[] = [
     { value: "IS", label: "ist gleich", icon: "=" },
     { value: "IS_NOT", label: "ist nicht gleich", icon: "!=" },
@@ -61,6 +70,7 @@ export const TreatmentSearchSingleQuery = ({
       icon: ">=",
     },
     { value: "IS_LESS_THAN_OR_EQUAL", label: "ist kleiner gleich", icon: "<=" },
+    { value: "CONTAINS", label: "enthält", icon: <>&sub;</> },
   ];
 
   const connectorOptions: ISelectOptions<ITreatmentSearchInnerConnector>[] = [
@@ -70,9 +80,11 @@ export const TreatmentSearchSingleQuery = ({
     { value: "OR NOT", label: "oder nicht" },
   ];
 
-  const handleFieldChange = (selected: ISelectOptions<string> | null) => {
+  const handleFieldChange = (
+    selected: ISelectOptions<ITreatmentSearchField> | null
+  ) => {
     if (selected) {
-      onQueryChange({ ...query, field: selected.value });
+      onQueryChange({ ...query, field: selected.value || undefined });
     }
   };
 

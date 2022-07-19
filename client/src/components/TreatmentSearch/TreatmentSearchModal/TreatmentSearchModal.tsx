@@ -4,10 +4,6 @@ import {
   Divider,
   HStack,
   Icon,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -16,30 +12,36 @@ import {
   ModalHeader,
   ModalOverlay,
   Stack,
-  Text,
-  VStack,
 } from "@chakra-ui/react";
-import { CaretDown, Plus } from "phosphor-react";
+import { Plus } from "phosphor-react";
 import React from "react";
 import { useState } from "react";
 
+import { useCustomToast } from "../../../hooks/useCustomToast";
 import { useFetch } from "../../../hooks/useFetch";
+import { ITreatment } from "../../../interfaces/treatmentInterface";
 import { ITreatmentSearchQuery } from "../../../interfaces/treatmentSearchInterface";
 import { TreatmentSearchGroupedQuery } from "../TreatmentSearchGroupedQuery/TreatmentSearchGroupedQuery";
 
 interface IProps {
   isOpen: boolean;
   onClose: () => void;
+  setSearchResults: (searchResults: ITreatment[] | null) => void;
 }
 
-export const TreatmentSearchModal = ({ isOpen, onClose }: IProps) => {
+export const TreatmentSearchModal = ({
+  isOpen,
+  onClose,
+  setSearchResults,
+}: IProps) => {
   const { isLoading, error, post } = useFetch();
+  const { showErrorToast } = useCustomToast();
 
   const [searchQuery, setSearchQuery] = useState<ITreatmentSearchQuery[]>([
     {
       queries: [
         {
-          field: "",
+          field: undefined,
           condition: undefined,
           value: "",
         },
@@ -67,7 +69,7 @@ export const TreatmentSearchModal = ({ isOpen, onClose }: IProps) => {
       {
         queries: [
           {
-            field: "",
+            field: undefined,
             condition: undefined,
             value: "",
           },
@@ -77,7 +79,23 @@ export const TreatmentSearchModal = ({ isOpen, onClose }: IProps) => {
     ]);
   };
 
-  const handleSearch = () => {};
+  const handleQueryRemove = (idx: number) => {
+    const mappedQuery = searchQuery.filter((query, i) => i !== idx);
+    setSearchQuery(mappedQuery);
+  };
+
+  const handleSearch = async () => {
+    const { searchResults } = await post("/api/treatment/search", {
+      searchQuery,
+    });
+
+    if (!searchResults || error) {
+      setSearchResults(null);
+      return showErrorToast("Fehler", "Fehler beim Suchen");
+    }
+
+    setSearchResults(searchResults);
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="6xl" isCentered>
@@ -93,6 +111,7 @@ export const TreatmentSearchModal = ({ isOpen, onClose }: IProps) => {
                 groupedQuery={query}
                 showConnector={idx !== 0}
                 onQueryChange={(newQuery) => handleQueryChange(newQuery, idx)}
+                onQueryRemove={() => handleQueryRemove(idx)}
               />
             ))}
             <HStack>
