@@ -85,16 +85,19 @@ export const TreatmentSearchModal = ({
   };
 
   const handleSearch = async () => {
-    const { searchResults } = await post("/api/treatment/search", {
+    const { treatments: searchResults } = await post("/api/treatment/search", {
       searchQuery,
     });
 
-    if (!searchResults || error) {
+    console.log("searchResults", searchResults, error);
+
+    if (!searchResults && error) {
       setSearchResults(null);
       return showErrorToast("Fehler", "Fehler beim Suchen");
     }
 
     setSearchResults(searchResults);
+    onClose();
   };
 
   return (

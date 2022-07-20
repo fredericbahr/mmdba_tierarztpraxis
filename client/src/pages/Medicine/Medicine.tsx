@@ -77,7 +77,7 @@ export const Medicine = () => {
               heading="Suchergebnisse"
               deleteMedicine={handleMedicineDelete}
             />
-            <Button variant="ghost" onClick={() => setSearchResults([])}>
+            <Button variant="ghost" onClick={() => handleSearchReset()}>
               Suche zurücksetzen
             </Button>
           </VStack>

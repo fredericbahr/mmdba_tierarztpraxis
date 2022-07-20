@@ -76,8 +76,7 @@ export const TreatmentSearchSingleQuery = ({
   const connectorOptions: ISelectOptions<ITreatmentSearchInnerConnector>[] = [
     { value: "AND", label: "und" },
     { value: "OR", label: "oder" },
-    { value: "AND NOT", label: "und nicht" },
-    { value: "OR NOT", label: "oder nicht" },
+    { value: "AND_NOT", label: "und nicht" },
   ];
 
   const handleFieldChange = (

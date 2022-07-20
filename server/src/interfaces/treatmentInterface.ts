@@ -29,8 +29,4 @@ export type ITreatmentSearchCondition =
 
 export type ITreatmentSearchOuterConnector = "AND" | "OR";
 
-export type ITreatmentSearchInnerConnector =
-  | "AND"
-  | "OR"
-  | "AND NOT"
-  | "OR NOT";
+export type ITreatmentSearchInnerConnector = "AND" | "OR" | "AND_NOT";
