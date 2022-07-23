@@ -6,7 +6,7 @@ import {
   httpIntServerError,
   httpOK,
 } from "../config/statusCode";
-import { IAnimalConstructionSet, ICreateAnimalRequest, ISearchAnimalRequest } from "../interfaces/animalInterface";
+import { IAnimalConstructionSet, IAnimalDeleteRequest, ICreateAnimalRequest, ISearchAnimalRequest } from "../interfaces/animalInterface";
 
 const prisma = new PrismaClient();
 
@@ -112,11 +112,6 @@ export const createAnimal = async (
 ) => {
   const { name, birthdate, weight, customerId, raceId } = req.body;
 
-  if (!name || !birthdate || !weight || !customerId || !raceId) {
-    return res.status(httpBadRequest).json({
-      error: "Nicht alle Felder ausgefüllt",
-    });
-  }
 
   try {
     const animal = await prisma.animal.create({
@@ -145,3 +140,21 @@ export const createAnimal = async (
   }
 };
 
+export const deleteAnimal = async (req: Request<never, never, IAnimalDeleteRequest>,
+  res: Response) => {
+    try {
+      console.log(req.params);
+      const {id} = req.params;
+      const deleteAnimal = await prisma.animal.delete({
+        where: {
+          id: Number(id),
+        }
+      });
+      return res.status(httpOK).json({ deleteAnimal });
+    }
+    catch (error: any) {
+      return res.status(httpIntServerError).json({
+        error: "Fehler beim Löschen des Tieres",
+      });
+    }
+  };

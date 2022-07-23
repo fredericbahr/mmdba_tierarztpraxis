@@ -24,6 +24,10 @@ export interface IAnimalConstructionSet {
     race: IRace;
 }
 
+export interface IAnimalDeleteRequest {
+    id: number;
+}
+
 export interface IOwner {
     name: string;
 }

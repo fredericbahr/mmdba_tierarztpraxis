@@ -17,6 +17,7 @@ import {
     animals: IAnimals[];
     heading?: string;
     showAmount?: number;
+    setResults: (results: any) => void;
   }
   
   export const AnimalOverview = ({
@@ -24,6 +25,7 @@ import {
     animals,
     heading,
     showAmount = 6,
+    setResults,
   }: IProps) => {
     const [page, setPage] = useState(1);
   
@@ -53,7 +55,7 @@ import {
                 )
                 .map((animal: IAnimals, index: number) => (
                   <GridItem key={index}>
-                    <AnimalCard animals={animal} />
+                    <AnimalCard animal={animal} allAnimals={animals} setResults={setResults}/>
                   </GridItem>
                 ))}
             </Grid>

@@ -32,6 +32,7 @@ export const Animal = () => {
                   isLoading={false}
                   animals={searchResults}
                   heading="Suchergebnisse"
+                  setResults={setSearchResults}
           />
           <Button variant="ghost" onClick={() => setSearchResults([])}>
                   Suche zurücksetzen
