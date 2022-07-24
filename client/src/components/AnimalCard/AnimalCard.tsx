@@ -33,6 +33,9 @@ export const AnimalCard = ({ animal, allAnimals, setResults }: IProps) => {
 
   const handleDeleteRequest = async () => {
     const result = await deleteFetch("/api/animal/delete/" + animal.id);
+    console.log(result);
+    const newAnimals = allAnimals.filter(animal => animal.id != result.deleteAnimal.id);
+    setResults(newAnimals);
     onClose();
   };
 

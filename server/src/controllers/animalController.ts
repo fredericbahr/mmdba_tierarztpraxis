@@ -143,7 +143,6 @@ export const createAnimal = async (
 export const deleteAnimal = async (req: Request<never, never, IAnimalDeleteRequest>,
   res: Response) => {
     try {
-      console.log(req.params);
       const {id} = req.params;
       const deleteAnimal = await prisma.animal.delete({
         where: {
