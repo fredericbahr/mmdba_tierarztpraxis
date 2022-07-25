@@ -8,6 +8,8 @@ import {
 } from "../config/statusCode";
 import { ITreatmentSearchQuery } from "../interfaces/treatmentInterface";
 import { generateTreatmentSearchQuery } from "../services/treatmentSearchService";
+import compareImages from "resemblejs/compareImages";
+import { ComparisonOptions } from "resemblejs";
 
 const prisma = new PrismaClient({
   log: [{ level: "query", emit: "event" }],
@@ -169,7 +171,7 @@ const getVideos = (files: Express.Multer.File[]) => {
  * @param req Request object
  * @param res Response object
  */
-export const handleTreatmentSearch = async (
+export const handleTreatmentFilterSearch = async (
   req: Request<never, never, { searchQuery: ITreatmentSearchQuery[] }>,
   res: Response
 ) => {
@@ -209,6 +211,74 @@ export const handleTreatmentSearch = async (
     return res
       .status(httpIntServerError)
       .json({ error: "Fehler beim Abrufen der Behandlungen" });
+  }
+};
+
+export const handleTreatmentImageSearch = async (
+  req: Request,
+  res: Response
+) => {
+  const inputFile = req.file;
+  const matchPercentage = Number(req.body.matchPercentage || 90);
+  const requestedMissMatchPercentage = 100 - matchPercentage;
+
+  if (!inputFile) {
+    return res.status(httpBadRequest).json({
+      error: "Bitte laden Sie eine Datei hoch",
+    });
+  }
+
+  try {
+    const matchingTreatments: Treatment[] = [];
+
+    const treatmentPhotos = await prisma.treatment.findMany({
+      include: {
+        animal: {
+          include: {
+            race: {
+              include: {
+                species: true,
+              },
+            },
+          },
+        },
+        customer: true,
+        medicines: true,
+        findings: true,
+        photos: true,
+        videos: true,
+      },
+    });
+
+    const compareOptions: ComparisonOptions = {
+      output: {},
+      scaleToSameSize: true,
+      ignore: "antialiasing",
+    };
+
+    await Promise.all(
+      treatmentPhotos.map(async (treatment) => {
+        await treatment.photos.map(async (photo) => {
+          const { misMatchPercentage } = await compareImages(
+            inputFile.buffer,
+            photo.blob,
+            compareOptions
+          );
+
+          if (misMatchPercentage <= requestedMissMatchPercentage) {
+            matchingTreatments.push(treatment);
+            return;
+          }
+        });
+      })
+    );
+
+    return res.status(httpOK).json({ treatments: matchingTreatments });
+  } catch (error: any) {
+    console.log(error);
+    return res
+      .status(httpIntServerError)
+      .json({ error: "Fehler bei der Bildsuche von Behandlungen" });
   }
 };
 

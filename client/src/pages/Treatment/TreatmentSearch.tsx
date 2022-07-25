@@ -1,19 +1,26 @@
 import { Button, useDisclosure } from "@chakra-ui/react";
-import React, { forwardRef, useEffect } from "react";
+import React, { forwardRef, useImperativeHandle } from "react";
 
 import TreatmentSearchModal from "../../components/TreatmentSearch/TreatmentSearchModal/TreatmentSearchModal";
 import { ITreatment } from "../../interfaces/treatmentInterface";
+import { ITreatmentSearchRef, ITreatmentSearchType } from "./Treatment";
 
 interface IProps {
+  searchType: ITreatmentSearchType;
+  setTreatmentSearchType: (treatmentSearchType: ITreatmentSearchType) => void;
   setSearchResults: (searchResults: ITreatment[] | null) => void;
 }
 
-const TreatmentSearch = ({ setSearchResults }: IProps, ref?: any) => {
+const TreatmentSearch = (
+  { searchType, setTreatmentSearchType, setSearchResults }: IProps,
+  ref?: React.Ref<ITreatmentSearchRef>
+) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  useEffect(() => {
-    ref.current = { ...ref.current, onOpen };
-  });
+  useImperativeHandle(ref, () => ({
+    ...(ref as React.RefObject<ITreatmentSearchRef>).current,
+    onOpen,
+  }));
 
   return (
     <>
@@ -21,7 +28,9 @@ const TreatmentSearch = ({ setSearchResults }: IProps, ref?: any) => {
       <TreatmentSearchModal
         ref={ref}
         isOpen={isOpen}
+        searchType={searchType}
         onClose={onClose}
+        setTreatmentSearchType={setTreatmentSearchType}
         setSearchResults={setSearchResults}
       />
     </>

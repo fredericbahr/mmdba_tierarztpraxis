@@ -4,9 +4,10 @@ import React, { useRef, useState } from "react";
 
 interface IProps {
   handleNewFiles: (files: File[]) => void;
+  multiple?: boolean;
 }
 
-export const FileUpload = ({ handleNewFiles }: IProps) => {
+export const FileUpload = ({ handleNewFiles, multiple = true }: IProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [dragActive, setDragActive] = useState(false);
@@ -79,7 +80,7 @@ export const FileUpload = ({ handleNewFiles }: IProps) => {
             ref={inputRef}
             onChange={handleFileChange}
             type="file"
-            multiple
+            multiple={multiple}
             accept="image/jpeg,image/gif,image/png,image/svg+xml,video/mp4,video/x-m4v,application/pdf"
           />
         </>

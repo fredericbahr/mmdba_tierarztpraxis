@@ -2,10 +2,8 @@ import {
   Box,
   Button,
   FormControl,
-  FormLabel,
   Grid,
   GridItem,
-  HStack,
   Icon,
   Input,
   Menu,
@@ -18,13 +16,13 @@ import { CaretDown } from "phosphor-react";
 import React from "react";
 import Select, { components } from "react-select";
 
-import { ISelectOptions } from "../../../interfaces/selectInterface";
+import { ISelectOptions } from "../../../../interfaces/selectInterface";
 import {
   ITreatmentSearchCondition,
   ITreatmentSearchField,
   ITreatmentSearchInnerConnector,
   ITreatmentSingleQuery,
-} from "../../../interfaces/treatmentSearchInterface";
+} from "../../../../interfaces/treatmentSearchInterface";
 
 interface IProps {
   query: ITreatmentSingleQuery;
@@ -82,9 +80,7 @@ export const TreatmentSearchSingleQuery = ({
   const handleFieldChange = (
     selected: ISelectOptions<ITreatmentSearchField> | null
   ) => {
-    if (selected) {
-      onQueryChange({ ...query, field: selected.value || undefined });
-    }
+    onQueryChange({ ...query, field: selected?.value || undefined });
   };
 
   const handleConditionChange = (

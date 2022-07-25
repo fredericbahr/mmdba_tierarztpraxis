@@ -5,7 +5,8 @@ import {
   deleteTreatment,
   getLatestTreatments,
   getTreatments,
-  handleTreatmentSearch,
+  handleTreatmentFilterSearch,
+  handleTreatmentImageSearch,
 } from "../controllers/treatmentController";
 
 const treatmentRouter = express.Router();
@@ -23,9 +24,14 @@ treatmentRouter.post(
   createTreatment
 );
 
-treatmentRouter.post("/treatment/search", handleTreatmentSearch);
+treatmentRouter.post("/treatment/search", handleTreatmentFilterSearch);
+
+treatmentRouter.post(
+  "/treatment/search/image",
+  formData.single("treatment-image"),
+  handleTreatmentImageSearch
+);
 
 treatmentRouter.delete("/treatment/:id", deleteTreatment);
 
 export default treatmentRouter;
-

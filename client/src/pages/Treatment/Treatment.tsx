@@ -17,14 +17,24 @@ import { TreatmentCreate } from "./TreatmentCreate";
 import { TreatmentOverview } from "./TreatmentOverview";
 import TreatmentSearch from "./TreatmentSearch";
 
+export interface ITreatmentSearchRef {
+  handleSearch?: () => void;
+  resetSearch?: () => void;
+  handleQueryConnectorToOr?: () => void;
+  onOpen?: () => void;
+}
+
+export type ITreatmentSearchType = "filter" | "image";
+
 export const Treatment = () => {
   const [treatments, setTreatments] = useState<ITreatment[]>([]);
   const [searchResults, setSearchResults] = useState<ITreatment[] | null>(null);
+  const [searchType, setSearchType] = useState<ITreatmentSearchType>("filter");
 
   const { isLoading, error, get } = useFetch();
 
   const { showErrorToast } = useCustomToast();
-  const searchRef = useRef<any>();
+  const searchRef = useRef<ITreatmentSearchRef>();
 
   const addTreatment = (treatment: ITreatment) => {
     setTreatments([...treatments, treatment]);
@@ -39,17 +49,15 @@ export const Treatment = () => {
   };
 
   const handleSearchReset = () => {
-    if (searchRef.current) {
-      searchRef.current.resetSearch();
-    }
+    searchRef.current?.resetSearch?.();
 
     setSearchResults(null);
   };
 
   const handleQueryConnectorToOr = () => {
     if (searchRef.current) {
-      searchRef.current.handleQueryConnectorToOr();
-      searchRef.current.onOpen();
+      searchRef.current?.handleQueryConnectorToOr?.();
+      searchRef.current?.onOpen?.();
     }
   };
 
@@ -77,9 +85,14 @@ export const Treatment = () => {
           <VStack spacing={4} marginTop={12}>
             <Text>Es wurden keine Ergebnisse gefunden.</Text>
             <Text>Wollen Sie die erweiterte Suchanfrage verodern?</Text>
-            <Button onClick={() => handleQueryConnectorToOr()} variant="ghost">
-              Suchanfrage verodern
-            </Button>
+            {searchType === "filter" && (
+              <Button
+                onClick={() => handleQueryConnectorToOr()}
+                variant="ghost"
+              >
+                Suchanfrage verodern
+              </Button>
+            )}
             <Button onClick={() => handleSearchReset()} variant="ghost">
               Suchanfrage zurücksetzen
             </Button>
@@ -111,7 +124,9 @@ export const Treatment = () => {
       <GridItem>
         <VStack spacing={8} alignItems="start">
           <TreatmentSearch
-            ref={searchRef}
+            ref={searchRef as React.RefObject<ITreatmentSearchRef>}
+            searchType={searchType}
+            setTreatmentSearchType={setSearchType}
             setSearchResults={handleSearchResults}
           />
           <TreatmentCreate addTreatment={addTreatment} />

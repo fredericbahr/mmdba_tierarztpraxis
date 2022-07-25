@@ -1,10 +1,9 @@
 import {
-  Box,
   Button,
-  Divider,
+  FormControl,
+  FormHelperText,
+  FormLabel,
   Heading,
-  HStack,
-  Icon,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -14,136 +13,74 @@ import {
   ModalOverlay,
   Stack,
 } from "@chakra-ui/react";
-import { Plus } from "phosphor-react";
-import React, { forwardRef, useEffect } from "react";
+import React, { forwardRef } from "react";
 import { useState } from "react";
+import Select from "react-select";
 
-import { useCustomToast } from "../../../hooks/useCustomToast";
-import { useFetch } from "../../../hooks/useFetch";
+import { ISelectOptions } from "../../../interfaces/selectInterface";
 import { ITreatment } from "../../../interfaces/treatmentInterface";
 import {
-  ITreatmentSearchQuery,
-  ITreatmentSingleQuery,
-} from "../../../interfaces/treatmentSearchInterface";
-import { TreatmentSearchGroupedQuery } from "../TreatmentSearchGroupedQuery/TreatmentSearchGroupedQuery";
+  ITreatmentSearchRef,
+  ITreatmentSearchType,
+} from "../../../pages/Treatment/Treatment";
+import TreatmentFilterSearch from "../TreatmentFilterSearch/TreatmentFilterSearch";
+import TreatmentImageSearch from "../TreatmentImageSearch/TreatmentImageSearch";
 
 interface IProps {
   isOpen: boolean;
+  searchType: ITreatmentSearchType;
   onClose: () => void;
+  setTreatmentSearchType: (treatmentSearchType: ITreatmentSearchType) => void;
   setSearchResults: (searchResults: ITreatment[] | null) => void;
 }
 
+const treatmentSearchTypeOptions: ISelectOptions<ITreatmentSearchType>[] = [
+  { value: "filter", label: "Filter" },
+  { value: "image", label: "Bild" },
+];
+
 const TreatmentSearchModal = (
-  { isOpen, onClose, setSearchResults }: IProps,
-  ref?: any
+  {
+    isOpen,
+    searchType,
+    onClose,
+    setTreatmentSearchType,
+    setSearchResults,
+  }: IProps,
+  ref?: React.Ref<ITreatmentSearchRef>
 ) => {
-  const { isLoading, error, post } = useFetch();
-  const { showErrorToast } = useCustomToast();
-
-  const [searchQuery, setSearchQuery] = useState<ITreatmentSearchQuery[]>([
-    {
-      queries: [
-        {
-          field: undefined,
-          condition: undefined,
-          value: "",
-        },
-      ],
-    },
-  ]);
-
-  const handleQueryChange = (
-    changedQuery: ITreatmentSearchQuery,
-    idx: number
-  ) => {
-    const mappedQuery = searchQuery.map((query, i) => {
-      if (i === idx) {
-        return changedQuery;
-      }
-      return query;
-    });
-
-    setSearchQuery(mappedQuery);
-  };
-
-  const handleQueryAdd = () => {
-    setSearchQuery([
-      ...searchQuery,
-      {
-        queries: [
-          {
-            field: undefined,
-            condition: undefined,
-            value: "",
-          },
-        ],
-        connector: "AND",
-      },
-    ]);
-  };
-
-  const handleQueryRemove = (idx: number) => {
-    const mappedQuery = searchQuery.filter((query, i) => i !== idx);
-    setSearchQuery(mappedQuery);
-  };
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSearch = async () => {
-    const { treatments: searchResults } = await post("/api/treatment/search", {
-      searchQuery,
-    });
-
-    if (!searchResults && error) {
-      setSearchResults(null);
-      return showErrorToast("Fehler", "Fehler beim Suchen");
-    }
-
-    setSearchResults(searchResults);
-    onClose();
+    await (
+      ref as React.RefObject<ITreatmentSearchRef>
+    ).current?.handleSearch?.();
   };
 
-  const resetSearch = () => {
-    setSearchQuery([
-      {
-        queries: [
-          {
-            field: undefined,
-            condition: undefined,
-            value: "",
-          },
-        ],
-      },
-    ]);
+  const handleSearchTypeChange = (
+    selected?: ISelectOptions<ITreatmentSearchType> | null
+  ) => {
+    setTreatmentSearchType(selected?.value || "filter");
   };
 
-  const handleSingleQueryConnectorToOr = (queries: ITreatmentSingleQuery[]) => {
-    const mappedQueries: ITreatmentSingleQuery[] = queries.map((query) => {
-      return {
-        ...query,
-        connector: "OR",
-      };
-    });
-
-    return mappedQueries;
+  const treatmentSearchTypeMap = {
+    filter: (
+      <TreatmentFilterSearch
+        ref={ref}
+        onClose={onClose}
+        setIsLoading={setIsLoading}
+        setSearchResults={setSearchResults}
+      />
+    ),
+    image: (
+      <TreatmentImageSearch
+        onClose={onClose}
+        setIsLoading={setIsLoading}
+        setSearchResults={setSearchResults}
+        ref={ref}
+      />
+    ),
   };
-
-  const handleQueryConnectorToOr = () => {
-    const newSearchQuery: ITreatmentSearchQuery[] = searchQuery.map(
-      (query: ITreatmentSearchQuery) => {
-        return {
-          queries: handleSingleQueryConnectorToOr(query.queries),
-          connector: "OR",
-        };
-      }
-    );
-
-    setSearchQuery(newSearchQuery);
-  };
-
-  useEffect(() => {
-    if (ref) {
-      ref.current = { handleQueryConnectorToOr, resetSearch };
-    }
-  });
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="6xl" isCentered>
@@ -153,25 +90,19 @@ const TreatmentSearchModal = (
         <ModalCloseButton />
         <ModalBody>
           <Stack spacing={4}>
-            <Heading as="h3">Filter</Heading>
-            {searchQuery.map((query, idx) => (
-              <TreatmentSearchGroupedQuery
-                key={idx}
-                groupedQuery={query}
-                showConnector={idx !== 0}
-                onQueryChange={(newQuery) => handleQueryChange(newQuery, idx)}
-                onQueryRemove={() => handleQueryRemove(idx)}
+            <FormControl display="flex" alignItems="center">
+              <FormLabel m={0} marginRight={4}>
+                Suchen mit
+              </FormLabel>
+              <Select
+                options={treatmentSearchTypeOptions}
+                value={treatmentSearchTypeOptions.find(
+                  (option) => option.value === searchType
+                )}
+                onChange={handleSearchTypeChange}
               />
-            ))}
-            <HStack>
-              <Divider />
-              <Box>
-                <Button leftIcon={<Icon as={Plus} />} onClick={handleQueryAdd}>
-                  Hinzufügen
-                </Button>
-              </Box>
-              <Divider />
-            </HStack>
+            </FormControl>
+            {treatmentSearchTypeMap[searchType]}
           </Stack>
         </ModalBody>
 
