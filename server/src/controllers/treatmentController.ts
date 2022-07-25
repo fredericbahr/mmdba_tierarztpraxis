@@ -42,7 +42,15 @@ export const getLatestTreatments = async (
       orderBy: { createdAt: "desc" },
       take: limit,
       include: {
-        animal: true,
+        animal: {
+          include: {
+            race: {
+              include: {
+                species: true,
+              },
+            },
+          },
+        },
         customer: true,
         medicines: true,
         findings: true,

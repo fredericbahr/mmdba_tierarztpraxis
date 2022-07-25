@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Divider,
+  Heading,
   HStack,
   Icon,
   Modal,
@@ -107,7 +108,8 @@ export const TreatmentSearchModal = ({
         <ModalHeader>Behandlung suchen</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <Stack>
+          <Stack spacing={4}>
+            <Heading as="h3">Filter</Heading>
             {searchQuery.map((query, idx) => (
               <TreatmentSearchGroupedQuery
                 key={idx}
