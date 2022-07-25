@@ -34,7 +34,7 @@ interface IProps {
   setResults: (results: IMedicine[]) => void;
 }
 
-const MedicineSearchBasic = ({ setResults }: IProps, ref?: any) => {
+const MedicineSearch = ({ setResults }: IProps, ref?: any) => {
   const { isLoading, error, post } = useFetch();
   const { showErrorToast } = useCustomToast();
 
@@ -224,4 +224,4 @@ const MedicineSearchBasic = ({ setResults }: IProps, ref?: any) => {
   );
 };
 
-export const MedicineSearch = forwardRef(MedicineSearchBasic);
+export default forwardRef(MedicineSearch);

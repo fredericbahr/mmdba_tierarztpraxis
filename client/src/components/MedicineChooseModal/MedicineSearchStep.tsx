@@ -1,6 +1,6 @@
 import React from "react";
 
-import { MedicineSearch } from "../MedicineSearch/MedicineSearch";
+import MedicineSearch from "../MedicineSearch/MedicineSearch";
 
 interface IProps {
   setResults: (results: any) => void;
