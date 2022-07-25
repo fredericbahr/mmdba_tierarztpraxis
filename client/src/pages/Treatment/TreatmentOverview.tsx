@@ -6,7 +6,6 @@ import { FindingViewModal } from "../../components/FindingViewModal/FindingViewM
 import { PhotoViewModal } from "../../components/PhotoViewModal/PhotoViewModal";
 import { TreatmentTableOverview } from "../../components/TreatementTableOverview/TreatmentTableOverview";
 import { VideoViewModal } from "../../components/VideoViewModal/VideoViewModal";
-import { useFetch } from "../../hooks/useFetch";
 import { ITreatment } from "../../interfaces/treatmentInterface";
 
 interface IProps {

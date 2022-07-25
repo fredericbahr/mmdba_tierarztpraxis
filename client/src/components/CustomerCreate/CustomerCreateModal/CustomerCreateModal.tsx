@@ -1,9 +1,9 @@
 import {
-  Box,
   Button,
   Flex,
   Modal,
   ModalBody,
+  ModalCloseButton,
   ModalContent,
   ModalFooter,
   ModalHeader,
@@ -87,6 +87,7 @@ export const CustomerCreateModal = ({ isOpen, onClose }: IProps) => {
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Besitzer anlegen</ModalHeader>
+        <ModalCloseButton />
         <ModalBody>
           <CustomerCreateForm
             onNameChange={handleCustomerNameChange}

@@ -49,7 +49,7 @@ export const FindingViewModal = ({ findings, isOpen, onClose }: IProps) => {
           {findings.length > 0 && (
             <Carousel>
               {findings.map((finding) => (
-                <>
+                <React.Fragment key={finding.id}>
                   <Document
                     file={finding.blob}
                     onLoadError={(e: Error) => console.log(e)}
@@ -83,7 +83,7 @@ export const FindingViewModal = ({ findings, isOpen, onClose }: IProps) => {
                       disabled={pageNumber === numPages}
                     />
                   </HStack>
-                </>
+                </React.Fragment>
               ))}
             </Carousel>
           )}

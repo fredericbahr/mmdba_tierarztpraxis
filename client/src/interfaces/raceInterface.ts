@@ -3,7 +3,7 @@ import { ISpecies } from "./speciesInterface";
 
 export interface IRace {
   name: string;
-  species?: ISpecies[];
+  species?: ISpecies;
   speciesId?: number;
   animal?: IAnimal;
 }

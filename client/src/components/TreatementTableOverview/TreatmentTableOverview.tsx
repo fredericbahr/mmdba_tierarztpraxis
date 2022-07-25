@@ -43,6 +43,8 @@ export const TreatmentTableOverview = ({
               <Th isNumeric>Kosten</Th>
               <Th>Kunde</Th>
               <Th>Tier</Th>
+              <Th>Spezies</Th>
+              <Th>Rasse</Th>
               <Th>Medizin</Th>
               <Th>Aktionen</Th>
             </Tr>

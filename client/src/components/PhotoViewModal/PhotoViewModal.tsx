@@ -1,12 +1,10 @@
 import {
-  Flex,
   Image,
   Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
   ModalOverlay,
-  Text,
 } from "@chakra-ui/react";
 import { Buffer } from "buffer";
 import React from "react";

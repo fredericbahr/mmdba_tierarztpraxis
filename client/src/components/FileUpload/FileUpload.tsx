@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Icon, Input, Text, VStack } from "@chakra-ui/react";
+import { Box, Button, Icon, Input, Text, VStack } from "@chakra-ui/react";
 import { UploadSimple } from "phosphor-react";
 import React, { useRef, useState } from "react";
 

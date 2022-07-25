@@ -15,6 +15,7 @@ import React from "react";
 import { useCustomToast } from "../../hooks/useCustomToast";
 import { useFetch } from "../../hooks/useFetch";
 import { IMedicine } from "../../interfaces/medicineInterface";
+import { ISpecies } from "../../interfaces/speciesInterface";
 import { ITreatment } from "../../interfaces/treatmentInterface";
 
 interface IProps {
@@ -32,7 +33,7 @@ export const TreatmentTableRow = ({
   handleFindingClick,
   deleteTreatment,
 }: IProps) => {
-  const { isLoading, error, get, deleteFetch } = useFetch();
+  const { isLoading, error, deleteFetch } = useFetch();
   const { showErrorToast } = useCustomToast();
 
   const renderMedicines = (medicines: IMedicine[]) => {
@@ -44,6 +45,16 @@ export const TreatmentTableRow = ({
       </List>
     );
   };
+
+  // const renderSpecies = (species: ISpecies[]) => {
+  //   return (
+  //     <List>
+  //       {species.map((specie) => {
+  //         return <ListItem key={specie.id}>{specie.name}</ListItem>;
+  //       })}
+  //     </List>
+  //   );
+  // };
 
   const handleDelete = async () => {
     const { deletedTreatment } = await deleteFetch(
@@ -72,6 +83,8 @@ export const TreatmentTableRow = ({
       <Td isNumeric>{treatment.costs}</Td>
       <Td>{treatment.customer.name}</Td>
       <Td>{treatment.animal.name}</Td>
+      <Td>{treatment.animal.race?.name || "---"}</Td>
+      <Td>{treatment.animal.race?.species?.name || "---"}</Td>
       <Td>{renderMedicines(treatment.medicines)}</Td>
       <Td>
         <HStack>

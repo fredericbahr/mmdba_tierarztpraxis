@@ -6,6 +6,8 @@ import {
   httpIntServerError,
   httpOK,
 } from "../config/statusCode";
+import { ITreatmentSearchQuery } from "../interfaces/treatmentInterface";
+import { generateTreatmentSearchQuery } from "../services/treatmentSearchService";
 
 const prisma = new PrismaClient({
   log: [{ level: "query", emit: "event" }],
@@ -40,7 +42,15 @@ export const getLatestTreatments = async (
       orderBy: { createdAt: "desc" },
       take: limit,
       include: {
-        animal: true,
+        animal: {
+          include: {
+            race: {
+              include: {
+                species: true,
+              },
+            },
+          },
+        },
         customer: true,
         medicines: true,
         findings: true,
@@ -152,6 +162,46 @@ const getPhotos = (files: Express.Multer.File[]) => {
  */
 const getVideos = (files: Express.Multer.File[]) => {
   return files.filter((file) => file.mimetype.startsWith("video/"));
+};
+
+/**
+ * Handles the search of treatments
+ * @param req Request object
+ * @param res Response object
+ */
+export const handleTreatmentSearch = async (
+  req: Request<never, never, { searchQuery: ITreatmentSearchQuery[] }>,
+  res: Response
+) => {
+  const { searchQuery } = req.body;
+
+  if (!searchQuery) {
+    return res.status(httpBadRequest).json({
+      error: "Suchanfrage nicht übergeben",
+    });
+  }
+
+  try {
+    const whereQuery = generateTreatmentSearchQuery(searchQuery);
+
+    const treatments = await prisma.treatment.findMany({
+      where: whereQuery,
+      include: {
+        animal: true,
+        customer: true,
+        medicines: true,
+        findings: true,
+        photos: true,
+        videos: true,
+      },
+    });
+
+    return res.status(httpOK).json({ treatments });
+  } catch (error: any) {
+    return res
+      .status(httpIntServerError)
+      .json({ error: "Fehler beim Abrufen der Behandlungen" });
+  }
 };
 
 export const deleteTreatment = async (
