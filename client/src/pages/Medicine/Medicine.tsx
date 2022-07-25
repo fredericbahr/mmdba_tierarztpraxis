@@ -1,7 +1,7 @@
 import { Box, Button, Grid, GridItem, Text, VStack } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
 
-import { MedicineSearch } from "../../components/MedicineSearch/MedicineSearch";
+import MedicineSearch from "../../components/MedicineSearch/MedicineSearch";
 import { useCustomToast } from "../../hooks/useCustomToast";
 import { useFetch } from "../../hooks/useFetch";
 import { IMedicine } from "../../interfaces/medicineInterface";

@@ -187,7 +187,15 @@ export const handleTreatmentSearch = async (
     const treatments = await prisma.treatment.findMany({
       where: whereQuery,
       include: {
-        animal: true,
+        animal: {
+          include: {
+            race: {
+              include: {
+                species: true,
+              },
+            },
+          },
+        },
         customer: true,
         medicines: true,
         findings: true,

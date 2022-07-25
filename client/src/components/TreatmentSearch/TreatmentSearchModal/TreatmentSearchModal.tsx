@@ -15,13 +15,16 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { Plus } from "phosphor-react";
-import React from "react";
+import React, { forwardRef, useEffect } from "react";
 import { useState } from "react";
 
 import { useCustomToast } from "../../../hooks/useCustomToast";
 import { useFetch } from "../../../hooks/useFetch";
 import { ITreatment } from "../../../interfaces/treatmentInterface";
-import { ITreatmentSearchQuery } from "../../../interfaces/treatmentSearchInterface";
+import {
+  ITreatmentSearchQuery,
+  ITreatmentSingleQuery,
+} from "../../../interfaces/treatmentSearchInterface";
 import { TreatmentSearchGroupedQuery } from "../TreatmentSearchGroupedQuery/TreatmentSearchGroupedQuery";
 
 interface IProps {
@@ -30,11 +33,10 @@ interface IProps {
   setSearchResults: (searchResults: ITreatment[] | null) => void;
 }
 
-export const TreatmentSearchModal = ({
-  isOpen,
-  onClose,
-  setSearchResults,
-}: IProps) => {
+const TreatmentSearchModal = (
+  { isOpen, onClose, setSearchResults }: IProps,
+  ref?: any
+) => {
   const { isLoading, error, post } = useFetch();
   const { showErrorToast } = useCustomToast();
 
@@ -90,8 +92,6 @@ export const TreatmentSearchModal = ({
       searchQuery,
     });
 
-    console.log("searchResults", searchResults, error);
-
     if (!searchResults && error) {
       setSearchResults(null);
       return showErrorToast("Fehler", "Fehler beim Suchen");
@@ -100,6 +100,50 @@ export const TreatmentSearchModal = ({
     setSearchResults(searchResults);
     onClose();
   };
+
+  const resetSearch = () => {
+    setSearchQuery([
+      {
+        queries: [
+          {
+            field: undefined,
+            condition: undefined,
+            value: "",
+          },
+        ],
+      },
+    ]);
+  };
+
+  const handleSingleQueryConnectorToOr = (queries: ITreatmentSingleQuery[]) => {
+    const mappedQueries: ITreatmentSingleQuery[] = queries.map((query) => {
+      return {
+        ...query,
+        connector: "OR",
+      };
+    });
+
+    return mappedQueries;
+  };
+
+  const handleQueryConnectorToOr = () => {
+    const newSearchQuery: ITreatmentSearchQuery[] = searchQuery.map(
+      (query: ITreatmentSearchQuery) => {
+        return {
+          queries: handleSingleQueryConnectorToOr(query.queries),
+          connector: "OR",
+        };
+      }
+    );
+
+    setSearchQuery(newSearchQuery);
+  };
+
+  useEffect(() => {
+    if (ref) {
+      ref.current = { handleQueryConnectorToOr, resetSearch };
+    }
+  });
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="6xl" isCentered>
@@ -140,3 +184,5 @@ export const TreatmentSearchModal = ({
     </Modal>
   );
 };
+
+export default forwardRef(TreatmentSearchModal);
