@@ -17,6 +17,7 @@ import {
 import { MagnifyingGlass } from "phosphor-react";
 import React, { useState } from "react";
 import { useEffect } from "react";
+import { useImperativeHandle } from "react";
 import { forwardRef } from "react";
 
 import { useCustomToast } from "../../hooks/useCustomToast";
@@ -28,13 +29,14 @@ import {
   ISearchTarget,
 } from "../../interfaces/medicineInterface";
 import { ISelectOptions } from "../../interfaces/selectInterface";
+import { ITreatmentSearchRef } from "../../pages/Treatment/Treatment";
 import { MedicineAdvancedSearch } from "./MedicineAdvancedSearch";
 
 interface IProps {
   setResults: (results: IMedicine[]) => void;
 }
 
-const MedicineSearch = ({ setResults }: IProps, ref?: any) => {
+const MedicineSearch = ({ setResults }: IProps, ref?: React.Ref<ITreatmentSearchRef>) => {
   const { isLoading, error, post } = useFetch();
   const { showErrorToast } = useCustomToast();
 
@@ -150,17 +152,17 @@ const MedicineSearch = ({ setResults }: IProps, ref?: any) => {
   };
 
   useEffect(() => {
-    if (ref) {
-      ref.current = { handleConnectKeywordsWithOr, resetSearch };
-    }
-  });
-
-  useEffect(() => {
     if (isConnectKeywordsWithOrTriggered) {
       handleSearch();
       setIsConnectKeywordsWithOrTriggered(false);
     }
   }, [isConnectKeywordsWithOrTriggered]);
+
+  useImperativeHandle(ref, () => ({
+    ...(ref as React.RefObject<ITreatmentSearchRef>).current,
+    handleConnectKeywordsWithOr,
+    resetSearch,
+  }));
 
   return (
     <>

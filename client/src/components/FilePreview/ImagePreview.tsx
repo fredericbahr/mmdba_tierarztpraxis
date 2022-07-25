@@ -5,12 +5,17 @@ import { PreviewItem } from "./PreviewItem";
 
 interface IProps {
   files: File[];
+  columns?: number;
   handleDelete: (index: number) => void;
 }
 
-export const ImagePreview = ({ files, handleDelete }: IProps) => {
+export const ImagePreview = ({ files, columns = 4, handleDelete }: IProps) => {
   return (
-    <Grid templateColumns="repeat(4, 1fr)" gridGap={8} alignItems="center">
+    <Grid
+      templateColumns={`repeat(${columns}, 1fr)`}
+      gridGap={8}
+      alignItems="center"
+    >
       {files.map((file, index) => {
         return (
           <PreviewItem

@@ -2,7 +2,6 @@ import {
   Box,
   Button,
   Divider,
-  Flex,
   Grid,
   GridItem,
   HStack,
@@ -19,12 +18,12 @@ import {
 import { CaretDown, Plus, TrashSimple } from "phosphor-react";
 import React from "react";
 
-import { ISelectOptions } from "../../../interfaces/selectInterface";
+import { ISelectOptions } from "../../../../interfaces/selectInterface";
 import {
   ITreatmentSearchOuterConnector,
   ITreatmentSearchQuery,
   ITreatmentSingleQuery,
-} from "../../../interfaces/treatmentSearchInterface";
+} from "../../../../interfaces/treatmentSearchInterface";
 import { TreatmentSearchSingleQuery } from "../TreatmentSearchSingleQuery/TreatmentSearchSingleQuery";
 
 interface IProbs {
