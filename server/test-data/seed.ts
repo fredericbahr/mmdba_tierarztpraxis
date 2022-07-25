@@ -25,6 +25,9 @@ async function deleteAllEntries() {
     await prisma.photo.deleteMany({});
     await prisma.video.deleteMany({});
     await prisma.finding.deleteMany({});
+
+    await prisma.$queryRaw`DROP INDEX IF EXISTS  medicine_description_index`;
+    await prisma.$queryRaw`DROP INDEX IF EXISTS medicine_name_index`;
   } catch (e) {
     console.log("Failure in deleting entries");
   }
@@ -437,9 +440,21 @@ async function repopulate() {
   }
 }
 
+async function createIndexes() {
+  try {
+    await prisma.$queryRaw`CREATE INDEX medicine_description_index ON "Medicine" USING GIN (to_tsvector('german', description))`;
+    await prisma.$queryRaw`CREATE INDEX medicine_name_index ON "Medicine" USING GIN (to_tsvector('german', name))`;
+    console.log("passed index creation");
+  } catch (e) {
+    console.log("Failure in creating indexes");
+    console.log(e);
+  }
+}
+
 async function main() {
   await deleteAllEntries();
   await readFiles();
+  await createIndexes();
   await repopulate();
 }
 
