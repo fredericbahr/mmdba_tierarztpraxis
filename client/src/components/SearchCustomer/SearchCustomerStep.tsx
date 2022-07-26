@@ -45,7 +45,7 @@ import {
   }: IProps) => {
     return (
       <Box marginTop={6}>
-        <Heading>Tierdaten eingeben</Heading>
+        <Heading>Kundendaten eingeben</Heading>
         <form>
           <VStack spacing={4}>
             <FormControl>
