@@ -13,3 +13,17 @@ export interface IAnimal {
   raceId?: number;
   treatements?: ITreatment[];
 }
+
+export interface IAnimals {
+  id: number;
+  name: string;
+  birthdate: Date;
+  weight: number;
+  owner: IOwner;
+  species: string;
+  race: IRace;
+}
+
+export interface IOwner {
+  name: string;
+}

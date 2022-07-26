@@ -1,3 +1,5 @@
+import { IRaceCreateRequest } from "./raceInterfaces";
+
 export interface ICreateAnimalRequest {
     name: string;
     birthdate: Date;
@@ -12,4 +14,24 @@ export interface ISearchAnimalRequest {
     customerId: number;
     raceId: number;
     speciesId: number;
+}
+
+export interface IAnimalConstructionSet {
+    name: string;
+    birthdate: Date;
+    weight: number;
+    owner: IOwner;
+    race: IRace;
+}
+
+export interface IAnimalDeleteRequest {
+    id: number;
+}
+
+export interface IOwner {
+    name: string;
+}
+
+export interface IRace {
+    name: string;
 }

@@ -6,7 +6,7 @@ import {
   httpIntServerError,
   httpOK,
 } from "../config/statusCode";
-import { ICreateAnimalRequest, ISearchAnimalRequest } from "../interfaces/animalInterface";
+import { IAnimalConstructionSet, IAnimalDeleteRequest, ICreateAnimalRequest, ISearchAnimalRequest } from "../interfaces/animalInterface";
 
 const prisma = new PrismaClient();
 
@@ -15,7 +15,20 @@ export const getAnimals = async (
   res: Response
 ) => {
   try {
-    const animals = await prisma.animal.findMany();
+    const animals = await prisma.animal.findMany({
+      include: {
+        owner: {
+          select: {
+            name: true
+          }
+        },
+        race: {
+          select: {
+            name: true
+          }
+        },
+      }
+    });
     console.log("Trying to find all");
     console.log(animals);
     return res.status(httpOK).json({ animals });
@@ -37,12 +50,25 @@ export const getAnimalQuery = async (
         where: {
           birthdate: req.query.birthdate != null ? new Date(String(req.query.birthdate)) : undefined,
           customerId: req.query.customerId != null ? Number(req.query.customerId) : undefined,
-          name: req.query.name != null ? String(req.query.name) : undefined, 
+          name: req.query.name != null && req.query.name != "" ? String(req.query.name) : undefined, 
           raceId: req.query.raceId != null ? Number(req.query.raceId) : undefined,
           weight: req.query.weight != null ? Number(req.query.weight) : undefined, 
-        }}
+        },
+      include: {
+        owner:  {
+          select: {
+            name: true
+          }
+        },
+        race:  {
+          select: {
+            name: true
+          }
+        },
+      }}
       );
       console.log(animal);
+
       return res.status(httpOK).json({ animal });
     }
     catch (error: any) {
@@ -51,23 +77,6 @@ export const getAnimalQuery = async (
       });
     }
   };
-
-/**
- * Gets all animals
- * @param req Request Object
- * @param res Response Object
- */
-export const getAnimals = async (req: Request, res: Response) => {
-  try {
-    const animals = await prisma.animal.findMany({});
-
-    return res.status(httpOK).json({ animals });
-  } catch (error: any) {
-    return res.status(httpIntServerError).json({
-      error: "Fehelr beim Abrufen der Tiere",
-    });
-  }
-};
 
 /**
  * Gets the animals for a customer
@@ -103,12 +112,6 @@ export const createAnimal = async (
 ) => {
   const { name, birthdate, weight, customerId, raceId } = req.body;
 
-  if (!name || !birthdate || !weight || !customerId || !raceId) {
-    return res.status(httpBadRequest).json({
-      error: "Nicht alle Felder ausgefüllt",
-    });
-  }
-
   try {
     const animal = await prisma.animal.create({
       data: {
@@ -136,3 +139,20 @@ export const createAnimal = async (
   }
 };
 
+export const deleteAnimal = async (req: Request<never, never, IAnimalDeleteRequest>,
+  res: Response) => {
+    try {
+      const {id} = req.params;
+      const deleteAnimal = await prisma.animal.delete({
+        where: {
+          id: Number(id),
+        }
+      });
+      return res.status(httpOK).json({ deleteAnimal });
+    }
+    catch (error: any) {
+      return res.status(httpIntServerError).json({
+        error: "Fehler beim Löschen des Tieres",
+      });
+    }
+  };
