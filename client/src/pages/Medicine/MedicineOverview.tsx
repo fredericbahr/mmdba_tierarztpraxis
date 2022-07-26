@@ -36,18 +36,22 @@ export const MedicineOverview = ({
   return (
     <>
       {heading && (
-        <Heading as="h3" size="lg">
+        <Heading as="h3" size="lg" textAlign="center">
           {heading}
         </Heading>
       )}
       {isLoading && (
-        <Flex justifyContent="center" alignItems="center">
+        <Flex justifyContent="center" alignItems="center" mt={8}>
           <Spinner />
         </Flex>
       )}
       {!isLoading && (
-        <VStack spacing={6}>
-          <Grid templateColumns="repeat(3, 1fr)" gap={6} w="full">
+        <VStack spacing={6} mt={4}>
+          <Grid
+            templateColumns={{ md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }}
+            gap={6}
+            w="full"
+          >
             {medicines
               .slice(
                 (page - 1) * showAmount,

@@ -59,7 +59,7 @@ export const TreatmentOverview = ({
   return (
     <>
       {isLoading && (
-        <Flex justifyContent="center" alignItems="center">
+        <Flex justifyContent="center" alignItems="center" mt={8}>
           <Spinner />
         </Flex>
       )}

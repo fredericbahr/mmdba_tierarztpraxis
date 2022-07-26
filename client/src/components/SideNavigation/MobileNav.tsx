@@ -1,4 +1,12 @@
-import { Flex, FlexProps, Icon, IconButton, Image } from "@chakra-ui/react";
+import {
+  Flex,
+  FlexProps,
+  HStack,
+  Icon,
+  IconButton,
+  Image,
+  VStack,
+} from "@chakra-ui/react";
 import { List } from "phosphor-react";
 import React from "react";
 
@@ -16,15 +24,16 @@ export const MobileNav = ({ onOpen, ...rest }: IProps) => {
       height="20"
       alignItems="center"
       borderBottomWidth="1px"
-      justifyContent="space-evenly"
       {...rest}
     >
-      <IconButton
-        variant="outline"
-        onClick={onOpen}
-        aria-label="open menu"
-        icon={<Icon as={List} />}
-      />
+      <Flex flex={1}>
+        <IconButton
+          variant="outline"
+          onClick={onOpen}
+          aria-label="open menu"
+          icon={<Icon as={List} />}
+        />
+      </Flex>
 
       <Image src={Logo} alt="Tierartzpraxis" />
     </Flex>

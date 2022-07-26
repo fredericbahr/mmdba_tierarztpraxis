@@ -166,7 +166,7 @@ const MedicineSearch = ({ setResults }: IProps, ref?: React.Ref<ITreatmentSearch
 
   return (
     <>
-      <Heading as="h3" size="lg">
+      <Heading as="h3" size="lg" textAlign="center">
         Medikamentensuche
       </Heading>
       <Box boxShadow="md" rounded="md" px={4} py={8}>

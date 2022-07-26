@@ -100,14 +100,19 @@ export const TreatmentSearchSingleQuery = ({
   };
 
   return (
-    <Grid templateColumns="repeat(7, 1fr)" w="full" gap={4}>
-      <GridItem>
+    <Grid
+      templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(7, 1fr)" }}
+      w="full"
+      gap={4}
+    >
+      <GridItem justifySelf={"center"} w={{base: "auto", md: "full"}}>
         <Menu>
           {displayInnerConnector && (
             <MenuButton
               as={Button}
               rightIcon={<Icon as={CaretDown} />}
-              w="full"
+              w={{ base: "auto", md: "full"}}
+              justifySelf="center"
               fontSize="sm"
             >
               {connectorOptions

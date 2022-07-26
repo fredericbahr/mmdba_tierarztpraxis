@@ -78,9 +78,12 @@ export const Treatment = () => {
   }, []);
 
   return (
-    <Grid templateColumns="repeat(3, 1fr)" gridGap={8}>
+    <Grid
+      templateColumns={{ base: "repeat(1, 1fr)", xl: "repeat(3, 1fr)" }}
+      gridGap={8}
+    >
       <GridItem colSpan={2}>
-        <Heading>Behandlungen</Heading>
+        <Heading textAlign="center">Behandlungen</Heading>
         {searchResults?.length === 0 && (
           <VStack spacing={4} marginTop={12}>
             <Text>Es wurden keine Ergebnisse gefunden.</Text>
