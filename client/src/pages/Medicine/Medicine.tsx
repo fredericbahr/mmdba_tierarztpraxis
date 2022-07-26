@@ -35,6 +35,10 @@ export const Medicine = () => {
     setMedicines(medicines.filter((medicine: IMedicine) => medicine.id !== id));
   };
 
+  const handleNewMedicine = (medicine: IMedicine) => {
+    setMedicines([...medicines, medicine]);
+  };
+
   useEffect(() => {
     const fetchLatestMedicine = async () => {
       const { medicines } = await get("/api/medicines/latest/6");
@@ -98,7 +102,7 @@ export const Medicine = () => {
         <Box marginBottom={4}>
           <MedicineSearch ref={searchRef} setResults={setSearchResults} />
         </Box>
-        <MedicineCreate />
+        <MedicineCreate setNewMedicine={handleNewMedicine} />
       </GridItem>
     </Grid>
   );

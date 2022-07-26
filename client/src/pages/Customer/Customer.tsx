@@ -23,6 +23,10 @@ export const Customer = () => {
     setCustomers(results);
   };
 
+  const handleNewCustomer = (customer: ICustomer) => {
+    setCustomers([...customers, customer]);
+  };
+
   useEffect(() => {
     const fetchLatestCustomers = async () => {
       const { customers } = await get("/api/customers/latest/6");
@@ -73,7 +77,7 @@ export const Customer = () => {
             setResults={setSearchResults}
           />
         </Box>
-        <CustomerCreate />
+        <CustomerCreate setNewCustomer={handleNewCustomer} />
       </GridItem>
     </Grid>
   );

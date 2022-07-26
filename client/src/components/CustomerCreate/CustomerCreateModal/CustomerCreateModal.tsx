@@ -13,14 +13,20 @@ import React, { useState } from "react";
 
 import { useCustomToast } from "../../../hooks/useCustomToast";
 import { useFetch } from "../../../hooks/useFetch";
+import { ICustomer } from "../../../interfaces/customerInterface";
 import { CustomerCreateForm } from "../CustomerCreateForm/CustomerCreateForm";
 
 interface IProps {
   isOpen: boolean;
   onClose: () => void;
+  setNewCustomer: (customer: ICustomer) => void;
 }
 
-export const CustomerCreateModal = ({ isOpen, onClose }: IProps) => {
+export const CustomerCreateModal = ({
+  isOpen,
+  onClose,
+  setNewCustomer,
+}: IProps) => {
   const { isLoading, error, post } = useFetch();
   const { showSuccessToast, showErrorToast } = useCustomToast();
 
@@ -69,9 +75,9 @@ export const CustomerCreateModal = ({ isOpen, onClose }: IProps) => {
       phoneNumber: customerPhoneNumber,
     };
 
-    const data = await post("/api/customer", body);
+    const { customer } = await post("/api/customer", body);
 
-    if (!data || error) {
+    if (!customer || error) {
       return showErrorToast(
         "Fehler",
         error || "Fehler beim Anlegen eines Besitzers"
@@ -79,6 +85,7 @@ export const CustomerCreateModal = ({ isOpen, onClose }: IProps) => {
     }
 
     showSuccessToast("Erfolg", "Besitzer erfolgreich angelegt");
+    setNewCustomer(customer);
     onClose();
   };
 

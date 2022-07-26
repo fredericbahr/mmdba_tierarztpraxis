@@ -10,11 +10,11 @@ import React, { useState } from "react";
 
 import { AnimalCard } from "../../components/AnimalCard/AnimalCard";
 import { Pagination } from "../../components/Pagination/Pagination";
-import { IAnimals } from "../../interfaces/animalInterface";
+import { IAnimal } from "../../interfaces/animalInterface";
 
 interface IProps {
   isLoading: boolean;
-  animals: IAnimals[];
+  animals: IAnimal[];
   heading?: string;
   showAmount?: number;
   setResults: (results: any) => void;
@@ -57,7 +57,7 @@ export const AnimalOverview = ({
                 (page - 1) * showAmount,
                 (page - 1) * showAmount + showAmount
               )
-              .map((animal: IAnimals, index: number) => (
+              .map((animal: IAnimal, index: number) => (
                 <GridItem key={index}>
                   <AnimalCard
                     animal={animal}
