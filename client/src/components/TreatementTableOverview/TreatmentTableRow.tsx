@@ -7,6 +7,7 @@ import {
   Td,
   Tooltip,
   Tr,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { format } from "date-fns";
 import { File, Image, MonitorPlay, TrashSimple } from "phosphor-react";
@@ -16,6 +17,7 @@ import { useCustomToast } from "../../hooks/useCustomToast";
 import { useFetch } from "../../hooks/useFetch";
 import { IMedicine } from "../../interfaces/medicineInterface";
 import { ITreatment } from "../../interfaces/treatmentInterface";
+import { DeleteAlert } from "../DeleteAlert/DeleteAlert";
 
 interface IProps {
   treatment: ITreatment;
@@ -34,6 +36,7 @@ export const TreatmentTableRow = ({
 }: IProps) => {
   const { isLoading, error, deleteFetch } = useFetch();
   const { showErrorToast } = useCustomToast();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const renderMedicines = (medicines: IMedicine[]) => {
     return (
@@ -56,6 +59,7 @@ export const TreatmentTableRow = ({
   // };
 
   const handleDelete = async () => {
+    onClose();
     const { deletedTreatment } = await deleteFetch(
       `api/treatment/${treatment.id}`
     );
@@ -127,9 +131,17 @@ export const TreatmentTableRow = ({
               icon={<Icon as={TrashSimple} />}
               aria-label="Löschen"
               isLoading={isLoading}
-              onClick={() => handleDelete()}
+              onClick={onOpen}
             />
           </Tooltip>
+          <DeleteAlert
+            heading="Behandlung löschen?"
+            body="Wollen Sie die Behandlung wirklich löschen?"
+            isOpen={isOpen}
+            isLoading={isLoading}
+            onClose={onClose}
+            onDelete={() => handleDelete()}
+          />
         </HStack>
       </Td>
     </Tr>
