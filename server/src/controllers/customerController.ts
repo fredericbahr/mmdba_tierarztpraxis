@@ -60,6 +60,18 @@ export const getCustomerQuery = async (
             ? String(req.query.street)
             : undefined,
       },
+      include: {
+        animals: {
+          include: {
+            owner: true,
+            race: {
+              include: {
+                species: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     return res.status(httpOK).json({ customer });
@@ -76,6 +88,18 @@ export const getLatestCustomers = async (req: Request, res: Response) => {
     const customers: Customer[] = await prisma.customer.findMany({
       orderBy: { createdAt: "desc" },
       take: amount,
+      include: {
+        animals: {
+          include: {
+            owner: true,
+            race: {
+              include: {
+                species: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     return res.status(httpOK).json({ customers });

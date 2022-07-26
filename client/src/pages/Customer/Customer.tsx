@@ -35,6 +35,8 @@ export const Customer = () => {
         return showErrorToast("Fehler", "Fehler beim Laden der letzen Kunden");
       }
 
+      console.log(customers);
+
       setCustomers(customers);
     };
     fetchLatestCustomers();
