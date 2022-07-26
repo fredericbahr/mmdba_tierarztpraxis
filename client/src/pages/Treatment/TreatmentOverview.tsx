@@ -12,12 +12,14 @@ interface IProps {
   treatments: ITreatment[];
   isLoading: boolean;
   deleteTreatment: (id: number) => void;
+  setUpdatedTreatment: (treatment: ITreatment) => void;
 }
 
 export const TreatmentOverview = ({
   treatments,
   isLoading,
   deleteTreatment,
+  setUpdatedTreatment,
 }: IProps) => {
   const {
     isOpen: isOpenPhotoModal,
@@ -70,6 +72,7 @@ export const TreatmentOverview = ({
           onVideoClick={handleVideoClick}
           onFindingClick={handleFindingClick}
           deleteTreatment={deleteTreatment}
+          setUpdatedTreatment={setUpdatedTreatment}
         />
       )}
       {treatments.length > 0 && (

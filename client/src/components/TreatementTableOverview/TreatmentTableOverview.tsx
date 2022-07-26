@@ -10,6 +10,7 @@ interface IProps {
   onVideoClick: (index: number) => void;
   onFindingClick: (index: number) => void;
   deleteTreatment: (id: number) => void;
+  setUpdatedTreatment: (treatment: ITreatment) => void;
 }
 
 export const TreatmentTableOverview = ({
@@ -18,6 +19,7 @@ export const TreatmentTableOverview = ({
   onVideoClick,
   onFindingClick,
   deleteTreatment,
+  setUpdatedTreatment,
 }: IProps) => {
   const handlePhotoClick = (index: number) => {
     onPhotoClick(index);
@@ -58,6 +60,7 @@ export const TreatmentTableOverview = ({
                 handleVideoClick={() => handleVideoClick(idx)}
                 handleFindingClick={() => handleFindingClick(idx)}
                 deleteTreatment={deleteTreatment}
+                setUpdatedTreatment={setUpdatedTreatment}
               />
             ))}
           </Tbody>

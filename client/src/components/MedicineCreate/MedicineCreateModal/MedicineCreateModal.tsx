@@ -21,7 +21,7 @@ import { MedicineDescriptionUpload } from "../MedicineDescriptionUpload/Medicine
 interface IProps {
   isOpen: boolean;
   onClose: () => void;
-  setNewMedicine: (medicine: IMedicine) => void;
+  setNewMedicine?: (medicine: IMedicine) => void;
 }
 
 export const MedicineCreateModal = ({
@@ -82,7 +82,7 @@ export const MedicineCreateModal = ({
     }
 
     showSuccessToast("Erfolg", "Medizin erfolgreich angelegt");
-    setNewMedicine(medicine);
+    setNewMedicine?.(medicine);
 
     onClose();
   };

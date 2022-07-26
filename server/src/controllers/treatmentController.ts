@@ -298,6 +298,87 @@ export const handleTreatmentImageSearch = async (
   }
 };
 
+export const updateTreatment = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { diagnosis, date, costs, notes, animalId, customerId } = req.body;
+  const files = req.files as Express.Multer.File[];
+
+  if (!diagnosis || !date || !costs || !animalId || !customerId) {
+    return res.status(httpBadRequest).json({
+      error: "Bitte alle Felder ausfüllen",
+    });
+  }
+
+  try {
+    const findings = await getFindings(files);
+    const photos = getPhotos(files);
+    const videos = getVideos(files);
+
+    const treatment = await prisma.treatment.update({
+      where: {
+        id: Number(id),
+      },
+      data: {
+        diagnosis,
+        date: new Date(date),
+        costs: Number(costs),
+        notes: notes || "",
+        animal: {
+          connect: { id: Number(animalId) },
+        },
+        customer: {
+          connect: { id: Number(customerId) },
+        },
+        findings: {
+          create: findings.map((finding) => ({
+            description: "",
+            blob: finding.buffer,
+            content: finding.text,
+          })),
+        },
+        photos: {
+          create: photos.map((photo) => ({
+            description: "",
+            blob: photo.buffer,
+            mimeType: photo.mimetype,
+          })),
+        },
+        videos: {
+          deleteMany: {},
+          create: videos.map((video) => ({
+            description: "",
+            blob: video.buffer,
+            mimeType: video.mimetype,
+          })),
+        },
+      },
+      include: {
+        animal: {
+          include: {
+            race: {
+              include: {
+                species: true,
+              },
+            },
+          },
+        },
+        customer: true,
+        medicines: true,
+        findings: true,
+        photos: true,
+        videos: true,
+      },
+    });
+
+    return res.status(httpOK).json({ treatment });
+  } catch (error: any) {
+    console.log(error);
+    return res
+      .status(httpIntServerError)
+      .json({ error: "Fehler beim Erstellen der Behandlung" });
+  }
+};
+
 export const deleteTreatment = async (
   req: Request<{ id: string }>,
   res: Response

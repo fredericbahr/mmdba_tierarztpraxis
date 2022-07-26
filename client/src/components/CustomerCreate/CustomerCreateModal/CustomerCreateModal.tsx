@@ -19,7 +19,7 @@ import { CustomerCreateForm } from "../CustomerCreateForm/CustomerCreateForm";
 interface IProps {
   isOpen: boolean;
   onClose: () => void;
-  setNewCustomer: (customer: ICustomer) => void;
+  setNewCustomer?: (customer: ICustomer) => void;
 }
 
 export const CustomerCreateModal = ({
@@ -85,7 +85,7 @@ export const CustomerCreateModal = ({
     }
 
     showSuccessToast("Erfolg", "Besitzer erfolgreich angelegt");
-    setNewCustomer(customer);
+    setNewCustomer?.(customer);
     onClose();
   };
 

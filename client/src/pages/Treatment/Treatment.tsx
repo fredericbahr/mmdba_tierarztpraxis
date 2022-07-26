@@ -61,6 +61,16 @@ export const Treatment = () => {
     }
   };
 
+  const handleUpdateTreatment = (treatment: ITreatment) => {
+    const updatedTreatments = treatments.map((t) => {
+      if (t.id === treatment.id) {
+        return treatment;
+      }
+
+      return t;
+    });
+  };
+
   useEffect(() => {
     const fetchLatestTreatment = async () => {
       const { treatments } = await get("/api/treatments/latest/10");
@@ -107,6 +117,7 @@ export const Treatment = () => {
               treatments={searchResults}
               isLoading={isLoading}
               deleteTreatment={deleteTreatment}
+              setUpdatedTreatment={handleUpdateTreatment}
             />
 
             <Flex justifyContent="center">
@@ -121,6 +132,7 @@ export const Treatment = () => {
             treatments={treatments}
             isLoading={isLoading}
             deleteTreatment={deleteTreatment}
+            setUpdatedTreatment={handleUpdateTreatment}
           />
         )}
       </GridItem>

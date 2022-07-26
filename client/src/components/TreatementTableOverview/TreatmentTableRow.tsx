@@ -10,7 +10,13 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { format } from "date-fns";
-import { File, Image, MonitorPlay, TrashSimple } from "phosphor-react";
+import {
+  File,
+  Image,
+  MonitorPlay,
+  PencilSimple,
+  TrashSimple,
+} from "phosphor-react";
 import React from "react";
 
 import { useCustomToast } from "../../hooks/useCustomToast";
@@ -18,6 +24,7 @@ import { useFetch } from "../../hooks/useFetch";
 import { IMedicine } from "../../interfaces/medicineInterface";
 import { ITreatment } from "../../interfaces/treatmentInterface";
 import { DeleteAlert } from "../DeleteAlert/DeleteAlert";
+import { TreatmentEditModal } from "../TreatmentEditModal/TreatmentEditModal";
 
 interface IProps {
   treatment: ITreatment;
@@ -25,6 +32,7 @@ interface IProps {
   handleVideoClick: () => void;
   handleFindingClick: () => void;
   deleteTreatment: (id: number) => void;
+  setUpdatedTreatment: (treatment: ITreatment) => void;
 }
 
 export const TreatmentTableRow = ({
@@ -33,10 +41,16 @@ export const TreatmentTableRow = ({
   handleVideoClick,
   handleFindingClick,
   deleteTreatment,
+  setUpdatedTreatment,
 }: IProps) => {
   const { isLoading, error, deleteFetch } = useFetch();
   const { showErrorToast } = useCustomToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenUpdate,
+    onOpen: onOpenUpdate,
+    onClose: onCloseUpdate,
+  } = useDisclosure();
 
   const renderMedicines = (medicines: IMedicine[]) => {
     return (
@@ -75,75 +89,93 @@ export const TreatmentTableRow = ({
   };
 
   return (
-    <Tr
-      _hover={{
-        backgroundColor: "gray.100",
-      }}
-    >
-      <Td>{format(new Date(treatment.date), "dd.MM.yyyy")}</Td>
-      <Td>{treatment.diagnosis}</Td>
-      <Td>{treatment.notes}</Td>
-      <Td isNumeric>{treatment.costs}</Td>
-      <Td>{treatment.customer?.name || "---"}</Td>
-      <Td>{treatment.animal?.name || "---"}</Td>
-      <Td>{treatment.animal?.race?.name || "---"}</Td>
-      <Td>{treatment.animal?.race?.species?.name || "---"}</Td>
-      <Td>{renderMedicines(treatment.medicines)}</Td>
-      <Td>
-        <HStack>
-          {treatment.photos.length > 0 && (
-            <Tooltip label="Bilddokumentation" hasArrow>
+    <>
+      <Tr
+        _hover={{
+          backgroundColor: "gray.100",
+        }}
+      >
+        <Td>{format(new Date(treatment.date), "dd.MM.yyyy")}</Td>
+        <Td>{treatment.diagnosis}</Td>
+        <Td>{treatment.notes}</Td>
+        <Td isNumeric>{treatment.costs}</Td>
+        <Td>{treatment.customer?.name || "---"}</Td>
+        <Td>{treatment.animal?.name || "---"}</Td>
+        <Td>{treatment.animal?.race?.name || "---"}</Td>
+        <Td>{treatment.animal?.race?.species?.name || "---"}</Td>
+        <Td>{renderMedicines(treatment.medicines)}</Td>
+        <Td>
+          <HStack>
+            {treatment.photos.length > 0 && (
+              <Tooltip label="Bilddokumentation" hasArrow>
+                <IconButton
+                  variant="ghost"
+                  colorScheme="gray"
+                  icon={<Icon as={Image} />}
+                  aria-label="Bilddokumentation"
+                  onClick={handlePhotoClick}
+                />
+              </Tooltip>
+            )}
+            {treatment.videos.length > 0 && (
+              <Tooltip label="Videodokumentation" hasArrow>
+                <IconButton
+                  variant="ghost"
+                  colorScheme="gray"
+                  icon={<Icon as={MonitorPlay} />}
+                  aria-label="Videodokumentation"
+                  onClick={handleVideoClick}
+                />
+              </Tooltip>
+            )}
+            {treatment.findings.length > 0 && (
+              <Tooltip label="Befunde" hasArrow>
+                <IconButton
+                  variant="ghost"
+                  colorScheme="gray"
+                  icon={<Icon as={File} />}
+                  aria-label="Befunde"
+                  onClick={handleFindingClick}
+                />
+              </Tooltip>
+            )}
+            <Tooltip label="Behandlung bearbeiten" hasArrow>
               <IconButton
                 variant="ghost"
                 colorScheme="gray"
-                icon={<Icon as={Image} />}
-                aria-label="Bilddokumentation"
-                onClick={handlePhotoClick}
+                icon={<Icon as={PencilSimple} />}
+                aria-label="Löschen"
+                isLoading={isLoading}
+                onClick={onOpenUpdate}
               />
             </Tooltip>
-          )}
-          {treatment.videos.length > 0 && (
-            <Tooltip label="Videodokumentation" hasArrow>
+            <Tooltip label="Behandlung löschen" hasArrow>
               <IconButton
                 variant="ghost"
-                colorScheme="gray"
-                icon={<Icon as={MonitorPlay} />}
-                aria-label="Videodokumentation"
-                onClick={handleVideoClick}
+                colorScheme="red"
+                icon={<Icon as={TrashSimple} />}
+                aria-label="Löschen"
+                isLoading={isLoading}
+                onClick={onOpen}
               />
             </Tooltip>
-          )}
-          {treatment.findings.length > 0 && (
-            <Tooltip label="Befunde" hasArrow>
-              <IconButton
-                variant="ghost"
-                colorScheme="gray"
-                icon={<Icon as={File} />}
-                aria-label="Befunde"
-                onClick={handleFindingClick}
-              />
-            </Tooltip>
-          )}
-          <Tooltip label="Behandlung löschen" hasArrow>
-            <IconButton
-              variant="ghost"
-              colorScheme="red"
-              icon={<Icon as={TrashSimple} />}
-              aria-label="Löschen"
-              isLoading={isLoading}
-              onClick={onOpen}
-            />
-          </Tooltip>
-          <DeleteAlert
-            heading="Behandlung löschen?"
-            body="Wollen Sie die Behandlung wirklich löschen?"
-            isOpen={isOpen}
-            isLoading={isLoading}
-            onClose={onClose}
-            onDelete={() => handleDelete()}
-          />
-        </HStack>
-      </Td>
-    </Tr>
+          </HStack>
+        </Td>
+      </Tr>
+      <DeleteAlert
+        heading="Behandlung löschen?"
+        body="Wollen Sie die Behandlung wirklich löschen?"
+        isOpen={isOpen}
+        isLoading={isLoading}
+        onClose={onClose}
+        onDelete={() => handleDelete()}
+      />
+      <TreatmentEditModal
+        isOpen={isOpenUpdate}
+        onClose={onCloseUpdate}
+        treatment={{ ...treatment }}
+        setUpdatedTreatment={setUpdatedTreatment}
+      />
+    </>
   );
 };

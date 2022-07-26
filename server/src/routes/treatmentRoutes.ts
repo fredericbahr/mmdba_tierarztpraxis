@@ -7,6 +7,7 @@ import {
   getTreatments,
   handleTreatmentFilterSearch,
   handleTreatmentImageSearch,
+  updateTreatment,
 } from "../controllers/treatmentController";
 
 const treatmentRouter = express.Router();
@@ -30,6 +31,12 @@ treatmentRouter.post(
   "/treatment/search/image",
   formData.single("treatment-image"),
   handleTreatmentImageSearch
+);
+
+treatmentRouter.post(
+  "/treatment/edit/:id",
+  formData.array("treatment-files"),
+  updateTreatment
 );
 
 treatmentRouter.delete("/treatment/:id", deleteTreatment);

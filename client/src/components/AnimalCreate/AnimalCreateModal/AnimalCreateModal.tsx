@@ -24,7 +24,7 @@ import { AnimalSpeziesChooseStep } from "../AnimalSpeciesChooseStep/AnimalSpecie
 interface IProps {
   isOpen: boolean;
   onClose: () => void;
-  setNewAnimal: (animal: IAnimal) => void;
+  setNewAnimal?: (animal: IAnimal) => void;
 }
 
 export const AnimalCreateModal = ({
@@ -98,7 +98,7 @@ export const AnimalCreateModal = ({
     }
 
     showSuccessToast("Erfolgreich", "Tiere wurden erfolgreich erstellt");
-    setNewAnimal(animal);
+    setNewAnimal?.(animal);
     onClose();
   };
 
