@@ -1,52 +1,67 @@
-import { Heading } from "@chakra-ui/react";
-import { Box, Button, Grid, GridItem, Text,VStack } from "@chakra-ui/react";
-import { useDisclosure } from "@chakra-ui/react";
+import { Button, Grid, GridItem, Text, VStack } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
-import { SearchAnimalModal } from "../../components/SearchAnimal/SearchAnimalModal";
 import { useCustomToast } from "../../hooks/useCustomToast";
 import { useFetch } from "../../hooks/useFetch";
 import { IAnimals } from "../../interfaces/animalInterface";
 import { AnimalCreate } from "./AnimalCreate";
 import { AnimalOverview } from "./AnimalOverview";
+import { SearchAnimals } from "./SearchAnimals";
 
 export const Animal = () => {
-
   const { isLoading, error, get } = useFetch();
   const { showErrorToast } = useCustomToast();
 
-  const [searchResults, setSearchResults] = useState<IAnimals[]>([]);
-
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [animals, setAnimals] = useState<IAnimals[]>([]);
+  const [searchResults, setSearchResults] = useState<IAnimals[] | null>(null);
 
   useEffect(() => {
-    console.log(searchResults, "- Search results have changed");
-  },[searchResults]);
+    const fetchLatestAnimals = async () => {
+      const { animals } = await get("/api/animals/latest/6");
+
+      if (!animals || error) {
+        return showErrorToast("Fehler", "Fehler beim Laden der letzen Tiere");
+      }
+
+      setAnimals(animals);
+    };
+    fetchLatestAnimals();
+  }, []);
 
   return (
-    <Grid templateColumns="repeat(3, 1fr)" gridGap={8}>
-    <GridItem colSpan={2}>
-      {searchResults.length > 0 && (
-        <VStack spacing={8}>
+    <Grid
+      templateColumns={{ base: "repeat(1, 1fr)", "2xl": "repeat(3, 1fr)" }}
+      gridGap={8}
+    >
+      <GridItem colSpan={2}>
+        {searchResults && searchResults.length > 0 && (
+          <VStack spacing={8}>
+            <AnimalOverview
+              isLoading={false}
+              animals={searchResults}
+              heading="Suchergebnisse"
+              setResults={setSearchResults}
+            />
+            <Button variant="ghost" onClick={() => setSearchResults([])}>
+              Suche zurücksetzen
+            </Button>
+          </VStack>
+        )}
+        {!searchResults && (
           <AnimalOverview
-                  isLoading={false}
-                  animals={searchResults}
-                  heading="Suchergebnisse"
-                  setResults={setSearchResults}
+            isLoading={isLoading}
+            animals={animals}
+            heading="Neusten Tiere"
+            setResults={setAnimals}
           />
-          <Button variant="ghost" onClick={() => setSearchResults([])}>
-                  Suche zurücksetzen
-          </Button>
+        )}
+      </GridItem>
+      <GridItem>
+        <VStack spacing={8} alignItems="start">
+          <SearchAnimals setResults={setSearchResults} />
+          <AnimalCreate />
         </VStack>
-      )} 
-    </GridItem>
-    <GridItem>
-      <Box marginBottom={4}>
-        <Button onClick={onOpen}>Tiere suchen</Button>
-        <SearchAnimalModal isOpen={isOpen} onClose={onClose} setResults={setSearchResults}/>
-      </Box>
-      <AnimalCreate />
-    </GridItem>
+      </GridItem>
     </Grid>
   );
 };

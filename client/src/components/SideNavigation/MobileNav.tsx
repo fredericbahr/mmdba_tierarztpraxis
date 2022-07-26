@@ -1,12 +1,4 @@
-import {
-  Flex,
-  FlexProps,
-  HStack,
-  Icon,
-  IconButton,
-  Image,
-  VStack,
-} from "@chakra-ui/react";
+import { Flex, FlexProps, Icon, IconButton, Image } from "@chakra-ui/react";
 import { List } from "phosphor-react";
 import React from "react";
 
