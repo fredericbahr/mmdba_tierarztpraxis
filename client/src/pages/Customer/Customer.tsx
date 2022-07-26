@@ -32,6 +32,7 @@ export const Customer = () => {
                   isLoading={false}
                   customers={searchResults}
                   heading="Suchergebnisse"
+                  setResults={setSearchResults}
           />
           <Button variant="ghost" onClick={() => setSearchResults([])}>
                   Suche zurücksetzen

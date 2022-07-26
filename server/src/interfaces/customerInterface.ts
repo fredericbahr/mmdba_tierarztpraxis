@@ -6,6 +6,10 @@ export interface ICreateCustomerRequest {
     plz: number;
     street: string;
 }
+
+export interface IDeleteCustomerRequest {
+    id: number;
+}
 export interface ISearchCustomerRequest {
     city: string;
     createdAt: Date;

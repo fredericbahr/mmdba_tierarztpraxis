@@ -17,6 +17,7 @@ import {
     customers: ICustomer[];
     heading?: string;
     showAmount?: number;
+    setResults: (results: any) => void;
   }
   
   export const CustomerOverview = ({
@@ -24,6 +25,7 @@ import {
     customers,
     heading,
     showAmount = 6,
+    setResults
   }: IProps) => {
     const [page, setPage] = useState(1);
   
@@ -53,7 +55,7 @@ import {
                 )
                 .map((customer: ICustomer, index: number) => (
                   <GridItem key={index}>
-                    <CustomerCard customer={customer} />
+                    <CustomerCard customer={customer} allCustomers={customers} setResults={setResults}/>
                   </GridItem>
                 ))}
             </Grid>
