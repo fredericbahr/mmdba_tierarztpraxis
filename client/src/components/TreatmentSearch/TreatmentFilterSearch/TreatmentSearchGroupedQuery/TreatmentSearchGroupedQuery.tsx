@@ -137,7 +137,7 @@ export const TreatmentSearchGroupedQuery = ({
                   }
                 />
               </GridItem>
-              <GridItem>
+              <GridItem alignSelf="center">
                 {index !== 0 && (
                   <Tooltip label="Filter löschen" hasArrow>
                     <IconButton
