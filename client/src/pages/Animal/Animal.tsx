@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 
 import { useCustomToast } from "../../hooks/useCustomToast";
 import { useFetch } from "../../hooks/useFetch";
-import { IAnimals } from "../../interfaces/animalInterface";
+import { IAnimal } from "../../interfaces/animalInterface";
 import { AnimalCreate } from "./AnimalCreate";
 import { AnimalOverview } from "./AnimalOverview";
 import { SearchAnimals } from "./SearchAnimals";
@@ -12,8 +12,12 @@ export const Animal = () => {
   const { isLoading, error, get } = useFetch();
   const { showErrorToast } = useCustomToast();
 
-  const [animals, setAnimals] = useState<IAnimals[]>([]);
-  const [searchResults, setSearchResults] = useState<IAnimals[] | null>(null);
+  const [animals, setAnimals] = useState<IAnimal[]>([]);
+  const [searchResults, setSearchResults] = useState<IAnimal[] | null>(null);
+
+  const handleNewAnimal = (animal: IAnimal) => {
+    setAnimals([...animals, animal]);
+  };
 
   useEffect(() => {
     const fetchLatestAnimals = async () => {
@@ -22,6 +26,8 @@ export const Animal = () => {
       if (!animals || error) {
         return showErrorToast("Fehler", "Fehler beim Laden der letzen Tiere");
       }
+
+      console.log(animals);
 
       setAnimals(animals);
     };
@@ -59,7 +65,7 @@ export const Animal = () => {
       <GridItem>
         <VStack spacing={8} alignItems="start">
           <SearchAnimals setResults={setSearchResults} />
-          <AnimalCreate />
+          <AnimalCreate setNewAnimal={handleNewAnimal} />
         </VStack>
       </GridItem>
     </Grid>

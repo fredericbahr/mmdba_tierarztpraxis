@@ -13,6 +13,7 @@ import React, { useEffect, useState } from "react";
 
 import { useCustomToast } from "../../../hooks/useCustomToast";
 import { useFetch } from "../../../hooks/useFetch";
+import { IMedicine } from "../../../interfaces/medicineInterface";
 import { IStep } from "../../../interfaces/stepInterface";
 import { MedicineCreateStep } from "../MedicineCreateStep/MedicineCreateStep";
 import { MedicineDescriptionUpload } from "../MedicineDescriptionUpload/MedicineDescriptionUpload";
@@ -20,9 +21,14 @@ import { MedicineDescriptionUpload } from "../MedicineDescriptionUpload/Medicine
 interface IProps {
   isOpen: boolean;
   onClose: () => void;
+  setNewMedicine: (medicine: IMedicine) => void;
 }
 
-export const MedicineCreateModal = ({ isOpen, onClose }: IProps) => {
+export const MedicineCreateModal = ({
+  isOpen,
+  onClose,
+  setNewMedicine,
+}: IProps) => {
   const { nextStep, prevStep, reset, activeStep } = useSteps({
     initialStep: 0,
   });
@@ -69,13 +75,15 @@ export const MedicineCreateModal = ({ isOpen, onClose }: IProps) => {
     formData.append("dosis", (medicineDosis ?? "").toString());
     formData.append("medicine-files", medicineDescription ?? "");
 
-    const response = await uploadFormData("/api/medicine", formData);
+    const { medicine } = await uploadFormData("/api/medicine", formData);
 
-    if (!response?.medicine || error) {
+    if (!medicine || error) {
       return showErrorToast("Fehler", error || "Es ist ein Fehler aufgetreten");
     }
 
     showSuccessToast("Erfolg", "Medizin erfolgreich angelegt");
+    setNewMedicine(medicine);
+
     onClose();
   };
 

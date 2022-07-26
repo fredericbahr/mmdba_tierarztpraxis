@@ -36,7 +36,7 @@ export const Treatment = () => {
   const { showErrorToast } = useCustomToast();
   const searchRef = useRef<ITreatmentSearchRef>();
 
-  const addTreatment = (treatment: ITreatment) => {
+  const handleNewTreatment = (treatment: ITreatment) => {
     setTreatments([...treatments, treatment]);
   };
 
@@ -132,7 +132,7 @@ export const Treatment = () => {
             setTreatmentSearchType={setSearchType}
             setSearchResults={handleSearchResults}
           />
-          <TreatmentCreate addTreatment={addTreatment} />
+          <TreatmentCreate setNewTreatment={handleNewTreatment} />
         </VStack>
       </GridItem>
     </Grid>

@@ -121,6 +121,22 @@ export const createTreatment = async (
           })),
         },
       },
+      include: {
+        animal: {
+          include: {
+            race: {
+              include: {
+                species: true,
+              },
+            },
+          },
+        },
+        customer: true,
+        medicines: true,
+        findings: true,
+        photos: true,
+        videos: true,
+      },
     });
 
     return res.status(httpOK).json({ treatment });

@@ -5,10 +5,10 @@ import { TreatmentCreateModal } from "../../components/TreatmentCreate/Treatment
 import { ITreatment } from "../../interfaces/treatmentInterface";
 
 interface IProps {
-  addTreatment: (treatment: ITreatment) => void;
+  setNewTreatment: (treatment: ITreatment) => void;
 }
 
-export const TreatmentCreate = ({ addTreatment }: IProps) => {
+export const TreatmentCreate = ({ setNewTreatment }: IProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <>
@@ -16,7 +16,7 @@ export const TreatmentCreate = ({ addTreatment }: IProps) => {
       <TreatmentCreateModal
         isOpen={isOpen}
         onClose={onClose}
-        addTreatment={addTreatment}
+        setNewTreatment={setNewTreatment}
       />
     </>
   );

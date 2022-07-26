@@ -13,6 +13,7 @@ import React, { useEffect, useState } from "react";
 
 import { useCustomToast } from "../../../hooks/useCustomToast";
 import { useFetch } from "../../../hooks/useFetch";
+import { IAnimal } from "../../../interfaces/animalInterface";
 import { ISelectOptions } from "../../../interfaces/selectInterface";
 import { IStep } from "../../../interfaces/stepInterface";
 import { CustomerChooseStep } from "../../CustomerChooseStep/CustomerChooseStep";
@@ -23,9 +24,14 @@ import { AnimalSpeziesChooseStep } from "../AnimalSpeciesChooseStep/AnimalSpecie
 interface IProps {
   isOpen: boolean;
   onClose: () => void;
+  setNewAnimal: (animal: IAnimal) => void;
 }
 
-export const AnimalCreateModal = ({ isOpen, onClose }: IProps) => {
+export const AnimalCreateModal = ({
+  isOpen,
+  onClose,
+  setNewAnimal,
+}: IProps) => {
   const { nextStep, prevStep, reset, activeStep } = useSteps({
     initialStep: 0,
   });
@@ -82,9 +88,9 @@ export const AnimalCreateModal = ({ isOpen, onClose }: IProps) => {
       raceId: raceId,
     };
 
-    const data = await post("/api/animal", body);
+    const { animal } = await post("/api/animal", body);
 
-    if (error || !data) {
+    if (error || !animal) {
       return showErrorToast(
         "Fehler",
         error || "Fehler beim Erstellen des Tieres"
@@ -92,7 +98,7 @@ export const AnimalCreateModal = ({ isOpen, onClose }: IProps) => {
     }
 
     showSuccessToast("Erfolgreich", "Tiere wurden erfolgreich erstellt");
-
+    setNewAnimal(animal);
     onClose();
   };
 

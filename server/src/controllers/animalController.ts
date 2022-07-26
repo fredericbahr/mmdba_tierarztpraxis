@@ -155,6 +155,10 @@ export const createAnimal = async (
           },
         },
       },
+      include: {
+        owner: true,
+        race: true,
+      },
     });
 
     return res.status(httpOK).json({ animal });

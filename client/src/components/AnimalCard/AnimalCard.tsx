@@ -15,12 +15,12 @@ import React, { useRef } from "react";
 
 import { useCustomToast } from "../../hooks/useCustomToast";
 import { useFetch } from "../../hooks/useFetch";
-import { IAnimals } from "../../interfaces/animalInterface";
+import { IAnimal } from "../../interfaces/animalInterface";
 import { DeleteAlert } from "../DeleteAlert/DeleteAlert";
 
 interface IProps {
-  animal: IAnimals;
-  allAnimals: IAnimals[];
+  animal: IAnimal;
+  allAnimals: IAnimal[];
   setResults: (results: any) => void;
 }
 
@@ -86,10 +86,10 @@ export const AnimalCard = ({ animal, allAnimals, setResults }: IProps) => {
               </Text>
             </VStack>
             <VStack>
-              <Text>Spezies: {animal.race.name}</Text>
+              <Text>Spezies: {animal.race?.name || "---"}</Text>
             </VStack>
             <VStack alignItems="start">
-              <Text>Besitzer: {animal.owner.name}</Text>
+              <Text>Besitzer: {animal.owner?.name || "---"}</Text>
             </VStack>
           </HStack>
         </VStack>

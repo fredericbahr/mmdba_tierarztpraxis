@@ -26,13 +26,13 @@ import { TreatmentMedicineStep } from "./TreatmentMedicineStep";
 interface IProps {
   isOpen: boolean;
   onClose: () => void;
-  addTreatment: (treatment: ITreatment) => void;
+  setNewTreatment: (treatment: ITreatment) => void;
 }
 
 export const TreatmentCreateModal = ({
   isOpen,
   onClose,
-  addTreatment,
+  setNewTreatment,
 }: IProps) => {
   const { nextStep, prevStep, reset, activeStep } = useSteps({
     initialStep: 0,
@@ -129,7 +129,7 @@ export const TreatmentCreateModal = ({
       "Behandlung erstellt",
       "Behandlung wurde erfolgreich erstellt"
     );
-    addTreatment(treatment);
+    setNewTreatment(treatment);
     onClose();
   };
 
