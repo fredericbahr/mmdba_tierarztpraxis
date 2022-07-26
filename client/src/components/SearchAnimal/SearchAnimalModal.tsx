@@ -13,7 +13,6 @@ import React, { useEffect, useState } from "react";
 
 import { useCustomToast } from "../../hooks/useCustomToast";
 import { useFetch } from "../../hooks/useFetch";
-import { IAnimals } from "../../interfaces/animalInterface";
 import { ISelectOptions } from "../../interfaces/selectInterface";
 import { SearchAnimalStep } from "./SearchAnimalStep";
 import { SearchCustomerStep } from "./SearchCustomerStep";
@@ -31,7 +30,7 @@ export const SearchAnimalModal = ({ isOpen, onClose, setResults }: IProps) => {
     initialStep: 0,
   });
 
-  const { showErrorToast } = useCustomToast();
+  const { showErrorToast, showSuccessToast } = useCustomToast();
   const { isLoading, error, get } = useFetch();
 
   const [animalName, setAnimalName] = useState("");
@@ -40,12 +39,6 @@ export const SearchAnimalModal = ({ isOpen, onClose, setResults }: IProps) => {
   const [customerId, setCustomerId] = useState<number | null>(null);
   const [speciesId, setSpeciesId] = useState<number | null>(null);
   const [raceId, setRaceId] = useState<number | null>(null);
-
-  const [animals, setAnimals] = useState<IAnimals[]>([]);
-
-  useEffect(() => {
-    setResults(animals);
-  }, [animals]);
 
   const handleAnimalNameChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -89,17 +82,27 @@ export const SearchAnimalModal = ({ isOpen, onClose, setResults }: IProps) => {
       raceId: raceId,
       speciesId: speciesId,
     };
-    const empty_query = (Object.keys(parameters).length === 1 && parameters.name.length === 0) ? false : true;
+    const empty_query =
+      Object.keys(parameters).length === 1 && parameters.name.length === 0
+        ? false
+        : true;
 
     if (!empty_query) {
       const data = await get("/api/animal/");
+
+      if (!data || error) {
+        showErrorToast(
+          "Fehler beim Laden der Tiere",
+          "Bitte versuchen Sie es erneut"
+        );
+      }
+
       console.log(data);
-      setAnimals(data.animal);
-    }
-    else {
-      let query="";
+      setResults(data.animal);
+    } else {
+      let query = "";
       if (parameters.birthdate != null || undefined) {
-        query += "birthdate=" + String(parameters.birthdate) +"&";
+        query += "birthdate=" + String(parameters.birthdate) + "&";
       }
       if (parameters.customerId != null || undefined) {
         query += "customerId=" + String(parameters.customerId) + "&";
@@ -116,16 +119,18 @@ export const SearchAnimalModal = ({ isOpen, onClose, setResults }: IProps) => {
       if (parameters.speciesId != null || undefined) {
         query += "speciesId=" + String(parameters.speciesId);
       }
-      if (query.slice(-1)=="&") query = query.slice(0,-1);
-      const data = await get("api/animal/data/?"+query);
-      setAnimals(data.animal);
-    }
+      if (query.slice(-1) == "&") query = query.slice(0, -1);
 
-    if (error || !animals) {
-      return showErrorToast(
-        "Fehler",
-        error || "Fehler beim Suchen des Tieres"
-      );
+      const data = await get("api/animal/data/?" + query);
+
+      if (!data || error) {
+        return showErrorToast(
+          "Fehler beim Laden der Tiere",
+          "Bitte versuchen Sie es erneut"
+        );
+      }
+
+      setResults(data.animal);
     }
 
     showSuccessToast("Erfolgreich", "Tiere wurden erfolgreich gefunden");
@@ -212,9 +217,7 @@ export const SearchAnimalModal = ({ isOpen, onClose, setResults }: IProps) => {
             </Button>
             <Button
               onClick={
-                activeStep === steps.length - 1
-                  ? handleSearchAnimal
-                  : nextStep
+                activeStep === steps.length - 1 ? handleSearchAnimal : nextStep
               }
               isLoading={isLoading}
               disabled={activeStep >= steps.length}
@@ -223,11 +226,11 @@ export const SearchAnimalModal = ({ isOpen, onClose, setResults }: IProps) => {
               {activeStep === steps.length - 1 ? "Tier suchen" : "Weiter"}
             </Button>
             <Button
-              onClick={
-                handleSearchAnimal
-              }
+              onClick={handleSearchAnimal}
               isLoading={isLoading}
-              hidden={activeStep == 3}>Tier suchen
+              hidden={activeStep == 3}
+            >
+              Tier suchen
             </Button>
           </Flex>
         </ModalFooter>
@@ -235,6 +238,3 @@ export const SearchAnimalModal = ({ isOpen, onClose, setResults }: IProps) => {
     </Modal>
   );
 };
-function showSuccessToast(arg0: string, arg1: string) {
-   console.log("Search was succesfull");
-}

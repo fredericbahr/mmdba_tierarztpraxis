@@ -1,7 +1,6 @@
-import { Button, Grid, GridItem, VStack } from "@chakra-ui/react";
+import { Button, Grid, GridItem, Text, VStack } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
-import { SearchAnimalModal } from "../../components/SearchAnimal/SearchAnimalModal";
 import { useCustomToast } from "../../hooks/useCustomToast";
 import { useFetch } from "../../hooks/useFetch";
 import { IAnimals } from "../../interfaces/animalInterface";
@@ -13,11 +12,21 @@ export const Animal = () => {
   const { isLoading, error, get } = useFetch();
   const { showErrorToast } = useCustomToast();
 
-  const [searchResults, setSearchResults] = useState<IAnimals[]>([]);
+  const [animals, setAnimals] = useState<IAnimals[]>([]);
+  const [searchResults, setSearchResults] = useState<IAnimals[] | null>(null);
 
   useEffect(() => {
-    console.log(searchResults, "- Search results have changed");
-  }, [searchResults]);
+    const fetchLatestAnimals = async () => {
+      const { animals } = await get("/api/animals/latest/6");
+
+      if (!animals || error) {
+        return showErrorToast("Fehler", "Fehler beim Laden der letzen Tiere");
+      }
+
+      setAnimals(animals);
+    };
+    fetchLatestAnimals();
+  }, []);
 
   return (
     <Grid
@@ -25,7 +34,7 @@ export const Animal = () => {
       gridGap={8}
     >
       <GridItem colSpan={2}>
-        {searchResults.length > 0 && (
+        {searchResults && searchResults.length > 0 && (
           <VStack spacing={8}>
             <AnimalOverview
               isLoading={false}
@@ -37,6 +46,14 @@ export const Animal = () => {
               Suche zurücksetzen
             </Button>
           </VStack>
+        )}
+        {!searchResults && (
+          <AnimalOverview
+            isLoading={isLoading}
+            animals={animals}
+            heading="Neusten Tiere"
+            setResults={setAnimals}
+          />
         )}
       </GridItem>
       <GridItem>

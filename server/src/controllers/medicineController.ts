@@ -49,7 +49,7 @@ export const getLatestMedicines = async (req: Request, res: Response) => {
   } catch (err) {
     return res
       .status(httpIntServerError)
-      .json({ error: "Fehler beim Abrufen der Medikamente" });
+      .json({ error: "Fehler beim Abrufen der neusten Medikamente" });
   }
 };
 
