@@ -57,19 +57,9 @@ import {
                 value={customerName}
               />
             </FormControl>
-  
-            <FormControl>
-              <FormLabel htmlFor="animalBirthYear">Geburtsdatum</FormLabel>
-              <Input
-                value={customerCreatedAt?.toISOString().substring(0, 10) || undefined}
-                id="customerCreatedAt"
-                type="date"
-                onChange={onCustomerCreatedAtChange}
-              />
-            </FormControl>
 
             <FormControl>
-              <FormLabel htmlFor="customerCity">Stadt</FormLabel>
+              <FormLabel htmlFor="customerCity">Ort</FormLabel>
               <Input
                 id="customerCity"
                 type="text"
@@ -79,7 +69,7 @@ import {
             </FormControl>
 
             <FormControl>
-              <FormLabel htmlFor="customerPhoneNumber">Rufnummer</FormLabel>
+              <FormLabel htmlFor="customerPhoneNumber">Telefonnummer</FormLabel>
               <Input
                 id="customerPhoneNumber"
                 type="text"
@@ -89,7 +79,7 @@ import {
             </FormControl>
   
             <FormControl>
-              <FormLabel htmlFor="customerPlz">PLZ:</FormLabel>
+              <FormLabel htmlFor="customerPlz">Postleitzahl</FormLabel>
               <NumberInput defaultValue={customerPlz || undefined}>
                 <NumberInputField
                   id="customerPlz"
