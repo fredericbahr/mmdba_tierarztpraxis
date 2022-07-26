@@ -190,7 +190,7 @@ const MedicineSearch = ({ setResults }: IProps, ref?: React.Ref<ITreatmentSearch
 
           <Accordion allowToggle marginTop={8} size="xs">
             <AccordionItem>
-              <AccordionButton _expanded={{ bg: "blue.500", color: "white" }}>
+              <AccordionButton  _expanded={{ bg: "blue.500", color: "white" }}>
                 <AccordionIcon />
                 <Text flex="1">Erweiterte Suche</Text>
               </AccordionButton>
