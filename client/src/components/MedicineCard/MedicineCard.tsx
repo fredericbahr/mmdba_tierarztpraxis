@@ -13,28 +13,60 @@ import {
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
-import { CaretDown, CaretUp } from "phosphor-react";
+import { CaretDown, CaretUp, TrashSimple } from "phosphor-react";
 import React, { useState } from "react";
 
+import { useCustomToast } from "../../hooks/useCustomToast";
+import { useFetch } from "../../hooks/useFetch";
 import { IMedicine } from "../../interfaces/medicineInterface";
 import { PDFFullScreenModal } from "../PDFFullScreenModal/PDFFullScreenModal";
 
 interface IProps {
   medicine: IMedicine;
+  deleteMedicine?: (id: number) => void;
 }
 
-export const MedicineCard = ({ medicine }: IProps) => {
+export const MedicineCard = ({
+  medicine,
+  deleteMedicine = undefined,
+}: IProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isLoading, error, deleteFetch } = useFetch();
+  const { showErrorToast } = useCustomToast();
 
   const [showMore, setShowMore] = useState(false);
+
+  const handleDelete = async (id: number) => {
+    const { deletedMedicine } = await deleteFetch(`/api/medicine/${id}`);
+
+    if (!deletedMedicine || error) {
+      return showErrorToast("Fehler", "Fehler beim Löschen des Medikaments");
+    }
+
+    if (deleteMedicine) {
+      deleteMedicine(id);
+    }
+  };
 
   return (
     <>
       <Box boxShadow="md" rounded="md" px={4} py={8} w="full" h="full">
         <VStack spacing={4} alignItems="center">
-          <Heading as="h4" size="md" width="full">
-            {medicine.name}
-          </Heading>
+          <HStack w="full" justifyContent="space-around">
+            <Heading as="h4" size="md" width="full">
+              {medicine.name}
+            </Heading>
+            {deleteMedicine && (
+              <IconButton
+                icon={<Icon as={TrashSimple} />}
+                aria-label="Löschen"
+                colorScheme="red"
+                variant="ghost"
+                isLoading={isLoading}
+                onClick={() => handleDelete(medicine.id)}
+              />
+            )}
+          </HStack>
           <HStack
             w="full"
             justifyContent="start"

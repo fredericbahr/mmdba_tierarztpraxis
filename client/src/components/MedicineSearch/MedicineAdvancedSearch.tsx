@@ -1,8 +1,6 @@
 import {
-  Box,
   Button,
   FormControl,
-  Heading,
   HStack,
   Icon,
   IconButton,
@@ -13,7 +11,6 @@ import {
 } from "@chakra-ui/react";
 import { Plus, TrashSimple } from "phosphor-react";
 import React from "react";
-import { useState } from "react";
 import Select from "react-select";
 
 import {
@@ -102,6 +99,8 @@ export const MedicineAdvancedSearch = ({
                     {idx > 0 && (
                       <IconButton
                         aria-label="Delete Keyword"
+                        colorScheme="red"
+                        variant="ghost"
                         icon={<Icon as={TrashSimple} />}
                         onClick={() => onKeywordSearchDelete(idx)}
                       />

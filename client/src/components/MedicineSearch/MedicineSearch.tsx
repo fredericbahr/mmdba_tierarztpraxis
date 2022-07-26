@@ -16,22 +16,27 @@ import {
 } from "@chakra-ui/react";
 import { MagnifyingGlass } from "phosphor-react";
 import React, { useState } from "react";
+import { useEffect } from "react";
+import { useImperativeHandle } from "react";
+import { forwardRef } from "react";
 
 import { useCustomToast } from "../../hooks/useCustomToast";
 import { useFetch } from "../../hooks/useFetch";
 import {
+  IMedicine,
   IMedicneAdvancedSearchKeyword,
   ISearchOperator,
   ISearchTarget,
 } from "../../interfaces/medicineInterface";
 import { ISelectOptions } from "../../interfaces/selectInterface";
+import { ITreatmentSearchRef } from "../../pages/Treatment/Treatment";
 import { MedicineAdvancedSearch } from "./MedicineAdvancedSearch";
 
 interface IProps {
-  setResults: (results: any) => void;
+  setResults: (results: IMedicine[]) => void;
 }
 
-export const MedicineSearch = ({ setResults }: IProps) => {
+const MedicineSearch = ({ setResults }: IProps, ref?: React.Ref<ITreatmentSearchRef>) => {
   const { isLoading, error, post } = useFetch();
   const { showErrorToast } = useCustomToast();
 
@@ -41,6 +46,10 @@ export const MedicineSearch = ({ setResults }: IProps) => {
   >([{ keyword: "", operator: "&" }]);
   const [keywordSearchAmount, setKeywordSearchAmount] = useState(1);
   const [searchTarget, setSearchTarget] = useState<ISearchTarget>("name");
+  const [
+    isConnectKeywordsWithOrTriggered,
+    setIsConnectKeywordsWithOrTriggered,
+  ] = useState(false);
 
   const handleMedicineNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMedicineNameSearch(e.target.value);
@@ -124,6 +133,37 @@ export const MedicineSearch = ({ setResults }: IProps) => {
     setResults(medicines);
   };
 
+  const handleConnectKeywordsWithOr = () => {
+    const newMedicineKeywordsSearch: IMedicneAdvancedSearchKeyword[] =
+      medicineKeywordsSearch.map((keywordSearch) => ({
+        ...keywordSearch,
+        operator: "|",
+      }));
+    setMedicineKeywordsSearch(newMedicineKeywordsSearch);
+    setIsConnectKeywordsWithOrTriggered(true);
+  };
+
+  const resetSearch = () => {
+    setMedicineNameSearch("");
+    setMedicineKeywordsSearch([{ keyword: "", operator: "&" }]);
+    setKeywordSearchAmount(1);
+    setSearchTarget("name");
+    setIsConnectKeywordsWithOrTriggered(false);
+  };
+
+  useEffect(() => {
+    if (isConnectKeywordsWithOrTriggered) {
+      handleSearch();
+      setIsConnectKeywordsWithOrTriggered(false);
+    }
+  }, [isConnectKeywordsWithOrTriggered]);
+
+  useImperativeHandle(ref, () => ({
+    ...(ref as React.RefObject<ITreatmentSearchRef>).current,
+    handleConnectKeywordsWithOr,
+    resetSearch,
+  }));
+
   return (
     <>
       <Heading as="h3" size="lg">
@@ -138,6 +178,7 @@ export const MedicineSearch = ({ setResults }: IProps) => {
                 id="nameSearch"
                 type="text"
                 placeholder="Medikamentname..."
+                value={medicineNameSearch}
                 disabled={
                   medicineKeywordsSearch.length > 1 ||
                   medicineKeywordsSearch[0].keyword !== ""
@@ -149,7 +190,7 @@ export const MedicineSearch = ({ setResults }: IProps) => {
 
           <Accordion allowToggle marginTop={8} size="xs">
             <AccordionItem>
-              <AccordionButton _expanded={{ bg: "blue.500", color: "white" }}>
+              <AccordionButton  _expanded={{ bg: "blue.500", color: "white" }}>
                 <AccordionIcon />
                 <Text flex="1">Erweiterte Suche</Text>
               </AccordionButton>
@@ -184,3 +225,5 @@ export const MedicineSearch = ({ setResults }: IProps) => {
     </>
   );
 };
+
+export default forwardRef(MedicineSearch);

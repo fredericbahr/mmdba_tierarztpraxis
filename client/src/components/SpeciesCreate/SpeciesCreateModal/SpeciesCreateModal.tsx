@@ -6,6 +6,7 @@ import {
   Input,
   Modal,
   ModalBody,
+  ModalCloseButton,
   ModalContent,
   ModalFooter,
   ModalHeader,
@@ -51,6 +52,7 @@ export const SpeciesCreateModal = ({ isOpen, onClose }: IProps) => {
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Spezies anlegen</ModalHeader>
+        <ModalCloseButton />
         <ModalBody>
           <form>
             <FormControl isRequired>

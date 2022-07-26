@@ -173,13 +173,12 @@ export const handleAdvancedMedicineDescriptionSearch = async (
 ) => {
   const { keywords } = req.body;
 
-  
   if (!keywords) {
     return res.status(httpBadRequest).json({
       error: "Bitte Suchbegriff eingeben",
     });
   }
-  
+
   try {
     const query: string = keywords.reduce(
       (acc: string, curr: IMedicineKeywordSearch, idx: number) => {
@@ -193,6 +192,8 @@ export const handleAdvancedMedicineDescriptionSearch = async (
       ""
     );
 
+    console.log(query);
+
     const medicines: Medicine[] = await prisma.medicine.findMany({
       where: {
         description: {
@@ -200,12 +201,39 @@ export const handleAdvancedMedicineDescriptionSearch = async (
         },
       },
     });
-    
+
     return res.status(httpOK).json({ medicines });
   } catch (err) {
     console.log(err);
     return res
       .status(httpIntServerError)
       .json({ error: "Fehler beim Suchen der Medikamente" });
+  }
+};
+
+export const handleMedicineDelete = async (
+  req: Request<{ id: string }>,
+  res: Response
+) => {
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(httpBadRequest).json({
+      error: "Bitte eine Medikamenten-Id angeben",
+    });
+  }
+
+  try {
+    const deletedMedicine = await prisma.medicine.delete({
+      where: {
+        id: Number(id),
+      },
+    });
+
+    return res.status(httpOK).json({ deletedMedicine });
+  } catch (err) {
+    return res
+      .status(httpIntServerError)
+      .json({ error: "Fehler beim Löschen des Medikamentes" });
   }
 };

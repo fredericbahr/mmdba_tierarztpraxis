@@ -1,8 +1,13 @@
+import { IAnimal } from "./animalInterface";
+import { ITreatment } from "./treatmentInterface";
+
 export interface ICustomer {
-    city: string;
-    createdAt: Date;
-    name: string;
-    phoneNumber: string;
-    plz: number;
-    street: string;
+  id: number;
+  name: string;
+  street: string;
+  plz: number;
+  city: string;
+  phoneNumber: string;
+  animals: IAnimal[];
+  treatments: ITreatment[];
 }

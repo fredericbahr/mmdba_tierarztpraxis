@@ -25,6 +25,9 @@ async function deleteAllEntries() {
     await prisma.photo.deleteMany({});
     await prisma.video.deleteMany({});
     await prisma.finding.deleteMany({});
+
+    await prisma.$queryRaw`DROP INDEX IF EXISTS  medicine_description_index`;
+    await prisma.$queryRaw`DROP INDEX IF EXISTS medicine_name_index`;
   } catch (e) {
     console.log("Failure in deleting entries");
   }
@@ -320,6 +323,7 @@ async function repopulate() {
     const lauesePhoto = await prisma.photo.create({
       data: {
         blob: photos[0],
+        mimeType: "image/jpeg",
         description: "Läuse-Befall, linkes Ohr",
         treatment: {
           connect: {
@@ -331,6 +335,7 @@ async function repopulate() {
     const canisPhoto = await prisma.photo.create({
       data: {
         blob: photos[1],
+        mimeType: "image/jpeg",
         description: "Canis maior, eiternd",
         treatment: {
           connect: {
@@ -342,6 +347,7 @@ async function repopulate() {
     const erkaltPhoto = await prisma.photo.create({
       data: {
         blob: photos[2],
+        mimeType: "image/jpeg",
         description: "Erkältung",
         treatment: {
           connect: {
@@ -355,6 +361,7 @@ async function repopulate() {
     const laueseVideo = await prisma.video.create({
       data: {
         blob: videos[0],
+        mimeType: "video/mp4",
         description: "Läuse-Befall, linkes Ohr",
         treatment: {
           connect: {
@@ -367,6 +374,7 @@ async function repopulate() {
     const canisVideo = await prisma.video.create({
       data: {
         blob: videos[1],
+        mimeType: "video/mp4",
         description: "Canis maior, eiternd",
         treatment: {
           connect: {
@@ -378,6 +386,7 @@ async function repopulate() {
     const erkaltVideo = await prisma.video.create({
       data: {
         blob: videos[2],
+        mimeType: "video/mp4",
         description: "Erkältung",
         treatment: {
           connect: {
@@ -431,9 +440,21 @@ async function repopulate() {
   }
 }
 
+async function createIndexes() {
+  try {
+    await prisma.$queryRaw`CREATE INDEX medicine_description_index ON "Medicine" USING GIN (to_tsvector('german', description))`;
+    await prisma.$queryRaw`CREATE INDEX medicine_name_index ON "Medicine" USING GIN (to_tsvector('german', name))`;
+    console.log("passed index creation");
+  } catch (e) {
+    console.log("Failure in creating indexes");
+    console.log(e);
+  }
+}
+
 async function main() {
   await deleteAllEntries();
   await readFiles();
+  await createIndexes();
   await repopulate();
 }
 

@@ -1,14 +1,4 @@
-import "./PreviewItem.css";
-
-import {
-  Box,
-  CloseButton,
-  Flex,
-  GridItem,
-  HStack,
-  Text,
-  Tooltip,
-} from "@chakra-ui/react";
+import { CloseButton, GridItem, HStack, Text } from "@chakra-ui/react";
 import React from "react";
 
 interface IProps {

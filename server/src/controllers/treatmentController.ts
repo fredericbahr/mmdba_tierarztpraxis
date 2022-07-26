@@ -6,8 +6,21 @@ import {
   httpIntServerError,
   httpOK,
 } from "../config/statusCode";
+import { ITreatmentSearchQuery } from "../interfaces/treatmentInterface";
+import { generateTreatmentSearchQuery } from "../services/treatmentSearchService";
+import compareImages from "resemblejs/compareImages";
+import { ComparisonOptions } from "resemblejs";
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  log: [{ level: "query", emit: "event" }],
+});
+
+// prisma.$on("query", (e) => {
+//   console.log("Query: " + e.query);
+//   console.log("Params: " + e.params);
+//   console.log("Duration: " + e.duration + "ms");
+//   console.log();
+// });
 
 export const getTreatments = async (req: Request, res: Response) => {
   try {
@@ -18,6 +31,41 @@ export const getTreatments = async (req: Request, res: Response) => {
     res
       .status(httpIntServerError)
       .json({ error: "Fehler beim Abrufen der Behanldungen" });
+  }
+};
+
+export const getLatestTreatments = async (
+  req: Request<{ limit: string | undefined }>,
+  res: Response
+) => {
+  try {
+    const limit = Number(req.params.limit || 10);
+    const treatments = await prisma.treatment.findMany({
+      orderBy: { createdAt: "desc" },
+      take: limit,
+      include: {
+        animal: {
+          include: {
+            race: {
+              include: {
+                species: true,
+              },
+            },
+          },
+        },
+        customer: true,
+        medicines: true,
+        findings: true,
+        photos: true,
+        videos: true,
+      },
+    });
+
+    res.status(httpOK).json({ treatments });
+  } catch (error: any) {
+    res
+      .status(httpIntServerError)
+      .json({ error: "Fehler beim Abrufen der letzten Behanldungen" });
   }
 };
 
@@ -53,7 +101,7 @@ export const createTreatment = async (
         },
         findings: {
           create: findings.map((finding) => ({
-            description: finding.text,
+            description: "",
             blob: finding.buffer,
             content: finding.text,
           })),
@@ -62,12 +110,14 @@ export const createTreatment = async (
           create: photos.map((photo) => ({
             description: "",
             blob: photo.buffer,
+            mimeType: photo.mimetype,
           })),
         },
         videos: {
           create: videos.map((video) => ({
             description: "",
             blob: video.buffer,
+            mimeType: video.mimetype,
           })),
         },
       },
@@ -114,4 +164,145 @@ const getPhotos = (files: Express.Multer.File[]) => {
  */
 const getVideos = (files: Express.Multer.File[]) => {
   return files.filter((file) => file.mimetype.startsWith("video/"));
+};
+
+/**
+ * Handles the search of treatments
+ * @param req Request object
+ * @param res Response object
+ */
+export const handleTreatmentFilterSearch = async (
+  req: Request<never, never, { searchQuery: ITreatmentSearchQuery[] }>,
+  res: Response
+) => {
+  const { searchQuery } = req.body;
+
+  if (!searchQuery) {
+    return res.status(httpBadRequest).json({
+      error: "Suchanfrage nicht übergeben",
+    });
+  }
+
+  try {
+    const whereQuery = generateTreatmentSearchQuery(searchQuery);
+
+    const treatments = await prisma.treatment.findMany({
+      where: whereQuery,
+      include: {
+        animal: {
+          include: {
+            race: {
+              include: {
+                species: true,
+              },
+            },
+          },
+        },
+        customer: true,
+        medicines: true,
+        findings: true,
+        photos: true,
+        videos: true,
+      },
+    });
+
+    return res.status(httpOK).json({ treatments });
+  } catch (error: any) {
+    return res
+      .status(httpIntServerError)
+      .json({ error: "Fehler beim Abrufen der Behandlungen" });
+  }
+};
+
+export const handleTreatmentImageSearch = async (
+  req: Request,
+  res: Response
+) => {
+  const inputFile = req.file;
+  const matchPercentage = Number(req.body.matchPercentage || 90);
+  const requestedMissMatchPercentage = 100 - matchPercentage;
+
+  if (!inputFile) {
+    return res.status(httpBadRequest).json({
+      error: "Bitte laden Sie eine Datei hoch",
+    });
+  }
+
+  try {
+    const matchingTreatments: Treatment[] = [];
+
+    const treatmentPhotos = await prisma.treatment.findMany({
+      include: {
+        animal: {
+          include: {
+            race: {
+              include: {
+                species: true,
+              },
+            },
+          },
+        },
+        customer: true,
+        medicines: true,
+        findings: true,
+        photos: true,
+        videos: true,
+      },
+    });
+
+    const compareOptions: ComparisonOptions = {
+      output: {},
+      scaleToSameSize: true,
+      ignore: "antialiasing",
+    };
+
+    await Promise.all(
+      treatmentPhotos.map(async (treatment) => {
+        await treatment.photos.map(async (photo) => {
+          const { misMatchPercentage } = await compareImages(
+            inputFile.buffer,
+            photo.blob,
+            compareOptions
+          );
+
+          if (misMatchPercentage <= requestedMissMatchPercentage) {
+            matchingTreatments.push(treatment);
+            return;
+          }
+        });
+      })
+    );
+
+    return res.status(httpOK).json({ treatments: matchingTreatments });
+  } catch (error: any) {
+    console.log(error);
+    return res
+      .status(httpIntServerError)
+      .json({ error: "Fehler bei der Bildsuche von Behandlungen" });
+  }
+};
+
+export const deleteTreatment = async (
+  req: Request<{ id: string }>,
+  res: Response
+) => {
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(httpBadRequest).json({
+      error: "Bitte eine Behandlungs-ID angeben",
+    });
+  }
+
+  try {
+    const deletedTreatment = await prisma.treatment.delete({
+      where: { id: Number(id) },
+    });
+
+    return res.status(httpOK).json({ deletedTreatment });
+  } catch (error: any) {
+    return res
+      .status(httpIntServerError)
+      .json({ error: "Fehler beim Löschen der Behandlung" });
+  }
 };
