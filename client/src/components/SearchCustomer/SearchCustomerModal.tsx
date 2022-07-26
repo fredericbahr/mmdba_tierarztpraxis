@@ -35,12 +35,6 @@ export const SearchCustomerModal = ({
   const [customerPlz, setCustomerPlz] = useState<number | null>(null);
   const [customerStreet, setCustomerStreet] = useState("");
 
-  const [customers, setCustomers] = useState<ICustomer[]>([]);
-
-  useEffect(() => {
-    setResults(customers);
-  }, [customers]);
-
   const handleCustomerNameChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -97,7 +91,12 @@ export const SearchCustomerModal = ({
     if (!empty_query) {
       const data = await get("/api/customer/");
       console.log(data);
-      setCustomers(data.customer);
+
+      if (!data || error) {
+        return showErrorToast("Fehler", "Fehler beim Suchen von Kunden");
+      }
+
+      setResults(data.customer);
     } else {
       let query = "";
       if (parameters.createdAt != null || undefined) {
@@ -119,12 +118,16 @@ export const SearchCustomerModal = ({
         query += "street=" + String(parameters.street);
       }
       if (query.slice(-1) == "&") query = query.slice(0, -1);
-      const data = await get("api/customer/data/?" + query);
-      setCustomers(data.customer);
-    }
 
-    if (error || !customers) {
-      return showErrorToast("Fehler", error || "Fehler beim Suchen des Kunden");
+      const data = await get("api/customer/data/?" + query);
+
+      console.log("datladjfaldfj", data);
+
+      if (!data || error) {
+        return showErrorToast("Fehler", "Fehler beim Suchen von Kunden");
+      }
+
+      setResults(data.customer);
     }
 
     showSuccessToast("Erfolgreich", "Kunden wurden erfolgreich gefunden");

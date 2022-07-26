@@ -13,13 +13,28 @@ export const Customer = () => {
   const { isLoading, error, get } = useFetch();
   const { showErrorToast } = useCustomToast();
 
-  const [searchResults, setSearchResults] = useState<ICustomer[]>([]);
+  const [searchResults, setSearchResults] = useState<ICustomer[] | null>(null);
+  const [customers, setCustomers] = useState<ICustomer[]>([]);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  const handleSetResults = (results: ICustomer[]) => {
+    setSearchResults(results);
+    setCustomers(results);
+  };
+
   useEffect(() => {
-    console.log(searchResults, "- Search results have changed");
-  }, [searchResults]);
+    const fetchLatestCustomers = async () => {
+      const { customers } = await get("/api/customers/latest/6");
+
+      if (!customers || error) {
+        return showErrorToast("Fehler", "Fehler beim Laden der letzen Kunden");
+      }
+
+      setCustomers(customers);
+    };
+    fetchLatestCustomers();
+  }, []);
 
   return (
     <Grid
@@ -27,18 +42,26 @@ export const Customer = () => {
       gridGap={8}
     >
       <GridItem colSpan={2}>
-        {searchResults.length > 0 && (
+        {searchResults && searchResults.length > 0 && (
           <VStack spacing={8}>
             <CustomerOverview
               isLoading={false}
               customers={searchResults}
               heading="Suchergebnisse"
-              setResults={setSearchResults}
+              setResults={handleSetResults}
             />
-            <Button variant="ghost" onClick={() => setSearchResults([])}>
+            <Button variant="ghost" onClick={() => setSearchResults(null)}>
               Suche zurücksetzen
             </Button>
           </VStack>
+        )}
+        {!searchResults && (
+          <CustomerOverview
+            isLoading={isLoading}
+            customers={customers}
+            heading="Neusten Kunden"
+            setResults={handleSetResults}
+          />
         )}
       </GridItem>
       <GridItem>

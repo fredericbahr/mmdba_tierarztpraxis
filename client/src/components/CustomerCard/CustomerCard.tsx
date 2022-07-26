@@ -1,25 +1,22 @@
 import {
   Box,
-  Button,
   Heading,
   HStack,
   Icon,
   IconButton,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalOverlay,
   Text,
+  Tooltip,
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
 import format from "date-fns/format";
-import { TrashSimple, X } from "phosphor-react";
-import React, { useState } from "react";
-import { useCustomToast } from "../../hooks/useCustomToast";
+import { TrashSimple } from "phosphor-react";
+import React from "react";
 
+import { useCustomToast } from "../../hooks/useCustomToast";
 import { useFetch } from "../../hooks/useFetch";
 import { ICustomer } from "../../interfaces/customerInterface";
+import { DeleteAlert } from "../DeleteAlert/DeleteAlert";
 
 interface IProps {
   customer: ICustomer;
@@ -38,7 +35,8 @@ export const CustomerCard = ({
   const { isLoading, error, deleteFetch } = useFetch();
 
   const handleDeleteRequest = async () => {
-    const result = await deleteFetch("/api/customer/delete/" + customer.id);
+    onClose();
+    const result = await deleteFetch(`/api/customer/delete/${customer.id}`);
     console.log(result);
 
     if (!result || error) {
@@ -49,7 +47,6 @@ export const CustomerCard = ({
       (customer) => customer.id != result.deleteCustomer.id
     );
     setResults(newCustomer);
-    onClose();
   };
 
   return (
@@ -60,39 +57,24 @@ export const CustomerCard = ({
             <Heading as="h4" size="md" width="full">
               {customer.name}
             </Heading>
-            <IconButton
-              icon={<Icon as={TrashSimple} />}
-              aria-label="Löschen"
-              colorScheme="red"
-              variant="ghost"
+            <Tooltip hasArrow label="Kunde löschen">
+              <IconButton
+                icon={<Icon as={TrashSimple} />}
+                aria-label="Löschen"
+                colorScheme="red"
+                variant="ghost"
+                isLoading={isLoading}
+                onClick={onOpen}
+              />
+            </Tooltip>
+            <DeleteAlert
+              heading="Kunde löschen?"
+              body="Wollen Sie den Kunden wirklich löschen?"
+              isOpen={isOpen}
               isLoading={isLoading}
-              onClick={onOpen}
+              onClose={onClose}
+              onDelete={handleDeleteRequest}
             />
-            <Modal isOpen={isOpen} onClose={onClose}>
-              <ModalOverlay />
-              <ModalContent>
-                <ModalBody>
-                  <Heading as="h4" size="md" p={5}>
-                    Wollen Sie den Kunden wirklich löschen?
-                  </Heading>
-                  <HStack
-                    alignItems="center"
-                    spacing={4}
-                    width="full"
-                    justify="center"
-                  >
-                    <IconButton
-                      icon={<Icon as={X} />}
-                      aria-label="Schließen"
-                      colorScheme="blue"
-                      isLoading={isLoading}
-                      onClick={onClose}
-                    />
-                    <Button onClick={handleDeleteRequest}>Bestätigen</Button>
-                  </HStack>
-                </ModalBody>
-              </ModalContent>
-            </Modal>
           </HStack>
           <HStack
             w="full"

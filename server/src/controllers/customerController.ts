@@ -6,7 +6,11 @@ import {
   httpOK,
 } from "../config/statusCode";
 
-import { ICreateCustomerRequest, ISearchCustomerRequest, IDeleteCustomerRequest } from "../interfaces/customerInterface";
+import {
+  ICreateCustomerRequest,
+  ISearchCustomerRequest,
+  IDeleteCustomerRequest,
+} from "../interfaces/customerInterface";
 
 const prisma = new PrismaClient();
 
@@ -27,29 +31,58 @@ export const getAllCustomers = async (req: Request, res: Response) => {
   }
 };
 
-export const getCustomerQuery = async (req: Request<ISearchCustomerRequest, never, ICreateCustomerRequest>,
-  res: Response) => {
+export const getCustomerQuery = async (
+  req: Request<ISearchCustomerRequest, never, ICreateCustomerRequest>,
+  res: Response
+) => {
   try {
-    console.log("Trying to find specific");
-    console.log(req.query);
     const customer = await prisma.customer.findMany({
       where: {
-        city: req.query.city != null && req.query.city != "" ? String(req.query.city) : undefined,
-        createdAt: req.query.createdAt != null ? new Date(String(req.query.createdAt)) : undefined,
-        name: req.query.name != null && req.query.name != "" ? String(req.query.name) : undefined, 
-        phoneNumber: req.query.phoneNumber != null && req.query.phoneNumber != "" ? String(req.query.phoneNumber) : undefined,
+        city:
+          req.query.city != null && req.query.city != ""
+            ? String(req.query.city)
+            : undefined,
+        createdAt:
+          req.query.createdAt != null
+            ? new Date(String(req.query.createdAt))
+            : undefined,
+        name:
+          req.query.name != null && req.query.name != ""
+            ? String(req.query.name)
+            : undefined,
+        phoneNumber:
+          req.query.phoneNumber != null && req.query.phoneNumber != ""
+            ? String(req.query.phoneNumber)
+            : undefined,
         plz: req.query.plz != null ? Number(req.query.plz) : undefined,
-        street: req.query.street != null && req.query.street != "" ? String(req.query.street) : undefined 
-      }
-    }
-    );
-    console.log(customer);
+        street:
+          req.query.street != null && req.query.street != ""
+            ? String(req.query.street)
+            : undefined,
+      },
+    });
 
     return res.status(httpOK).json({ customer });
   } catch (error: any) {
     res
       .status(httpIntServerError)
-      .json({ error: "Fehler beimAbrufen der Kunden"});
+      .json({ error: "Fehler beimAbrufen der Kunden" });
+  }
+};
+
+export const getLatestCustomers = async (req: Request, res: Response) => {
+  try {
+    const amount = parseInt(req.params.amount ?? 10);
+    const customers: Customer[] = await prisma.customer.findMany({
+      orderBy: { createdAt: "desc" },
+      take: amount,
+    });
+
+    return res.status(httpOK).json({ customers });
+  } catch (err) {
+    return res
+      .status(httpIntServerError)
+      .json({ error: "Fehler beim Abrufen der neusten Tiere" });
   }
 };
 
@@ -89,20 +122,21 @@ export const handleCustomerCreate = async (
   }
 };
 
-export const deleteCustomer = async (req: Request<never, never, IDeleteCustomerRequest>,
-  res: Response) => {
-    try {
-      const {id} = req.params;
-      const deleteCustomer = await prisma.customer.delete({
-        where: {
-          id: Number(id),
-        }
-      });
-      return res.status(httpOK).json({ deleteCustomer });
-    }
-    catch (error: any) {
-      return res.status(httpIntServerError).json({
-        error: "Fehler beim Löschen des Kunden",
-      });
-    }
+export const deleteCustomer = async (
+  req: Request<never, never, IDeleteCustomerRequest>,
+  res: Response
+) => {
+  try {
+    const { id } = req.params;
+    const deleteCustomer = await prisma.customer.delete({
+      where: {
+        id: Number(id),
+      },
+    });
+    return res.status(httpOK).json({ deleteCustomer });
+  } catch (error: any) {
+    return res.status(httpIntServerError).json({
+      error: "Fehler beim Löschen des Kunden",
+    });
+  }
 };

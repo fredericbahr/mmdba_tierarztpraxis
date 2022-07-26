@@ -11,8 +11,8 @@ export interface ITreatment {
   costs: number;
   date: Date;
   notes: string;
-  animal: IAnimal;
-  customer: ICustomer;
+  animal?: IAnimal;
+  customer?: ICustomer;
   medicines: IMedicine[];
   photos: IPhoto[];
   videos: IVideo[];

@@ -80,10 +80,10 @@ export const TreatmentTableRow = ({
       <Td>{treatment.diagnosis}</Td>
       <Td>{treatment.notes}</Td>
       <Td isNumeric>{treatment.costs}</Td>
-      <Td>{treatment.customer.name}</Td>
-      <Td>{treatment.animal.name}</Td>
-      <Td>{treatment.animal.race?.name || "---"}</Td>
-      <Td>{treatment.animal.race?.species?.name || "---"}</Td>
+      <Td>{treatment.customer?.name || "---"}</Td>
+      <Td>{treatment.animal?.name || "---"}</Td>
+      <Td>{treatment.animal?.race?.name || "---"}</Td>
+      <Td>{treatment.animal?.race?.species?.name || "---"}</Td>
       <Td>{renderMedicines(treatment.medicines)}</Td>
       <Td>
         <HStack>
@@ -120,7 +120,7 @@ export const TreatmentTableRow = ({
               />
             </Tooltip>
           )}
-          <Tooltip label="Löschen" hasArrow>
+          <Tooltip label="Behandlung löschen" hasArrow>
             <IconButton
               variant="ghost"
               colorScheme="red"

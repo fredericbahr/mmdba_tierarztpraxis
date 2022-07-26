@@ -17,8 +17,8 @@ model Animal {
   birthdate  DateTime
   weight     Int
   createdAt  DateTime    @default(now())
-  owner      Customer    @relation(fields: [customerId], references: [id])
-  customerId Int
+  owner      Customer?   @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  customerId Int?
   race       Race        @relation(fields: [raceId], references: [id])
   treatments Treatment[]
   raceId     Int
@@ -43,10 +43,10 @@ model Treatment {
   date       DateTime   @default(now())
   notes      String
   createdAt  DateTime   @default(now())
-  animal     Animal     @relation(fields: [animalId], references: [id])
-  customer   Customer   @relation(fields: [customerId], references: [id])
-  animalId   Int
-  customerId Int
+  animal     Animal?    @relation(fields: [animalId], references: [id], onDelete: SetNull)
+  customer   Customer?  @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  animalId   Int?
+  customerId Int?
   medicines  Medicine[]
   photos     Photo[]
   videos     Video[]
