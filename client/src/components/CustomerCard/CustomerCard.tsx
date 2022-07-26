@@ -17,6 +17,7 @@ import { useCustomToast } from "../../hooks/useCustomToast";
 import { useFetch } from "../../hooks/useFetch";
 import { ICustomer } from "../../interfaces/customerInterface";
 import { DeleteAlert } from "../DeleteAlert/DeleteAlert";
+import { CustomerAnimalViewModal } from "./CustomerAnimalViewModal";
 
 interface IProps {
   customer: ICustomer;
@@ -29,13 +30,22 @@ export const CustomerCard = ({
   allCustomers,
   setResults,
 }: IProps) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenDeleteAlert,
+    onOpen: onOpenDeleteAlert,
+    onClose: onCloseDeleteAlert,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenAnimalModal,
+    onOpen: onOpenAnimalModal,
+    onClose: onCloseAnimalModal,
+  } = useDisclosure();
   const { showErrorToast } = useCustomToast();
 
   const { isLoading, error, deleteFetch } = useFetch();
 
   const handleDeleteRequest = async () => {
-    onClose();
+    onCloseDeleteAlert();
     const result = await deleteFetch(`/api/customer/delete/${customer.id}`);
     console.log(result);
 
@@ -51,7 +61,21 @@ export const CustomerCard = ({
 
   return (
     <>
-      <Box boxShadow="md" rounded="md" px={4} py={8} w="full" h="full">
+      <Box
+        boxShadow="md"
+        rounded="md"
+        px={4}
+        py={8}
+        w="full"
+        h="full"
+        onClick={onOpenAnimalModal}
+        _hover={{
+          cursor:
+            customer.animals && customer.animals.length > 0
+              ? "pointer"
+              : "auto",
+        }}
+      >
         <VStack spacing={4} alignItems="left" justify="center">
           <HStack alignItems="left">
             <Heading as="h4" size="md" width="full">
@@ -64,15 +88,15 @@ export const CustomerCard = ({
                 colorScheme="red"
                 variant="ghost"
                 isLoading={isLoading}
-                onClick={onOpen}
+                onClick={onOpenDeleteAlert}
               />
             </Tooltip>
             <DeleteAlert
               heading="Kunde löschen?"
               body="Wollen Sie den Kunden wirklich löschen?"
-              isOpen={isOpen}
+              isOpen={isOpenDeleteAlert}
               isLoading={isLoading}
-              onClose={onClose}
+              onClose={onCloseDeleteAlert}
               onDelete={handleDeleteRequest}
             />
           </HStack>
@@ -97,6 +121,14 @@ export const CustomerCard = ({
           </HStack>
         </VStack>
       </Box>
+      {customer.animals && customer.animals.length > 0 && (
+        <CustomerAnimalViewModal
+          animals={customer.animals}
+          isOpen={isOpenAnimalModal}
+          onClose={onCloseAnimalModal}
+          setResults={setResults}
+        />
+      )}
     </>
   );
 };

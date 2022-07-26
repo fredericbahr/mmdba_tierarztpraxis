@@ -8,7 +8,7 @@ export interface ICustomer {
   plz: number;
   city: string;
   phoneNumber: string;
-  animals: IAnimal[];
+  animals?: IAnimal[];
   treatments: ITreatment[];
   createdAt: Date;
 }
