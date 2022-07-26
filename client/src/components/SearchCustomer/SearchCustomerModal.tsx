@@ -16,34 +16,34 @@ import {
   import { ICustomer } from "../../interfaces/customerInterface";
   import { ISelectOptions } from "../../interfaces/selectInterface";
 import { SearchCustomerStep } from "../SearchCustomer/SearchCustomerStep";
-  
+
   interface IProps {
     isOpen: boolean;
     onClose: () => void;
     setResults: (results: any) => void;
   }
-  
+
   export const SearchCustomerModal = ({ isOpen, onClose, setResults }: IProps) => {
     const { nextStep, prevStep, reset, activeStep } = useSteps({
       initialStep: 0,
     });
-  
+
     const { showErrorToast } = useCustomToast();
     const { isLoading, error, get } = useFetch();
-  
+
     const [customerName, setCustomerName] = useState("");
     const [customerCreatedAt, setCustomerCreatedAt] = useState<Date | null>(null);
     const [customerCity, setCustomerCity] = useState("");
     const [customerPhoneNumber, setCustomerPhoneNumber] = useState("");
     const [customerPlz, setCustomerPlz] = useState<number | null>(null);
     const [customerStreet, setCustomerStreet] = useState("");
-  
+
     const [customers, setCustomers] = useState<ICustomer[]>([]);
-  
+
     useEffect(() => {
       setResults(customers);
     }, [customers]);
-  
+
     const handleCustomerNameChange = (
       event: React.ChangeEvent<HTMLInputElement>
     ) => {
@@ -67,19 +67,19 @@ import { SearchCustomerStep } from "../SearchCustomer/SearchCustomerStep";
       ) => {
           setCustomerStreet(event.target.value);
     };
-  
+
     const handleCustomerCreatedAtChange = (
       event: React.ChangeEvent<HTMLInputElement>
     ) => {
       setCustomerCreatedAt(new Date(event.target.value));
     };
-  
+
     const handleCustomerPlzChange = (
       event: React.ChangeEvent<HTMLInputElement>
     ) => {
         setCustomerPlz(Number(event.target.value));
     };
-  
+
     /**
      * Handles the search of the animal(s)
      */
@@ -93,7 +93,7 @@ import { SearchCustomerStep } from "../SearchCustomer/SearchCustomerStep";
         street: customerStreet,
       };
       const empty_query = (Object.keys(parameters).length === 1 && parameters.name.length === 0) ? false : true;
-  
+
       if (!empty_query) {
         const data = await get("/api/customer/");
         console.log(data);
@@ -123,18 +123,18 @@ import { SearchCustomerStep } from "../SearchCustomer/SearchCustomerStep";
         const data = await get("api/customer/data/?"+query);
         setCustomers(data.customer);
       }
-  
+
       if (error || !customers) {
         return showErrorToast(
           "Fehler",
           error || "Fehler beim Suchen des Kunden"
         );
       }
-  
+
       showSuccessToast("Erfolgreich", "Kunden wurden erfolgreich gefunden");
       onClose();
     };
-  
+
     const steps = [
       {
         label: "Kundendaten",
@@ -156,11 +156,11 @@ import { SearchCustomerStep } from "../SearchCustomer/SearchCustomerStep";
         ),
       },
     ];
-  
+
     useEffect(() => {
       reset();
     }, [isOpen]);
-  
+
     return (
       <Modal isOpen={isOpen} onClose={onClose} size="6xl" isCentered>
         <ModalOverlay />
@@ -181,7 +181,7 @@ import { SearchCustomerStep } from "../SearchCustomer/SearchCustomerStep";
               </Steps>
             </Flex>
           </ModalBody>
-  
+
           <ModalFooter>
             <Flex width="100%" justify="flex-end">
               <Button

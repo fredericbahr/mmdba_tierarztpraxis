@@ -2,7 +2,6 @@ import {
   Box,
   Button,
   Heading,
-  Hide,
   HStack,
   Icon,
   IconButton,
@@ -14,9 +13,8 @@ import {
   useDisclosure,
   VStack} from "@chakra-ui/react";
 import format from "date-fns/format";
-import { CaretDown, CaretUp, TrashSimple, X } from "phosphor-react";
+import { TrashSimple, X } from "phosphor-react";
 import React, { useState } from "react";
-import { useEffect } from "react";
 
 import { useFetch } from "../../hooks/useFetch";
 import { IAnimals } from "../../interfaces/animalInterface";
@@ -82,7 +80,7 @@ export const AnimalCard = ({ animal, allAnimals, setResults }: IProps) => {
               alignItems="start"
               spacing={8}
             >
-              <VStack>
+              <VStack alignItems="start">
                 <Text>Geburtstag</Text>
                 <Text fontSize="xs">{format(new Date(animal.birthdate), "dd.MM.yyyy")}</Text>
               </VStack>
