@@ -13,12 +13,13 @@ import {
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
-import { CaretDown, CaretUp, TrashSimple } from "phosphor-react";
-import React, { useState } from "react";
+import { CaretDown, CaretUp, TrashSimple, X } from "phosphor-react";
+import React, { useRef, useState } from "react";
 
 import { useCustomToast } from "../../hooks/useCustomToast";
 import { useFetch } from "../../hooks/useFetch";
 import { IMedicine } from "../../interfaces/medicineInterface";
+import { DeleteAlert } from "../DeleteAlert/DeleteAlert";
 import { PDFFullScreenModal } from "../PDFFullScreenModal/PDFFullScreenModal";
 
 interface IProps {
@@ -31,12 +32,19 @@ export const MedicineCard = ({
   deleteMedicine = undefined,
 }: IProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenDeleteModal,
+    onOpen: onOpenDeleteModal,
+    onClose: onCloseDeleteModal,
+  } = useDisclosure();
+
   const { isLoading, error, deleteFetch } = useFetch();
   const { showErrorToast } = useCustomToast();
 
   const [showMore, setShowMore] = useState(false);
 
   const handleDelete = async (id: number) => {
+    onCloseDeleteModal();
     const { deletedMedicine } = await deleteFetch(`/api/medicine/${id}`);
 
     if (!deletedMedicine || error) {
@@ -57,14 +65,26 @@ export const MedicineCard = ({
               {medicine.name}
             </Heading>
             {deleteMedicine && (
-              <IconButton
-                icon={<Icon as={TrashSimple} />}
-                aria-label="Löschen"
-                colorScheme="red"
-                variant="ghost"
-                isLoading={isLoading}
-                onClick={() => handleDelete(medicine.id)}
-              />
+              <>
+                <Tooltip hasArrow label="Medikament löschen">
+                  <IconButton
+                    icon={<Icon as={TrashSimple} />}
+                    aria-label="Löschen"
+                    colorScheme="red"
+                    variant="ghost"
+                    isLoading={isLoading}
+                    onClick={onOpenDeleteModal}
+                  />
+                </Tooltip>
+                <DeleteAlert
+                  heading="Medikament löschen?"
+                  body="Wollen Sie das Medikament wirklich löschen?"
+                  isOpen={isOpenDeleteModal}
+                  isLoading={isLoading}
+                  onClose={onCloseDeleteModal}
+                  onDelete={() => handleDelete(medicine.id)}
+                />
+              </>
             )}
           </HStack>
           <HStack

@@ -42,7 +42,7 @@ export const Animal = () => {
               heading="Suchergebnisse"
               setResults={setSearchResults}
             />
-            <Button variant="ghost" onClick={() => setSearchResults([])}>
+            <Button variant="ghost" onClick={() => setSearchResults(null)}>
               Suche zurücksetzen
             </Button>
           </VStack>

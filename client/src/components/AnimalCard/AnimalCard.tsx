@@ -1,10 +1,4 @@
 import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
   Box,
   Heading,
   HStack,
@@ -22,6 +16,7 @@ import React, { useRef } from "react";
 import { useCustomToast } from "../../hooks/useCustomToast";
 import { useFetch } from "../../hooks/useFetch";
 import { IAnimals } from "../../interfaces/animalInterface";
+import { DeleteAlert } from "../DeleteAlert/DeleteAlert";
 
 interface IProps {
   animal: IAnimals;
@@ -33,9 +28,10 @@ export const AnimalCard = ({ animal, allAnimals, setResults }: IProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { showErrorToast } = useCustomToast();
   const { isLoading, error, deleteFetch } = useFetch();
-  const cancelRef: any = useRef();
 
   const handleDeleteRequest = async () => {
+    onClose();
+
     const result = await deleteFetch("/api/animal/delete/" + animal.id);
     console.log(result);
 
@@ -58,55 +54,24 @@ export const AnimalCard = ({ animal, allAnimals, setResults }: IProps) => {
             <Heading as="h4" size="md" width="full">
               {animal.name}
             </Heading>
-            <IconButton
-              icon={<Icon as={TrashSimple} />}
-              aria-label="Löschen"
-              colorScheme="red"
-              variant="ghost"
+            <Tooltip hasArrow label="Tier löschen">
+              <IconButton
+                icon={<Icon as={TrashSimple} />}
+                aria-label="Löschen"
+                colorScheme="red"
+                variant="ghost"
+                isLoading={isLoading}
+                onClick={onOpen}
+              />
+            </Tooltip>
+            <DeleteAlert
+              heading="Tier löschen?"
+              body="Wollen Sie das Tier wirklich löschen?"
               isLoading={isLoading}
-              onClick={onOpen}
-            />
-            <AlertDialog
               isOpen={isOpen}
-              leastDestructiveRef={cancelRef}
               onClose={onClose}
-            >
-              <AlertDialogOverlay>
-                <AlertDialogContent>
-                  <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                    Tier löschen?
-                  </AlertDialogHeader>
-
-                  <AlertDialogBody>
-                    Wollen Sie das Tier wirklich löschen?
-                  </AlertDialogBody>
-
-                  <AlertDialogFooter>
-                    <HStack spacing={4}>
-                      <Tooltip label="Abbrechen" hasArrow>
-                        <IconButton
-                          icon={<Icon as={X} />}
-                          aria-label="Abbrechen"
-                          colorScheme="gray"
-                          variant="ghost"
-                          isLoading={isLoading}
-                          onClick={onClose}
-                        />
-                      </Tooltip>
-                      <Tooltip label="Abbrechen" hasArrow>
-                        <IconButton
-                          icon={<Icon as={TrashSimple} />}
-                          aria-label="Löschen"
-                          colorScheme="red"
-                          isLoading={isLoading}
-                          onClick={handleDeleteRequest}
-                        />
-                      </Tooltip>
-                    </HStack>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialogOverlay>
-            </AlertDialog>
+              onDelete={handleDeleteRequest}
+            />
           </HStack>
           <HStack
             w="full"

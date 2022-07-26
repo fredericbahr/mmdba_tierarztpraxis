@@ -36,12 +36,12 @@ export const CustomerOverview = ({
   return (
     <>
       {heading && (
-        <Heading as="h3" size="lg">
+        <Heading as="h3" size="lg" textAlign="center">
           {heading}
         </Heading>
       )}
       {isLoading && (
-        <Flex justifyContent="center" alignItems="center">
+        <Flex justifyContent="center" alignItems="center" mt={8}>
           <Spinner />
         </Flex>
       )}

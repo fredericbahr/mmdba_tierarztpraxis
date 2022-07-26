@@ -1,5 +1,4 @@
 import { Animal, PrismaClient } from "@prisma/client";
-import console from "console";
 import { Request, Response } from "express";
 import { httpIntServerError, httpOK } from "../config/statusCode";
 import {
@@ -29,8 +28,6 @@ export const getAnimals = async (
         },
       },
     });
-    console.log("Trying to find all");
-    console.log(animals);
     return res.status(httpOK).json({ animals });
   } catch (error: any) {
     return res.status(httpIntServerError).json({
@@ -68,8 +65,6 @@ export const getAnimalQuery = async (
   res: Response
 ) => {
   try {
-    console.log("Trying to find specific");
-    console.log(req.query);
     const animal = await prisma.animal.findMany({
       where: {
         birthdate:
@@ -100,7 +95,6 @@ export const getAnimalQuery = async (
         },
       },
     });
-    console.log(animal);
 
     return res.status(httpOK).json({ animal });
   } catch (error: any) {

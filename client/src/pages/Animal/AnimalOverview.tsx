@@ -36,7 +36,7 @@ export const AnimalOverview = ({
   return (
     <>
       {heading && (
-        <Heading as="h3" size="lg">
+        <Heading as="h3" size="lg" textAlign="center">
           {heading}
         </Heading>
       )}
