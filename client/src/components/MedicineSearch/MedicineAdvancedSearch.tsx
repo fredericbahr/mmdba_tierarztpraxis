@@ -99,6 +99,8 @@ export const MedicineAdvancedSearch = ({
                     {idx > 0 && (
                       <IconButton
                         aria-label="Delete Keyword"
+                        colorScheme="red"
+                        variant="ghost"
                         icon={<Icon as={TrashSimple} />}
                         onClick={() => onKeywordSearchDelete(idx)}
                       />
