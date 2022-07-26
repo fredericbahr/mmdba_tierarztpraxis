@@ -10,4 +10,5 @@ export interface ICustomer {
   phoneNumber: string;
   animals: IAnimal[];
   treatments: ITreatment[];
+  createdAt: Date;
 }

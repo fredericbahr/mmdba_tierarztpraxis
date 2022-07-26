@@ -1,5 +1,5 @@
 import { Heading } from "@chakra-ui/react";
-import { Box, Button, Grid, GridItem, Text,VStack } from "@chakra-ui/react";
+import { Box, Button, Grid, GridItem, Text, VStack } from "@chakra-ui/react";
 import { useDisclosure } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
@@ -11,7 +11,6 @@ import { CustomerCreate } from "./CustomerCreate";
 import { CustomerOverview } from "./CustomerOverview";
 
 export const Customer = () => {
-
   const { isLoading, error, get } = useFetch();
   const { showErrorToast } = useCustomToast();
 
@@ -21,32 +20,38 @@ export const Customer = () => {
 
   useEffect(() => {
     console.log(searchResults, "- Search results have changed");
-  },[searchResults]);
+  }, [searchResults]);
 
   return (
-    <Grid templateColumns="repeat(3, 1fr)" gridGap={8}>
-    <GridItem colSpan={2}>
-      {searchResults.length > 0 && (
-        <VStack spacing={8}>
-          <CustomerOverview
-                  isLoading={false}
-                  customers={searchResults}
-                  heading="Suchergebnisse"
+    <Grid
+      templateColumns={{ base: "repeat(1, 1fr)", "2xl": "repeat(3, 1fr)" }}
+      gridGap={8}
+    >
+      <GridItem colSpan={2}>
+        {searchResults.length > 0 && (
+          <VStack spacing={8}>
+            <CustomerOverview
+              isLoading={false}
+              customers={searchResults}
+              heading="Suchergebnisse"
+            />
+            <Button variant="ghost" onClick={() => setSearchResults([])}>
+              Suche zurücksetzen
+            </Button>
+          </VStack>
+        )}
+      </GridItem>
+      <GridItem>
+        <Box marginBottom={4}>
+          <Button onClick={onOpen}>Kunde suchen</Button>
+          <SearchCustomerModal
+            isOpen={isOpen}
+            onClose={onClose}
+            setResults={setSearchResults}
           />
-          <Button variant="ghost" onClick={() => setSearchResults([])}>
-                  Suche zurücksetzen
-          </Button>
-        </VStack>
-      )} 
-    </GridItem>
-    <GridItem>
-      <Box marginBottom={4}>
-        <Button onClick={onOpen}>Kunde suchen</Button>
-        <SearchCustomerModal isOpen={isOpen} onClose={onClose} setResults={setSearchResults}/>
-      </Box>
-      <CustomerCreate />
-    </GridItem>
+        </Box>
+        <CustomerCreate />
+      </GridItem>
     </Grid>
   );
 };
-
