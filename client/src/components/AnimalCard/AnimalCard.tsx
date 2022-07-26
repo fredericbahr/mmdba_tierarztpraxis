@@ -6,7 +6,6 @@ import {
   AlertDialogHeader,
   AlertDialogOverlay,
   Box,
-  Button,
   Heading,
   HStack,
   Icon,

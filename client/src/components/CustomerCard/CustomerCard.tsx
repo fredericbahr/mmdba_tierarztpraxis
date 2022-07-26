@@ -16,6 +16,7 @@ import {
 import format from "date-fns/format";
 import { TrashSimple, X } from "phosphor-react";
 import React, { useState } from "react";
+import { useCustomToast } from "../../hooks/useCustomToast";
 
 import { useFetch } from "../../hooks/useFetch";
 import { ICustomer } from "../../interfaces/customerInterface";
@@ -32,13 +33,18 @@ export const CustomerCard = ({
   setResults,
 }: IProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { showErrorToast } = useCustomToast();
 
-  const [showMore, setShowMore] = useState(false);
   const { isLoading, error, deleteFetch } = useFetch();
 
   const handleDeleteRequest = async () => {
     const result = await deleteFetch("/api/customer/delete/" + customer.id);
     console.log(result);
+
+    if (!result || error) {
+      return showErrorToast("Fehler", "Fehler beim Löschen des Kunden");
+    }
+
     const newCustomer = allCustomers.filter(
       (customer) => customer.id != result.deleteCustomer.id
     );

@@ -15,7 +15,6 @@ import React from "react";
 import { useCustomToast } from "../../hooks/useCustomToast";
 import { useFetch } from "../../hooks/useFetch";
 import { IMedicine } from "../../interfaces/medicineInterface";
-import { ISpecies } from "../../interfaces/speciesInterface";
 import { ITreatment } from "../../interfaces/treatmentInterface";
 
 interface IProps {
