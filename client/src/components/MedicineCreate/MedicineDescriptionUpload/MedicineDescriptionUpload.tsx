@@ -20,7 +20,7 @@ export const MedicineDescriptionUpload = ({ file, onFileChange }: IProps) => {
 
   return (
     <>
-      <FileUpload handleNewFiles={handleNewFiles} />
+      <FileUpload handleNewFiles={handleNewFiles} multiple={false} />
       {file && (
         <Box marginTop={8}>
           <Heading as="h3">Beschreibung</Heading>

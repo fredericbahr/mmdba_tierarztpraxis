@@ -23,29 +23,28 @@ import { ITreatmentSearchRef } from "../../../pages/Treatment/Treatment";
 import { TreatmentSearchGroupedQuery } from "./TreatmentSearchGroupedQuery/TreatmentSearchGroupedQuery";
 
 interface IProps {
+  filterSearchQuery: ITreatmentSearchQuery[];
   onClose: () => void;
   setSearchResults: (searchResults: ITreatment[] | null) => void;
   setIsLoading: (isLoading: boolean) => void;
+  setFilterSearchQuery: (filterSearchQuery: ITreatmentSearchQuery[]) => void;
 }
 
 const TreatmentFilterSearch = (
-  { onClose, setSearchResults, setIsLoading }: IProps,
+  {
+    filterSearchQuery,
+    onClose,
+    setSearchResults,
+    setIsLoading,
+    setFilterSearchQuery,
+  }: IProps,
   ref?: React.Ref<ITreatmentSearchRef>
 ) => {
   const { isLoading, error, post } = useFetch();
   const { showErrorToast } = useCustomToast();
 
-  const [searchQuery, setSearchQuery] = useState<ITreatmentSearchQuery[]>([
-    {
-      queries: [
-        {
-          field: undefined,
-          condition: undefined,
-          value: "",
-        },
-      ],
-    },
-  ]);
+  const [searchQuery, setSearchQuery] =
+    useState<ITreatmentSearchQuery[]>(filterSearchQuery);
 
   const handleQueryChange = (
     changedQuery: ITreatmentSearchQuery,
@@ -96,52 +95,16 @@ const TreatmentFilterSearch = (
     onClose();
   };
 
-  const resetSearch = () => {
-    setSearchQuery([
-      {
-        queries: [
-          {
-            field: undefined,
-            condition: undefined,
-            value: "",
-          },
-        ],
-      },
-    ]);
-  };
-
-  const handleSingleQueryConnectorToOr = (queries: ITreatmentSingleQuery[]) => {
-    const mappedQueries: ITreatmentSingleQuery[] = queries.map((query) => {
-      return {
-        ...query,
-        connector: "OR",
-      };
-    });
-
-    return mappedQueries;
-  };
-
-  const handleQueryConnectorToOr = () => {
-    const newSearchQuery: ITreatmentSearchQuery[] = searchQuery.map(
-      (query: ITreatmentSearchQuery) => {
-        return {
-          queries: handleSingleQueryConnectorToOr(query.queries),
-          connector: "OR",
-        };
-      }
-    );
-
-    setSearchQuery(newSearchQuery);
-  };
-
   useEffect(() => {
     setIsLoading(isLoading);
   }, [isLoading]);
 
+  useEffect(() => {
+    setFilterSearchQuery(searchQuery);
+  }, [searchQuery]);
+
   useImperativeHandle(ref, () => ({
     ...(ref as React.RefObject<ITreatmentSearchRef>).current,
-    handleQueryConnectorToOr,
-    resetSearch,
     handleSearch,
   }));
 

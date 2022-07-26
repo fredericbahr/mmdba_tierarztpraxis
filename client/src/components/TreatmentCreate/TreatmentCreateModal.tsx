@@ -189,7 +189,7 @@ export const TreatmentCreateModal = ({
   ];
 
   useEffect(() => {
-    handleReset();
+    //handleReset();
   }, [isOpen]);
 
   return (

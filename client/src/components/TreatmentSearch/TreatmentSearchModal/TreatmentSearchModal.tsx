@@ -19,6 +19,7 @@ import Select from "react-select";
 
 import { ISelectOptions } from "../../../interfaces/selectInterface";
 import { ITreatment } from "../../../interfaces/treatmentInterface";
+import { ITreatmentSearchQuery } from "../../../interfaces/treatmentSearchInterface";
 import {
   ITreatmentSearchRef,
   ITreatmentSearchType,
@@ -29,9 +30,11 @@ import TreatmentImageSearch from "../TreatmentImageSearch/TreatmentImageSearch";
 interface IProps {
   isOpen: boolean;
   searchType: ITreatmentSearchType;
+  filterSearchQuery: ITreatmentSearchQuery[];
   onClose: () => void;
   setTreatmentSearchType: (treatmentSearchType: ITreatmentSearchType) => void;
   setSearchResults: (searchResults: ITreatment[] | null) => void;
+  setFilterSearchQuery: (filterSearchQuery: ITreatmentSearchQuery[]) => void;
 }
 
 const treatmentSearchTypeOptions: ISelectOptions<ITreatmentSearchType>[] = [
@@ -43,9 +46,11 @@ const TreatmentSearchModal = (
   {
     isOpen,
     searchType,
+    filterSearchQuery,
     onClose,
     setTreatmentSearchType,
     setSearchResults,
+    setFilterSearchQuery,
   }: IProps,
   ref?: React.Ref<ITreatmentSearchRef>
 ) => {
@@ -68,8 +73,10 @@ const TreatmentSearchModal = (
       <TreatmentFilterSearch
         ref={ref}
         onClose={onClose}
+        filterSearchQuery={filterSearchQuery}
         setIsLoading={setIsLoading}
         setSearchResults={setSearchResults}
+        setFilterSearchQuery={setFilterSearchQuery}
       />
     ),
     image: (

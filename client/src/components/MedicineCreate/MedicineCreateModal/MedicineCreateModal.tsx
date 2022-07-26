@@ -111,7 +111,7 @@ export const MedicineCreateModal = ({
   ];
 
   useEffect(() => {
-    handleReset();
+    //handleReset();
   }, [isOpen]);
 
   return (
