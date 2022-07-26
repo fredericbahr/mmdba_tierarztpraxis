@@ -6,7 +6,7 @@ import {
   httpOK,
 } from "../config/statusCode";
 
-import { ICreateCustomerRequest, ISearchCustomerRequest } from "../interfaces/customerInterface";
+import { ICreateCustomerRequest, ISearchCustomerRequest, IDeleteCustomerRequest } from "../interfaces/customerInterface";
 
 const prisma = new PrismaClient();
 
@@ -87,4 +87,22 @@ export const handleCustomerCreate = async (
       error: "Fehler beim Speichern des Kunden",
     });
   }
+};
+
+export const deleteCustomer = async (req: Request<never, never, IDeleteCustomerRequest>,
+  res: Response) => {
+    try {
+      const {id} = req.params;
+      const deleteCustomer = await prisma.customer.delete({
+        where: {
+          id: Number(id),
+        }
+      });
+      return res.status(httpOK).json({ deleteCustomer });
+    }
+    catch (error: any) {
+      return res.status(httpIntServerError).json({
+        error: "Fehler beim Löschen des Kunden",
+      });
+    }
 };
