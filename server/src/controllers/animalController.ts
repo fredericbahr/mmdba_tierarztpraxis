@@ -112,7 +112,6 @@ export const createAnimal = async (
 ) => {
   const { name, birthdate, weight, customerId, raceId } = req.body;
 
-
   try {
     const animal = await prisma.animal.create({
       data: {
