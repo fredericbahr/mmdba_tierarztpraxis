@@ -6,6 +6,8 @@ import {
   httpOK,
 } from "../config/statusCode";
 
+import { ICreateCustomerRequest, ISearchCustomerRequest } from "../interfaces/customerInterface";
+
 const prisma = new PrismaClient();
 
 /**
@@ -13,7 +15,7 @@ const prisma = new PrismaClient();
  * @param req Request Object
  * @param res Response Object
  */
-export const getCustomers = async (req: Request, res: Response) => {
+export const getAllCustomers = async (req: Request, res: Response) => {
   try {
     const customers = await prisma.customer.findMany({});
 
@@ -22,6 +24,32 @@ export const getCustomers = async (req: Request, res: Response) => {
     res
       .status(httpIntServerError)
       .json({ error: "Fehler beim Abrufen der Kunden" });
+  }
+};
+
+export const getCustomerQuery = async (req: Request<ISearchCustomerRequest, never, ICreateCustomerRequest>,
+  res: Response) => {
+  try {
+    console.log("Trying to find specific");
+    console.log(req.query);
+    const customer = await prisma.customer.findMany({
+      where: {
+        city: req.query.city != null && req.query.city != "" ? String(req.query.city) : undefined,
+        createdAt: req.query.createdAt != null ? new Date(String(req.query.createdAt)) : undefined,
+        name: req.query.name != null && req.query.name != "" ? String(req.query.name) : undefined, 
+        phoneNumber: req.query.phoneNumber != null && req.query.phoneNumber != "" ? String(req.query.phoneNumber) : undefined,
+        plz: req.query.plz != null ? Number(req.query.plz) : undefined,
+        street: req.query.street != null && req.query.street != "" ? String(req.query.street) : undefined 
+      }
+    }
+    );
+    console.log(customer);
+
+    return res.status(httpOK).json({ customer });
+  } catch (error: any) {
+    res
+      .status(httpIntServerError)
+      .json({ error: "Fehler beimAbrufen der Kunden"});
   }
 };
 
