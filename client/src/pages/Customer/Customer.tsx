@@ -1,5 +1,4 @@
-import { Heading } from "@chakra-ui/react";
-import { Box, Button, Grid, GridItem, Text, VStack } from "@chakra-ui/react";
+import { Box, Button, Grid, GridItem, VStack } from "@chakra-ui/react";
 import { useDisclosure } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
@@ -34,6 +33,7 @@ export const Customer = () => {
               isLoading={false}
               customers={searchResults}
               heading="Suchergebnisse"
+              setResults={setSearchResults}
             />
             <Button variant="ghost" onClick={() => setSearchResults([])}>
               Suche zurücksetzen

@@ -17,6 +17,7 @@ interface IProps {
   customers: ICustomer[];
   heading?: string;
   showAmount?: number;
+  setResults: (results: any) => void;
 }
 
 export const CustomerOverview = ({
@@ -24,6 +25,7 @@ export const CustomerOverview = ({
   customers,
   heading,
   showAmount = 6,
+  setResults,
 }: IProps) => {
   const [page, setPage] = useState(1);
 
@@ -57,7 +59,11 @@ export const CustomerOverview = ({
               )
               .map((customer: ICustomer, index: number) => (
                 <GridItem key={index}>
-                  <CustomerCard customer={customer} />
+                  <CustomerCard
+                    customer={customer}
+                    allCustomers={customers}
+                    setResults={setResults}
+                  />
                 </GridItem>
               ))}
           </Grid>
