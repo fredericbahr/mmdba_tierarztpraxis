@@ -86,14 +86,12 @@ export const Medicine = () => {
           </VStack>
         )}
         {!searchResults && (
-          <>
-            <MedicineOverview
-              isLoading={isLoading}
-              medicines={medicines}
-              heading="Neusten Medikamente"
-              deleteMedicine={handleMedicineDelete}
-            />
-          </>
+          <MedicineOverview
+            isLoading={isLoading}
+            medicines={medicines}
+            heading="Neusten Medikamente"
+            deleteMedicine={handleMedicineDelete}
+          />
         )}
       </GridItem>
       <GridItem>
