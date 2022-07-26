@@ -91,6 +91,8 @@ export const AnimalRaceChooseStep = ({
             options={options}
             value={options.find((option) => option.value === raceId)}
             onChange={onRaceChange}
+            placeholder="Tierrasse auswählen..."
+            loadingMessage={() => "Lade Tierrassen..."}
           />
           <FormHelperText>Wählen Sie bitte einen Tierrasse</FormHelperText>
         </FormControl>

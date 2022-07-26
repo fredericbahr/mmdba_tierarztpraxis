@@ -7,6 +7,7 @@ import {
   Input,
   Modal,
   ModalBody,
+  ModalCloseButton,
   ModalContent,
   ModalFooter,
   ModalHeader,
@@ -91,6 +92,7 @@ export const RaceCreateModal = ({ isOpen, onClose }: IProps) => {
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Rasse anlegen</ModalHeader>
+        <ModalCloseButton />
         <ModalBody>
           <form>
             <VStack spacing={4}>
@@ -113,6 +115,8 @@ export const RaceCreateModal = ({ isOpen, onClose }: IProps) => {
                     (option) => option.value === speciesId
                   )}
                   onChange={handleSpeciesChange}
+                  placeholder="Spezies auswählen..."
+                  loadingMessage={() => "Spezies werden geladen..."}
                 />
                 <FormHelperText>Wählen Sie bitte eine Spezies</FormHelperText>
               </FormControl>

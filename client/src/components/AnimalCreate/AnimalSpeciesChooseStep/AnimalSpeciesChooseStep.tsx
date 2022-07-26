@@ -67,6 +67,8 @@ export const AnimalSpeziesChooseStep = ({
             options={options}
             value={options.find((option) => option.value === speciesId)}
             onChange={onSpeciesChange}
+            placeholder="Spezies auswählen..."
+            loadingMessage={() => "Lade Spezies..."}
           />
           <FormHelperText>Wählen Sie bitte einen Tierspezies</FormHelperText>
         </FormControl>

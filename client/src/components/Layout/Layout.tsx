@@ -1,4 +1,4 @@
-import { HourglassMedium, House, PawPrint, Pill, Users } from "phosphor-react";
+import { FirstAidKit, House, PawPrint, Pill, Users } from "phosphor-react";
 import React from "react";
 import { Outlet } from "react-router-dom";
 
@@ -8,22 +8,27 @@ import { SideNavigation } from "../SideNavigation/SideNavigation";
 export const Layout = () => {
   const navbarItems: ISidebarItem[] = [
     {
-      name: "Home",
+      label: "Home",
       icon: House,
       route: "/",
     },
     {
-      name: "Tiere",
+      label: "Tiere",
       icon: PawPrint,
       route: "/animal",
     },
     {
-      name: "Kunden",
+      label: "Kunden",
       icon: Users,
       route: "/customer",
     },
+     {
+      label: "Behandlungen",
+      icon: FirstAidKit,
+      route: "/treatment",
+     },
     {
-      name: "Medikamente",
+      label: "Medikamente",
       icon: Pill,
       route: "/medicine",
     },

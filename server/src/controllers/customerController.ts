@@ -19,7 +19,9 @@ export const getCustomers = async (req: Request, res: Response) => {
 
     res.status(httpOK).json({ customers });
   } catch (error: any) {
-    res.status(httpIntServerError).json({ error: error.message });
+    res
+      .status(httpIntServerError)
+      .json({ error: "Fehler beim Abrufen der Kunden" });
   }
 };
 
