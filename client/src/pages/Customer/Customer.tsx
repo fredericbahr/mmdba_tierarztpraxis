@@ -1,4 +1,4 @@
-import { Box, Button, Grid, GridItem, VStack } from "@chakra-ui/react";
+import { Box, Button, Grid, GridItem, Text, VStack } from "@chakra-ui/react";
 import { useDisclosure } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
@@ -48,6 +48,14 @@ export const Customer = () => {
       gridGap={8}
     >
       <GridItem colSpan={2}>
+        {searchResults && searchResults.length === 0 && (
+          <VStack spacing={4} marginTop={12}>
+            <Text>Es wurden keine Ergebnisse gefunden.</Text>
+            <Button onClick={() => setSearchResults(null)} variant="ghost">
+              Suchanfrage zurücksetzen
+            </Button>
+          </VStack>
+        )}
         {searchResults && searchResults.length > 0 && (
           <VStack spacing={8}>
             <CustomerOverview

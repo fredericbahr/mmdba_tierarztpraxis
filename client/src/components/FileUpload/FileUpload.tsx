@@ -81,7 +81,7 @@ export const FileUpload = ({ handleNewFiles, multiple = true }: IProps) => {
             onChange={handleFileChange}
             type="file"
             multiple={multiple}
-            accept="image/jpeg,image/gif,image/png,image/svg+xml,video/mp4,video/x-m4v,application/pdf"
+            accept="image/jpeg,image/gif,image/png,image/svg+xml,image/bmp,video/mp4,video/x-m4v,application/pdf"
           />
         </>
       ) : (

@@ -162,7 +162,7 @@ async function repopulate() {
 
     const coots = await prisma.animal.create({
       data: {
-        name: "coots",
+        name: "Coots",
         birthdate: new Date(),
         weight: 4,
         owner: {
